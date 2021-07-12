@@ -10,6 +10,11 @@ workspace "Letgen"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+IncludeDir = {}
+IncludeDir["GLFW"] = "Letgen/vendor/GLFW/include"
+
+include "Letgen/vendor/GLFW"
+
 project "Letgen"
     location "Letgen"
     kind "SharedLib"
@@ -27,7 +32,8 @@ project "Letgen"
     includedirs
     {
         "%{prj.name}/src",
-        "%{prj.name}/vendor/spdlog/include"
+        "%{prj.name}/vendor/spdlog/include",
+        "%{IncludeDir.GLFW}"
     }
 
     filter "system:windows"
@@ -37,9 +43,14 @@ project "Letgen"
 
         defines
         {
-
             "LE_PLATFORM_WINDOWS",
             "LE_BUILD_DLL"
+        }
+
+        links
+        {
+            "GLFW",
+            "opengl32.lib"
         }
 
         postbuildcommands

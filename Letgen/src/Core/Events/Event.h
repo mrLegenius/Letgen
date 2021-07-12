@@ -38,13 +38,13 @@ public:
 	virtual const char* GetName() const = 0;
 	virtual int GetCategoryFlags() const = 0;
 	virtual std::string ToString() const { return GetName(); }
-	bool Handled() const { return _handled; }
+	bool Handled() const { return m_Handled; }
 	bool IsInCategory(EventCategory category) const
 	{
 		return GetCategoryFlags() & static_cast<int>(category);
 	}
 protected:
-	bool _handled = false;
+	bool m_Handled = false;
 };
 
 class LETGEN_API EventDispatcher
@@ -53,20 +53,20 @@ class LETGEN_API EventDispatcher
 	using EventFn = std::function<bool(T&)>;
 public:
 	explicit EventDispatcher(Event& event)
-		: _event(event) { }
+		: m_Event(event) { }
 
 	template<typename T>
 	bool Dispatch(EventFn<T> func)
 	{
-		if(_event.GetEventType() == T::GetStaticType())
+		if(m_Event.GetEventType() == T::GetStaticType())
 		{
-			_event._handled = func(*static_cast<T*>(&_event));
+			m_Event.m_Handled = func(*static_cast<T*>(&m_Event));
 			return true;
 		}
 		return false;
 	}
 private:
-	Event& _event;
+	Event& m_Event;
 };
 
 inline std::ostream& operator<<(std::ostream& os, const Event& e)

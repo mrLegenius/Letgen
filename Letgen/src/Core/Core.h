@@ -10,4 +10,13 @@
 	#error Only supports Windows so far!
 #endif
 
+#ifdef LE_ENABLE_ASSERTS
+	#define LE_ASSERT(x, ...) { if(!(x)) { Log::Error("Assertion Failed {0}", __VA_ARGS__); __debugbreak(); } }
+	#define LE_INNER_ASSERT(x, ...) { if(!(x)) { Log::InnerError("Assertion Failed {0}", __VA_ARGS__); __debugbreak(); } }
+#else
+	#define LE_ASSERT(x, ...)
+	#define LE_INNER_ASSERT(x, ...)
+#endif
+
+
 constexpr int Bit(const int offset) { return 1 << offset; }

@@ -2,7 +2,7 @@
 
 #include <sstream>
 
-#include "Event.h"
+#include "Event.h" 
 
 #include <string>
 
@@ -10,23 +10,23 @@ class LETGEN_API WindowResizeEvent : public Event
 {
 public:
 	WindowResizeEvent(const unsigned int width, const unsigned int height)
-		: _width(width), _height(height) { }
+		: m_Width(width), m_Height(height) { }
 
-	unsigned int GetWidth() const { return _width; }
-	unsigned int GetHeight() const { return _height; }
+	unsigned int GetWidth() const { return m_Width; }
+	unsigned int GetHeight() const { return m_Height; }
 
 	std::string ToString() const override
 	{
 		std::stringstream ss;
-		ss << "WindowResizeEvent: " << _width << ", " << _height;
+		ss << "WindowResizeEvent: " << m_Width << ", " << m_Height;
 		return ss.str();
 	}
 
 	EVENT_CLASS_TYPE(WindowResize)
 	EVENT_CLASS_CATEGORY(EventCategoryApplication)
 private:
-	unsigned int _width;
-	unsigned int _height;
+	unsigned int m_Width;
+	unsigned int m_Height;
 
 };
 
