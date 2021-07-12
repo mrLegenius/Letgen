@@ -1,5 +1,9 @@
 ﻿#include "Application.h"
 
+#include "Events/ApplicationEvent.h"
+#include "Events/Event.h"
+#include "Logger.h"
+
 namespace Letgen
 {
 	Application::Application()
@@ -11,7 +15,7 @@ namespace Letgen
 	}
 
 	void Application::Run()
-	{
+	{		
 		while (true);
 	}
 

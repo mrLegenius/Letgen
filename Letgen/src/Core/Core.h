@@ -10,3 +10,4 @@
 	#error Only supports Windows so far!
 #endif
 
+constexpr int Bit(const int offset) { return 1 << offset; }
