@@ -27,7 +27,11 @@ namespace Letgen
 			glClearColor(1, 0, 1, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-
+			for (Layer* layer : m_LayerStack)
+			{
+				layer->OnUpdate();
+			}
+			
 			m_Window->Update();
 		}
 	}
@@ -41,8 +45,24 @@ namespace Letgen
 
 		Log::Debug("{0}", e);
 
+		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
+		{
+			(*--it)->OnEvent(e);
+			if (e.handled)
+				break;
+		}
 	}
 
+	void Application::PushLayer(Layer* layer)
+	{
+		m_LayerStack.PushLayer(layer);
+	}
+
+	void Application::PushOverlay(Layer* overlay)
+	{
+		m_LayerStack.PushOverlay(overlay);
+	}
+	
 	bool Application::OnWindowClosed(WindowCloseEvent& e)
 	{
 		m_IsRunning = false;

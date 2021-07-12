@@ -32,19 +32,16 @@ enum EventCategory
 
 class LETGEN_API Event
 {
-	friend class EventDispatcher;
 public:
 	virtual EventType GetEventType() const = 0;
 	virtual const char* GetName() const = 0;
 	virtual int GetCategoryFlags() const = 0;
 	virtual std::string ToString() const { return GetName(); }
-	bool Handled() const { return m_Handled; }
 	bool IsInCategory(EventCategory category) const
 	{
 		return GetCategoryFlags() & static_cast<int>(category);
 	}
-protected:
-	bool m_Handled = false;
+	bool handled = false;
 };
 
 class LETGEN_API EventDispatcher
@@ -60,7 +57,7 @@ public:
 	{
 		if(m_Event.GetEventType() == T::GetStaticType())
 		{
-			m_Event.m_Handled = func(*static_cast<T*>(&m_Event));
+			m_Event.handled = func(*static_cast<T*>(&m_Event));
 			return true;
 		}
 		return false;
