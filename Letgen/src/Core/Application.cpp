@@ -3,6 +3,7 @@
 #include "Events/ApplicationEvent.h"
 #include "Events/Event.h"
 #include "Logger.h"
+#include "Input.h"
 
 #include <glad/glad.h>
 

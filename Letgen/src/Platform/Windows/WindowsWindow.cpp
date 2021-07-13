@@ -3,6 +3,7 @@
 
 #include "Core/Window.h"
 #include "Core/Core.h"
+#include "Core/Input.h"
 #include "Core/Logger.h"
 #include "Core/Events/ApplicationEvent.h"
 #include "Core/Events/KeyEvent.h"
