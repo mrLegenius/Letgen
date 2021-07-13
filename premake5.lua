@@ -1,5 +1,6 @@
 workspace "Letgen"
     architecture "x64"
+    startproject "Sandbox"
 
     configurations
     {
@@ -15,14 +16,17 @@ IncludeDir["GLFW"] = "Letgen/vendor/GLFW/include"
 IncludeDir["GLAD"] = "Letgen/vendor/GLAD/include"
 IncludeDir["ImGui"] = "Letgen/vendor/ImGui"
 
-include "Letgen/vendor/GLFW"
-include "Letgen/vendor/GLAD"
-include "Letgen/vendor/ImGui"
+group "Dependencies"
+    include "Letgen/vendor/GLFW"
+    include "Letgen/vendor/GLAD"
+    include "Letgen/vendor/ImGui"
+group ""
 
 project "Letgen"
     location "Letgen"
     kind "SharedLib"
     language "C++"
+    staticruntime "off"
 
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -44,7 +48,6 @@ project "Letgen"
 
     filter "system:windows"
         cppdialect "C++17"
-        staticruntime "On"
         systemversion "latest"
 
         defines
@@ -64,28 +67,29 @@ project "Letgen"
 
         postbuildcommands
         {
-            ("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox")
+            ("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .. "/Sandbox\"")
         }
 
     filter "configurations:Debug"
         defines "LE_DEBUG"
-        buildoptions "/MDd"
+        runtime "Debug"
         symbols "On"
 
     filter "configurations:Release"
         defines "LE_RELEASE"
-        buildoptions "/MD"
+        runtime "Release"
         optimize "On"
 
     filter "configurations:Distribution"
         defines "LE_DIST"
-        buildoptions "/MD"
+        runtime "Release"
         optimize "On"
 
 project "Sandbox"
     location "Sandbox"
     kind "ConsoleApp"
     language "C++"
+    staticruntime "off"
 
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -109,7 +113,6 @@ project "Sandbox"
 
     filter "system:windows"
         cppdialect "C++17"
-        staticruntime "On"
         systemversion "latest"
 
         defines
@@ -119,15 +122,15 @@ project "Sandbox"
 
     filter "configurations:Debug"
         defines "LE_DEBUG"
-        buildoptions "/MDd"
+        runtime "Debug"
         symbols "On"
 
     filter "configurations:Release"
         defines "LE_RELEASE"
-        buildoptions "/MD"
+        runtime "Release"
         optimize "On"
 
     filter "configurations:Distribution"
         defines "LE_DIST"
-        buildoptions "/MD"
+        runtime "Release"
         optimize "On"
