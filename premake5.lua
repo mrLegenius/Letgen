@@ -15,6 +15,7 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "Letgen/vendor/GLFW/include"
 IncludeDir["GLAD"] = "Letgen/vendor/GLAD/include"
 IncludeDir["ImGui"] = "Letgen/vendor/ImGui"
+IncludeDir["GLM"] = "Letgen/vendor/GLM"
 
 group "Dependencies"
     include "Letgen/vendor/GLFW"
@@ -37,7 +38,9 @@ project "Letgen"
     files
     {
         "%{prj.name}/src/**.h",
-        "%{prj.name}/src/**.cpp"
+        "%{prj.name}/src/**.cpp",
+        "%{prj.name}/vendor/GLM/glm/**.hpp",
+        "%{prj.name}/vendor/GLM/glm/**.inl"
     }
 
     includedirs

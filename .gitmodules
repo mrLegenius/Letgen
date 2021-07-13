@@ -7,3 +7,6 @@
 [submodule "Letgen/vendor/ImGui"]
 	path = Letgen/vendor/ImGui
 	url = https://github.com/mrLegenius/imgui
+[submodule "Letgen/vendor/GLM"]
+	path = Letgen/vendor/GLM
+	url = https://github.com/g-truc/glm
