@@ -6,6 +6,7 @@
 #include "Core/Application.h"
 #include "Core/Layer.h"
 #include "Core/Logger.h"
+#include "Core/GUI/ImGuiLayer.h"
 
 #pragma endregion 
 

@@ -12,8 +12,12 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
 IncludeDir["GLFW"] = "Letgen/vendor/GLFW/include"
+IncludeDir["GLAD"] = "Letgen/vendor/GLAD/include"
+IncludeDir["ImGui"] = "Letgen/vendor/ImGui"
 
 include "Letgen/vendor/GLFW"
+include "Letgen/vendor/GLAD"
+include "Letgen/vendor/ImGui"
 
 project "Letgen"
     location "Letgen"
@@ -33,7 +37,9 @@ project "Letgen"
     {
         "%{prj.name}/src",
         "%{prj.name}/vendor/spdlog/include",
-        "%{IncludeDir.GLFW}"
+        "%{IncludeDir.GLFW}",
+        "%{IncludeDir.GLAD}",
+        "%{IncludeDir.ImGui}"
     }
 
     filter "system:windows"
@@ -44,12 +50,15 @@ project "Letgen"
         defines
         {
             "LE_PLATFORM_WINDOWS",
-            "LE_BUILD_DLL"
+            "LE_BUILD_DLL",
+            "GLFW_INCLUDE_NONE"
         }
 
         links
         {
             "GLFW",
+            "GLAD",
+            "ImGui",
             "opengl32.lib"
         }
 

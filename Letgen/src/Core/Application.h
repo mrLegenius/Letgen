@@ -11,6 +11,7 @@ namespace Letgen
 	class LETGEN_API Application
 	{
 	public:
+		
 		Application();
 		~Application();
 
@@ -20,8 +21,13 @@ namespace Letgen
 
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* overlay);
+
+		static Application& Get() { return *s_Instance; }
+		Window& GetWindow() const { return *m_Window; }
 	private:
-		bool OnWindowClosed(WindowCloseEvent& e);
+		static Application* s_Instance;
+		
+		bool OnWindowClosed(WindowClosedEvent& e);
 
 		std::unique_ptr<Window> m_Window;
 

@@ -23,6 +23,7 @@ public:
 	Sandbox()
 	{
 		PushLayer(new ExampleLayer);
+		PushOverlay(new Letgen::ImGuiLayer);
 	}
 	~Sandbox() { }
 };

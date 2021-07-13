@@ -4,16 +4,20 @@
 #include "Events/Event.h"
 #include "Logger.h"
 
-#include <GLFW/glfw3.h>
+#include <glad/glad.h>
 
 namespace Letgen
 {
-	#define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
 
+	Application* Application::s_Instance = nullptr;
+	
 	Application::Application()
 	{
+		LE_INNER_ASSERT(!s_Instance, "Only one applications allowed");
+		s_Instance = this;
+		
 		m_Window = std::unique_ptr<Window>(Window::Create());
-		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
+		m_Window->SetEventCallback(LE_BIND_EVENT_FN(Application::OnEvent));
 	}
 
 	Application::~Application()
@@ -41,7 +45,7 @@ namespace Letgen
 
 		EventDispatcher dispatcher(e);
 
-		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClosed));
+		dispatcher.Dispatch<WindowClosedEvent>(LE_BIND_EVENT_FN(Application::OnWindowClosed));
 
 		Log::Debug("{0}", e);
 
@@ -56,14 +60,16 @@ namespace Letgen
 	void Application::PushLayer(Layer* layer)
 	{
 		m_LayerStack.PushLayer(layer);
+		layer->OnAttach();
 	}
 
 	void Application::PushOverlay(Layer* overlay)
 	{
 		m_LayerStack.PushOverlay(overlay);
+		overlay->OnAttach();
 	}
 	
-	bool Application::OnWindowClosed(WindowCloseEvent& e)
+	bool Application::OnWindowClosed(WindowClosedEvent& e)
 	{
 		m_IsRunning = false;
 		return true;

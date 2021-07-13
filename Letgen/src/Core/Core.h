@@ -18,5 +18,7 @@
 	#define LE_INNER_ASSERT(x, ...)
 #endif
 
+#define LE_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
+
 
 constexpr int Bit(const int offset) { return 1 << offset; }

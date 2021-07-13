@@ -6,10 +6,10 @@
 
 #include <string>
 
-class LETGEN_API WindowResizeEvent : public Event
+class LETGEN_API WindowResizedEvent : public Event
 {
 public:
-	WindowResizeEvent(const unsigned int width, const unsigned int height)
+	WindowResizedEvent(const unsigned int width, const unsigned int height)
 		: m_Width(width), m_Height(height) { }
 
 	unsigned int GetWidth() const { return m_Width; }
@@ -18,7 +18,7 @@ public:
 	std::string ToString() const override
 	{
 		std::stringstream ss;
-		ss << "WindowResizeEvent: " << m_Width << ", " << m_Height;
+		ss << "WindowResizedEvent: " << m_Width << ", " << m_Height;
 		return ss.str();
 	}
 
@@ -30,37 +30,37 @@ private:
 
 };
 
-class LETGEN_API WindowCloseEvent: public Event
+class LETGEN_API WindowClosedEvent: public Event
 {
 public:
-	WindowCloseEvent() = default;
+	WindowClosedEvent() = default;
 
 	EVENT_CLASS_TYPE(WindowClose)
 	EVENT_CLASS_CATEGORY(EventCategoryApplication)
 };
 
-class LETGEN_API AppTickEvent : public Event
+class LETGEN_API AppTickedEvent : public Event
 {
 public:
-	AppTickEvent() = default;
+	AppTickedEvent() = default;
 
 	EVENT_CLASS_TYPE(AppTick)
 	EVENT_CLASS_CATEGORY(EventCategoryApplication)
 };
 
-class LETGEN_API AppUpdateEvent : public Event
+class LETGEN_API AppUpdatedEvent : public Event
 {
 public:
-	AppUpdateEvent() = default;
+	AppUpdatedEvent() = default;
 
 	EVENT_CLASS_TYPE(AppUpdate)
 	EVENT_CLASS_CATEGORY(EventCategoryApplication)
 };
 
-class LETGEN_API AppRenderEvent : public Event
+class LETGEN_API AppRenderedEvent : public Event
 {
 public:
-	AppRenderEvent() = default;
+	AppRenderedEvent() = default;
 
 	EVENT_CLASS_TYPE(AppRender)
 	EVENT_CLASS_CATEGORY(EventCategoryApplication)

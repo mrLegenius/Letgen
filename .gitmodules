@@ -4,3 +4,6 @@
 [submodule "Letgen/vendor/GLFW"]
 	path = Letgen/vendor/GLFW
 	url = https://github.com/mrLegenius/glfw
+[submodule "Letgen/vendor/ImGui"]
+	path = Letgen/vendor/ImGui
+	url = https://github.com/mrLegenius/imgui

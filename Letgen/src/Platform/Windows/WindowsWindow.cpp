@@ -8,6 +8,8 @@
 #include "Core/Events/KeyEvent.h"
 #include "Core/Events/MouseEvent.h"
 
+#include "glad/glad.h"
+
 namespace Letgen
 {
 	static bool is_window_initialized = false;
@@ -44,7 +46,7 @@ namespace Letgen
 		if (!is_window_initialized)
 		{
 			int success = glfwInit();
-			LE_ASSERT(success, "Could not initialize GLFW");
+			LE_INNER_ASSERT(success, "Could not initialize GLFW");
 
 			glfwSetErrorCallback(GLFWErrorCallback);
 			is_window_initialized = true;
@@ -58,6 +60,10 @@ namespace Letgen
 			nullptr);
 
 		glfwMakeContextCurrent(m_Window);
+
+		int success = gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
+		LE_INNER_ASSERT(success, "Could not initialize GLAD");
+		
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
 
@@ -68,7 +74,7 @@ namespace Letgen
 			data.width = width;
 			data.height = height;
 
-			WindowResizeEvent event(width, height);
+			WindowResizedEvent event(width, height);
 			data.eventCallback(event);
 		});
 
@@ -76,7 +82,7 @@ namespace Letgen
 		{
 			auto& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
-			WindowCloseEvent event;
+			WindowClosedEvent event;
 			data.eventCallback(event);
 		});
 
@@ -106,6 +112,13 @@ namespace Letgen
 				break;
 			}
 			}
+		});
+
+		glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int character)
+		{
+			auto& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
+			KeyTypedEvent event(character);
+			data.eventCallback(event);
 		});
 
 		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods)
