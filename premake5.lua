@@ -31,6 +31,9 @@ project "Letgen"
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
+    pchheader "pch.h"
+    pchsource "Letgen/src/pch.cpp"
+
     files
     {
         "%{prj.name}/src/**.h",
@@ -43,7 +46,16 @@ project "Letgen"
         "%{prj.name}/vendor/spdlog/include",
         "%{IncludeDir.GLFW}",
         "%{IncludeDir.GLAD}",
-        "%{IncludeDir.ImGui}"
+        "%{IncludeDir.ImGui}",
+        "%{IncludeDir.GLM}"
+    }
+
+    links
+    {
+        "GLFW",
+        "GLAD",
+        "ImGui",
+        "opengl32.lib"
     }
 
     filter "system:windows"
@@ -55,14 +67,6 @@ project "Letgen"
             "LE_PLATFORM_WINDOWS",
             "LE_BUILD_DLL",
             "GLFW_INCLUDE_NONE"
-        }
-
-        links
-        {
-            "GLFW",
-            "GLAD",
-            "ImGui",
-            "opengl32.lib"
         }
 
         postbuildcommands
@@ -103,7 +107,8 @@ project "Sandbox"
     includedirs
     {
         "Letgen/vendor/spdlog/include",
-        "Letgen/src"
+        "Letgen/src",
+        "%{IncludeDir.GLM}"
     }
 
     links
