@@ -8,6 +8,10 @@
 #include "Core/Logger.h"
 #include "Core/GUI/ImGuiLayer.h"
 
+#include "Core/Input.h"
+#include "Core/KeyCodes.h"
+#include "Core/MouseButton.h"
+
 #pragma endregion 
 
 

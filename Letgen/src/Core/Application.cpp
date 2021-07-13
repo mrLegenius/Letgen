@@ -43,12 +43,9 @@ namespace Letgen
 
 	void Application::OnEvent(Event& e)
 	{
-
 		EventDispatcher dispatcher(e);
 
 		dispatcher.Dispatch<WindowClosedEvent>(LE_BIND_EVENT_FN(Application::OnWindowClosed));
-
-		Log::Debug("{0}", e);
 
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
 		{

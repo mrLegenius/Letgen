@@ -7,12 +7,12 @@ public:
 
 	void OnUpdate() override
 	{
-		Letgen::Log::Info("ExampleLayer::OnUpdate");
+		if(Letgen::Input::IsKeyPressed(KeyCode::Tab))
+			Letgen::Log::Info("Tab is pressed!!");
 	}
 
 	void OnEvent(Event& event) override
 	{
-		Letgen::Log::Trace("{0}", event);
 	}
 };
 

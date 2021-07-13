@@ -1,26 +1,28 @@
 #pragma once
 #include "Core/Core.h"
+#include "KeyCodes.h"
+#include "MouseButton.h"
 
 namespace Letgen
 {
 	class LETGEN_API Input
 	{
 	public:	
-		static bool IsKeyPressed(const int keycode)
+		static bool IsKeyPressed(const KeyCode keycode)
 		{
-			return s_Instance->IsKeyPressedImpl(keycode);
+			return s_Instance->IsKeyPressedImpl(static_cast<int>(keycode));
 		}
-		static bool IsKeyReleased(const int keycode)
+		static bool IsKeyReleased(const KeyCode keycode)
 		{
-			return s_Instance->IsKeyReleasedImpl(keycode);
+			return s_Instance->IsKeyReleasedImpl(static_cast<int>(keycode));
 		}
-		static bool IsMouseButtonPressed(const int button)
+		static bool IsMouseButtonPressed(const MouseButton button)
 		{
-			return s_Instance->IsKeyReleasedImpl(button);
+			return s_Instance->IsKeyReleasedImpl(static_cast<int>(button));
 		}
-		static bool IsMouseButtonReleased(const int button)
+		static bool IsMouseButtonReleased(const MouseButton button)
 		{
-			return s_Instance->IsKeyReleasedImpl(button);
+			return s_Instance->IsKeyReleasedImpl(static_cast<int>(button));
 		}
 		static std::pair<float, float> GetMousePosition()
 		{
