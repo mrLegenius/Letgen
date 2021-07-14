@@ -111,6 +111,7 @@ project "Sandbox"
     {
         "Letgen/vendor/spdlog/include",
         "Letgen/src",
+        "Letgen/vendor",
         "%{IncludeDir.GLM}"
     }
 

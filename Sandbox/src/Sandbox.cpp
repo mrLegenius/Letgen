@@ -1,6 +1,8 @@
 #include <Letgen.h>
 #include <glm/glm.hpp>
 
+#include "imgui/imgui.h"
+
 class ExampleLayer : public Letgen::Layer
 {
 public:
@@ -12,6 +14,13 @@ public:
 			Letgen::Log::Info("Cos of 2 = {0}", glm::cos(2));
 	}
 
+	void OnImGuiRender() override
+	{
+		ImGui::Begin("ImGui");
+		ImGui::Text("Hello world!!");
+		ImGui::End();
+	}
+	
 	void OnEvent(Event& event) override
 	{
 	}
@@ -24,7 +33,6 @@ public:
 	Sandbox()
 	{
 		PushLayer(new ExampleLayer);
-		PushOverlay(new Letgen::ImGuiLayer);
 	}
 	~Sandbox() { }
 };

@@ -4,7 +4,6 @@
 #include "Events/ApplicationEvent.h"
 #include "Events/Event.h"
 #include "Logger.h"
-#include "Input.h"
 
 #include <glad/glad.h>
 
@@ -20,6 +19,9 @@ namespace Letgen
 		
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(LE_BIND_EVENT_FN(Application::OnEvent));
+
+		m_ImGuiLayer = new ImGuiLayer;
+		PushOverlay(m_ImGuiLayer);
 	}
 
 	Application::~Application()
@@ -37,6 +39,11 @@ namespace Letgen
 			{
 				layer->OnUpdate();
 			}
+
+			m_ImGuiLayer->Begin();
+			for (Layer* layer : m_LayerStack)
+				layer->OnImGuiRender();
+			m_ImGuiLayer->End();
 			
 			m_Window->Update();
 		}

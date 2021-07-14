@@ -6,6 +6,8 @@
 #include "Window.h"
 #include "Events/ApplicationEvent.h"
 
+#include "GUI/ImGuiLayer.h"
+
 namespace Letgen
 {
 	class LETGEN_API Application
@@ -30,6 +32,7 @@ namespace Letgen
 		bool OnWindowClosed(WindowClosedEvent& e);
 
 		std::unique_ptr<Window> m_Window;
+		ImGuiLayer* m_ImGuiLayer;
 
 		bool m_IsRunning = true;
 
