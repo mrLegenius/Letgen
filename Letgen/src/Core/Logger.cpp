@@ -6,19 +6,19 @@ namespace Letgen
 {
 	namespace Log
 	{
-		std::shared_ptr<spdlog::logger> Logger::_internalLogger;
-		std::shared_ptr<spdlog::logger> Logger::_externalLogger;
+		std::shared_ptr<spdlog::logger> Logger::m_CoreLogger;
+		std::shared_ptr<spdlog::logger> Logger::m_Logger;
 
 		void Logger::Init()
 		{
 			spdlog::set_pattern("%^[%T] %n: %v%$");
 
-			_internalLogger = spdlog::stdout_color_mt("LEGEN");
+			m_CoreLogger = spdlog::stdout_color_mt("LEGEN");
 			//TODO: make level changeable
-			_internalLogger->set_level(spdlog::level::trace);
+			m_CoreLogger->set_level(spdlog::level::trace);
 
-			_externalLogger = spdlog::stdout_color_mt("APP");
-			_externalLogger->set_level(spdlog::level::trace);
+			m_Logger = spdlog::stdout_color_mt("APP");
+			m_Logger->set_level(spdlog::level::trace);
 		}
 	}
 }

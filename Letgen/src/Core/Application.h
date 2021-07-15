@@ -10,6 +10,8 @@
 
 namespace Letgen
 {
+	class Shader;
+
 	class LETGEN_API Application
 	{
 	public:
@@ -27,8 +29,6 @@ namespace Letgen
 		static Application& Get() { return *s_Instance; }
 		Window& GetWindow() const { return *m_Window; }
 	private:
-		static Application* s_Instance;
-		
 		bool OnWindowClosed(WindowClosedEvent& e);
 
 		std::unique_ptr<Window> m_Window;
@@ -37,6 +37,13 @@ namespace Letgen
 		bool m_IsRunning = true;
 
 		LayerStack m_LayerStack;
+
+		unsigned int m_VertexArray;
+		unsigned int m_VertexBuffer;
+		unsigned int m_IndexBuffer;
+		Shader* m_Shader;
+		
+		static Application* s_Instance;
 	};
 
 	Application* CreateApplication();

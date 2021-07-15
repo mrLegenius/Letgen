@@ -7,6 +7,8 @@
 
 #include <glad/glad.h>
 
+#include "Renderer/Shader.h"
+
 namespace Letgen
 {
 
@@ -14,7 +16,7 @@ namespace Letgen
 	
 	Application::Application()
 	{
-		LE_INNER_ASSERT(!s_Instance, "Only one applications allowed");
+		LE_CORE_ASSERT(!s_Instance, "Only one applications allowed");
 		s_Instance = this;
 		
 		m_Window = std::unique_ptr<Window>(Window::Create());
@@ -22,6 +24,35 @@ namespace Letgen
 
 		m_ImGuiLayer = new ImGuiLayer;
 		PushOverlay(m_ImGuiLayer);
+
+
+		glGenVertexArrays(1, &m_VertexArray);
+		glBindVertexArray(m_VertexArray);
+
+		glGenBuffers(1, &m_VertexBuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, m_VertexBuffer);
+
+		float vertices[3 * 3] =
+		{
+			-0.5f, -0.5f, 0.0f,
+			0.5f, -0.5f, 0.0f,
+			0.0f, 0.5f, 0.0f
+		};
+
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, nullptr);
+
+		glGenBuffers(1, &m_IndexBuffer);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBuffer);
+
+		unsigned int indices[3] = { 0, 1, 2 };
+
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+
+		//m_Shader = new Shader("../res/shaders/Unlit_Color.shader");
 	}
 
 	Application::~Application()
@@ -32,9 +63,16 @@ namespace Letgen
 	{		
 		while (m_IsRunning)
 		{
-			glClearColor(1, 0, 1, 1);
+			const float gray = 0.69f / 5;
+			glClearColor(gray, gray, gray, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
 
+			//m_Shader->Bind();
+			
+			glBindVertexArray(m_VertexArray);
+			glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
+
+			
 			for (Layer* layer : m_LayerStack)
 			{
 				layer->OnUpdate();

@@ -41,13 +41,13 @@ namespace Letgen
 		m_Data.width = attributes.width;
 		m_Data.height = attributes.height;
 		
-		Log::InnerInfo("Creating window {0} ({1}x{2})",
+		Log::CoreInfo("Creating window {0} ({1}x{2})",
 			attributes.title, attributes.width, attributes.height);	
 		
 		if (!is_window_initialized)
 		{
 			int success = glfwInit();
-			LE_INNER_ASSERT(success, "Could not initialize GLFW");
+			LE_CORE_ASSERT(success, "Could not initialize GLFW");
 
 			glfwSetErrorCallback(GLFWErrorCallback);
 			is_window_initialized = true;
