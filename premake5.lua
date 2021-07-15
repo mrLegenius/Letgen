@@ -25,9 +25,10 @@ group ""
 
 project "Letgen"
     location "Letgen"
-    kind "SharedLib"
+    kind "StaticLib"
     language "C++"
-    staticruntime "off"
+    cppdialect "C++17"
+    staticruntime "on"
 
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -41,6 +42,11 @@ project "Letgen"
         "%{prj.name}/src/**.cpp",
         "%{prj.name}/vendor/GLM/glm/**.hpp",
         "%{prj.name}/vendor/GLM/glm/**.inl"
+    }
+
+    defines
+    {
+        "_CRT_SECURE_NO_WARNINGS"
     }
 
     includedirs
@@ -62,41 +68,37 @@ project "Letgen"
     }
 
     filter "system:windows"
-        cppdialect "C++17"
+
         systemversion "latest"
 
         defines
         {
             "LE_PLATFORM_WINDOWS",
             "LE_BUILD_DLL",
-            "GLFW_INCLUDE_NONE"
-        }
-
-        postbuildcommands
-        {
-            ("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .. "/Sandbox\"")
+            "GLFW_INCLUDE_NONE",
         }
 
     filter "configurations:Debug"
         defines "LE_DEBUG"
         runtime "Debug"
-        symbols "On"
+        symbols "on"
 
     filter "configurations:Release"
         defines "LE_RELEASE"
         runtime "Release"
-        optimize "On"
+        optimize "on"
 
     filter "configurations:Distribution"
         defines "LE_DIST"
         runtime "Release"
-        optimize "On"
+        optimize "on"
 
 project "Sandbox"
     location "Sandbox"
     kind "ConsoleApp"
     language "C++"
-    staticruntime "off"
+    cppdialect "C++17"
+    staticruntime "on"
 
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -121,7 +123,6 @@ project "Sandbox"
     }
 
     filter "system:windows"
-        cppdialect "C++17"
         systemversion "latest"
 
         defines
@@ -132,14 +133,14 @@ project "Sandbox"
     filter "configurations:Debug"
         defines "LE_DEBUG"
         runtime "Debug"
-        symbols "On"
+        symbols "on"
 
     filter "configurations:Release"
         defines "LE_RELEASE"
         runtime "Release"
-        optimize "On"
+        optimize "on"
 
     filter "configurations:Distribution"
         defines "LE_DIST"
         runtime "Release"
-        optimize "On"
+        optimize "on"

@@ -146,14 +146,14 @@ namespace Letgen
 		glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset)
 		{
 			auto& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
-			MouseScrolledEvent event((xOffset), (yOffset));
+			MouseScrolledEvent event(static_cast<float>(xOffset), static_cast<float>(yOffset));
 			data.eventCallback(event);
 		});
 
 		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos)
 		{
 			auto& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
-			MouseMovedEvent event((xPos), (yPos));
+			MouseMovedEvent event(static_cast<float>(xPos), static_cast<float>(yPos));
 			data.eventCallback(event);
 		});
 	}

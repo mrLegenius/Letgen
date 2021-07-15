@@ -73,7 +73,7 @@ namespace Letgen
 		ImGuiIO& io = ImGui::GetIO();
 		auto& app = Application::Get();
 		auto& window = app.GetWindow();
-		io.DisplaySize = ImVec2(window.GetWidth(), window.GetHeight());
+		io.DisplaySize = ImVec2(static_cast<float>(window.GetWidth()), static_cast<float>(window.GetHeight()));
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
