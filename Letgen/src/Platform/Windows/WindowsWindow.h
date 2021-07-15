@@ -1,6 +1,9 @@
 #pragma once
+
 #include "Core/Window.h"
-#include "GLFW/glfw3.h"
+#include "Core/Renderer/GraphicsContext.h"
+
+#include <GLFW/glfw3.h>
 
 namespace Letgen
 {
@@ -30,7 +33,8 @@ namespace Letgen
 		virtual void Close();
 
 		GLFWwindow* m_Window = nullptr;
-
+		GraphicsContext* m_Context = nullptr;
+		
 		struct WindowData
 		{
 			std::string title;

@@ -3,13 +3,13 @@
 
 #include "Core/Window.h"
 #include "Core/Core.h"
-#include "Core/Input.h"
 #include "Core/Logger.h"
 #include "Core/Events/ApplicationEvent.h"
 #include "Core/Events/KeyEvent.h"
 #include "Core/Events/MouseEvent.h"
 
-#include "glad/glad.h"
+#include "Platform/OpenGL/OpenGLContext.h"
+
 
 namespace Letgen
 {
@@ -40,10 +40,10 @@ namespace Letgen
 		m_Data.title = attributes.title;
 		m_Data.width = attributes.width;
 		m_Data.height = attributes.height;
-
+		
 		Log::InnerInfo("Creating window {0} ({1}x{2})",
-			attributes.title, attributes.width, attributes.height);
-
+			attributes.title, attributes.width, attributes.height);	
+		
 		if (!is_window_initialized)
 		{
 			int success = glfwInit();
@@ -60,10 +60,8 @@ namespace Letgen
 			nullptr,
 			nullptr);
 
-		glfwMakeContextCurrent(m_Window);
-
-		int success = gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
-		LE_INNER_ASSERT(success, "Could not initialize GLAD");
+		m_Context = new OpenGLContext(m_Window);
+		m_Context->Init();
 		
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
@@ -166,7 +164,7 @@ namespace Letgen
 	void WindowsWindow::Update()
 	{
 		glfwPollEvents();
-		glfwSwapBuffers(m_Window);
+		m_Context->SwapBuffers();
 	}
 	
 	void WindowsWindow::SetVSync(const bool enabled)
