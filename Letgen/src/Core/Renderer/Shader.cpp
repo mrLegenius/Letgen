@@ -3,7 +3,9 @@
 
 #include <glad/glad.h>
 
+#include "Core/Asserts.h"
 #include "glm/glm.hpp"
+#include "glm/gtc/type_ptr.hpp"
 
 namespace Letgen
 {
@@ -147,15 +149,15 @@ namespace Letgen
 	}
 	void Shader::SetUniformMat2f(const std::string& name, const glm::mat2& matrix)
 	{
-		glUniformMatrix2fv(GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]);
+		glUniformMatrix2fv(GetUniformLocation(name), 1, GL_FALSE, value_ptr(matrix));
 	}
 	void Shader::SetUniformMat3f(const std::string& name, const glm::mat3& matrix)
 	{
-		glUniformMatrix3fv(GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]);
+		glUniformMatrix3fv(GetUniformLocation(name), 1, GL_FALSE, value_ptr(matrix));
 	}
 	void Shader::SetUniformMat4f(const std::string& name, const glm::mat4& matrix)
 	{
-		glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]);
+		glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, value_ptr(matrix));
 	}
 	void Shader::SetUniformMat4fv(const std::string& name, const glm::f32* value)
 	{

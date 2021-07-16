@@ -10,11 +10,10 @@ namespace Letgen
 	{
 		switch (Renderer::GetAPI()) {
 
-		case RendererAPI::None:
-			Log::CoreCritical("None of Renderer API was chosen");
+		case RendererAPI::API::None:
 			LE_CORE_ASSERT(false, "None for API was chosen");
 			return nullptr;
-		case RendererAPI::OpenGL:
+		case RendererAPI::API::OpenGL:
 			return new OpenGLVertexBuffer(vertices, size);
 		}
 
@@ -26,11 +25,11 @@ namespace Letgen
 	{
 		switch (Renderer::GetAPI()) {
 
-		case RendererAPI::None:
+		case RendererAPI::API::None:
 			Log::CoreCritical("None of Renderer API was chosen");
 			LE_CORE_ASSERT(false, "None for API was chosen");
 			return nullptr;
-		case RendererAPI::OpenGL:
+		case RendererAPI::API::OpenGL:
 			return new OpenGLIndexBuffer(indices, count);
 		}
 

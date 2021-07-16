@@ -11,9 +11,13 @@ namespace Letgen
 
 		void Bind() const override;
 		void Unbind() const override;
+
+		void SetLayout(const BufferLayout& layout) override { m_Layout = layout; }
+		[[nodiscard]] const BufferLayout& GetLayout() const override { return m_Layout; }
 	
 	private:
 		uint32_t m_RendererID = 0;
+		BufferLayout m_Layout;
 	};
 
 	class OpenGLIndexBuffer final : public IndexBuffer
@@ -25,7 +29,7 @@ namespace Letgen
 		void Bind() const override;
 		void Unbind() const override;
 
-		uint32_t GetCount() const override { return m_Count; }
+		[[nodiscard]] uint32_t GetCount() const override { return m_Count; }
 	
 	private:
 		uint32_t m_RendererID = 0;

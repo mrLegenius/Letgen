@@ -4,6 +4,8 @@
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
+#include "Core/Asserts.h"
+
 namespace Letgen
 {
 	OpenGLContext::OpenGLContext(GLFWwindow* windowHandle)

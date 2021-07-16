@@ -2,8 +2,8 @@
 #include "WindowsWindow.h"
 
 #include "Core/Window.h"
-#include "Core/Core.h"
-#include "Core/Logger.h"
+
+#include "Core/Asserts.h"
 #include "Core/Events/ApplicationEvent.h"
 #include "Core/Events/KeyEvent.h"
 #include "Core/Events/MouseEvent.h"
