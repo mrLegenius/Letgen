@@ -39,11 +39,6 @@ namespace Letgen
 		bool m_IsRunning = true;
 
 		LayerStack m_LayerStack;
-
-		std::shared_ptr<VertexArray> m_VertexArray;
-		std::shared_ptr<Shader> m_Shader;
-
-		OrthographicCamera m_Camera;
 		
 		static Application* s_Instance;
 	};

@@ -1,70 +1,69 @@
 #pragma once
-
-#include <sstream>
-
 #include "Event.h"
-
-class LETGEN_API KeyEvent : public Event
+namespace Letgen
 {
-public:
-	int GetKeyCode() const { return m_Keycode; }
-
-	EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
-protected:
-	explicit KeyEvent(const int keycode) : m_Keycode(keycode) { }
-
-	int m_Keycode;
-};
-
-class LETGEN_API KeyPressedEvent : public KeyEvent
-{
-public:
-	KeyPressedEvent(const int keycode, const int repeatCount)
-		: KeyEvent(keycode), m_RepeatCount(repeatCount) { }
-
-	int GetRepeatCount() const { return m_RepeatCount; }
-
-	std::string ToString() const override
+	class LETGEN_API KeyEvent : public Event
 	{
-		std::stringstream ss;
-		ss << "KeyPressedEvent: " << m_Keycode << " (" << m_RepeatCount << " repeats)";
-		return ss.str();
-	}
-	
-	EVENT_CLASS_TYPE(KeyPressed)
-	
-private:
-	int m_RepeatCount;
-};
+	public:
+		int GetKeyCode() const { return m_Keycode; }
 
-class LETGEN_API KeyTypedEvent : public KeyEvent
-{
-public:
-	KeyTypedEvent(const int keycode)
-		: KeyEvent(keycode) { }
+		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
+	protected:
+		explicit KeyEvent(const int keycode) : m_Keycode(keycode) { }
 
-	std::string ToString() const override
+		int m_Keycode;
+	};
+
+	class LETGEN_API KeyPressedEvent : public KeyEvent
 	{
-		std::stringstream ss;
-		ss << "KeyTypedEvent: " << m_Keycode;
-		return ss.str();
-	}
+	public:
+		KeyPressedEvent(const int keycode, const int repeatCount)
+			: KeyEvent(keycode), m_RepeatCount(repeatCount) { }
 
-	EVENT_CLASS_TYPE(KeyTyped)
-};
+		int GetRepeatCount() const { return m_RepeatCount; }
 
-class LETGEN_API KeyReleasedEvent : public KeyEvent
-{
-public:
-	explicit KeyReleasedEvent(const int keycode)
-		: KeyEvent(keycode) { }
+		std::string ToString() const override
+		{
+			std::stringstream ss;
+			ss << "KeyPressedEvent: " << m_Keycode << " (" << m_RepeatCount << " repeats)";
+			return ss.str();
+		}
 
-	std::string ToString() const override
+		EVENT_CLASS_TYPE(KeyPressed)
+
+	private:
+		int m_RepeatCount;
+	};
+
+	class LETGEN_API KeyTypedEvent : public KeyEvent
 	{
-		std::stringstream ss;
-		ss << "KeyReleasedEvent: " << m_Keycode;
-		return ss.str();
-	}
+	public:
+		KeyTypedEvent(const int keycode)
+			: KeyEvent(keycode) { }
 
-	EVENT_CLASS_TYPE(KeyReleased)
-};
+		std::string ToString() const override
+		{
+			std::stringstream ss;
+			ss << "KeyTypedEvent: " << m_Keycode;
+			return ss.str();
+		}
+
+		EVENT_CLASS_TYPE(KeyTyped)
+	};
+
+	class LETGEN_API KeyReleasedEvent : public KeyEvent
+	{
+	public:
+		explicit KeyReleasedEvent(const int keycode)
+			: KeyEvent(keycode) { }
+
+		std::string ToString() const override
+		{
+			std::stringstream ss;
+			ss << "KeyReleasedEvent: " << m_Keycode;
+			return ss.str();
+		}
+
+		EVENT_CLASS_TYPE(KeyReleased)
+	};
+}
