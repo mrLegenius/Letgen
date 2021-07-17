@@ -1,7 +1,5 @@
 ﻿#include "Sandbox2D.h"
 
-#include "Platform/OpenGL/OpenGLShader.h"
-
 Sandbox2D::Sandbox2D() : Layer("Sandbox2D") { }
 
 void Sandbox2D::OnAttach()
@@ -17,22 +15,20 @@ void Sandbox2D::OnUpdate()
 {
 	m_CameraController.Update();
 
-	const float gray = 0.69f / 5;
+	Letgen::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
-	Letgen::RenderCommand::SetClearColor(glm::vec4(glm::vec3(gray), 1.0f));
-	Letgen::RenderCommand::Clear();
-
-	Letgen::Renderer::BeginScene(m_CameraController.GetCamera());
-
-	Letgen::Renderer::Submit(m_Sprite);
+	Letgen::Renderer2D::DrawQuad(
+		{ -1.0f, 1.0f },
+		{ 1.0f, 1.0f },
+		{ 0.5f, 0.2f, 0.7f, 1.0f });
+	
+	Letgen::Renderer2D::DrawSprite(m_Sprite);
 
 	m_Sprite->GetTransform()->position.x += m_Offset;
-
-	Letgen::Renderer::Submit(m_Sprite);
-
+	Letgen::Renderer2D::DrawSprite(m_Sprite);
 	m_Sprite->GetTransform()->position.x -= m_Offset;
 
-	Letgen::Renderer::EndScene();
+	Letgen::Renderer2D::EndScene();
 }
 
 void Sandbox2D::OnEvent(Letgen::Event& event)

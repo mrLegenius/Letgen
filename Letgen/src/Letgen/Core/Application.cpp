@@ -31,13 +31,14 @@ namespace Letgen
 
 	Application::~Application()
 	{
+		Renderer::Shutdown();
 	}
 
 	void Application::Run()
 	{		
 		while (m_IsRunning)
 		{
-			const float time = static_cast<float>(glfwGetTime()); //Platform::GetTime
+			const auto time = static_cast<float>(glfwGetTime()); //Platform::GetTime
 			const float timestep = time - m_LastFrameTime;
 			m_LastFrameTime = time;
 			Time::s_DeltaTime = timestep;	

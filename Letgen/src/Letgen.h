@@ -22,6 +22,7 @@
 // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 #include "Letgen/Renderer/Renderer.h"
+#include "Letgen/Renderer/Renderer2D.h"
 #include "Letgen/Renderer/RenderCommand.h"
 				 
 #include "Letgen/Renderer/Buffer.h"
