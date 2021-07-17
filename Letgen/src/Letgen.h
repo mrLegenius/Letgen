@@ -40,4 +40,5 @@
 // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 #include "Letgen/Components/Transform.h"
+#include "Letgen/Components/Transform2D.h"
 #include "Letgen/Components/CameraControllers/OrthographicCameraController.h"

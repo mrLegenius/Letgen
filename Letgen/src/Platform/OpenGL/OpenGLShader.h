@@ -20,23 +20,18 @@ namespace Letgen
 		void Unbind() const override;
 
 		const std::string& GetName() const override { return m_Name; }
-		
-		void SetUniformBool(const std::string& name, bool value);
 
-		void SetUniformInt(const std::string& name, int value);
+		void SetBool(const std::string& name, bool value) override;
+		void SetInt(const std::string& name, int value) override;
+		void SetFloat(const std::string& name, float value) override;
 
-		void SetUniformFloat(const std::string& name, float value);
-		void SetUniformFloat2(const std::string& name, float v0, float v1);
-		void SetUniformFloat3(const std::string& name, float v0, float v1, float v2);
-		void SetUniformFloat4(const std::string& name, float v0, float v1, float v2, float v3);
+		void SetFloat2(const std::string& name, const glm::vec2& vector) override;
+		void SetFloat3(const std::string& name, const glm::vec3& vector) override;
+		void SetFloat4(const std::string& name, const glm::vec4& vector) override;
 
-		void SetUniformFloatVector2(const std::string& name, const glm::vec2& vector);
-		void SetUniformFloatVector3(const std::string& name, const glm::vec3& vector);
-		void SetUniformFloatVector4(const std::string& name, const glm::vec4& vector);
-
-		void SetUniformFloatMatrix2(const std::string& name, const glm::mat2& matrix);
-		void SetUniformFloatMatrix3(const std::string& name, const glm::mat3& matrix);
-		void SetUniformFloatMatrix4(const std::string& name, const glm::mat4& matrix);
+		void SetMatrix2(const std::string& name, const glm::mat2& matrix) override;
+		void SetMatrix3(const std::string& name, const glm::mat3& matrix) override;
+		void SetMatrix4(const std::string& name, const glm::mat4& matrix) override;
 	private:
 		[[nodiscard]] std::string ReadFile(const std::string& filepath) const;
 		[[nodiscard]] std::unordered_map<GLenum, std::string> Preprocess(const std::string& source) const;
@@ -44,6 +39,7 @@ namespace Letgen
 		void Compile(const std::unordered_map<GLenum, std::string>& shaderSources);
 		
 		[[nodiscard]] int GetUniformLocation(const std::string& name);
+	
 	private:
 		std::string m_FilePath;
 		std::string m_Name;

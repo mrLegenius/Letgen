@@ -46,57 +46,43 @@ namespace Letgen
 	void OpenGLShader::Unbind() const
 	{
 		glUseProgram(0);
-	} 
+	}
 
-	void OpenGLShader::SetUniformBool(const std::string& name, const bool value)
+	void OpenGLShader::SetBool(const std::string& name, const bool value)
 	{
 		glUniform1i(GetUniformLocation(name), static_cast<int>(value));
 	}
-
-	void OpenGLShader::SetUniformInt(const std::string& name, const int value)
+	void OpenGLShader::SetInt(const std::string& name, const int value)
 	{
 		glUniform1i(GetUniformLocation(name), value);
 	}
-
-	void OpenGLShader::SetUniformFloat(const std::string& name, const float value)
+	void OpenGLShader::SetFloat(const std::string& name, const float value)
 	{
 		glUniform1f(GetUniformLocation(name), value);
 	}
-	void OpenGLShader::SetUniformFloat2(const std::string& name, const float v0, const float v1)
-	{
-		glUniform2f(GetUniformLocation(name), v0, v1);
-	}
-	void OpenGLShader::SetUniformFloat3(const std::string& name, const float v0, const float v1, const float v2)
-	{
-		glUniform3f(GetUniformLocation(name), v0, v1, v2);
-	}
-	void OpenGLShader::SetUniformFloat4(const std::string& name, const float v0, const float v1, const float v2, const float v3)
-	{
-		glUniform4f(GetUniformLocation(name), v0, v1, v2, v3);
-	}
 
-	void OpenGLShader::SetUniformFloatVector2(const std::string& name, const glm::vec2& vector)
+	void OpenGLShader::SetFloat2(const std::string& name, const glm::vec2& vector)
 	{
 		glUniform2fv(GetUniformLocation(name), 1, &vector[0]);
 	}
-	void OpenGLShader::SetUniformFloatVector3(const std::string& name, const glm::vec3& vector)
+	void OpenGLShader::SetFloat3(const std::string& name, const glm::vec3& vector)
 	{
 		glUniform3fv(GetUniformLocation(name), 1, &vector[0]);
 	}
-	void OpenGLShader::SetUniformFloatVector4(const std::string& name, const glm::vec4& vector)
+	void OpenGLShader::SetFloat4(const std::string& name, const glm::vec4& vector)
 	{
 		glUniform4fv(GetUniformLocation(name), 1, &vector[0]);
 	}
 	
-	void OpenGLShader::SetUniformFloatMatrix2(const std::string& name, const glm::mat2& matrix)
+	void OpenGLShader::SetMatrix2(const std::string& name, const glm::mat2& matrix)
 	{
 		glUniformMatrix2fv(GetUniformLocation(name), 1, GL_FALSE, glm::value_ptr(matrix));
 	}
-	void OpenGLShader::SetUniformFloatMatrix3(const std::string& name, const glm::mat3& matrix)
+	void OpenGLShader::SetMatrix3(const std::string& name, const glm::mat3& matrix)
 	{
 		glUniformMatrix3fv(GetUniformLocation(name), 1, GL_FALSE, value_ptr(matrix));
 	}
-	void OpenGLShader::SetUniformFloatMatrix4(const std::string& name, const glm::mat4& matrix)
+	void OpenGLShader::SetMatrix4(const std::string& name, const glm::mat4& matrix)
 	{
 		glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, value_ptr(matrix));
 	}

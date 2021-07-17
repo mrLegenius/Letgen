@@ -1,9 +1,10 @@
 ﻿#include "pch.h"
 #include "Renderer2D.h"
 
+#include <glm/ext/matrix_transform.hpp>
+
+#include "Shader.h"
 #include "RenderCommand.h"
-#include "glm/ext/matrix_transform.hpp"
-#include "Platform/OpenGL/OpenGLShader.h"
 
 namespace Letgen
 {
@@ -65,35 +66,26 @@ namespace Letgen
 		const auto projectionMatrix = camera.GetProjectionMatrix();
 		const auto viewMatrix = camera.GetViewMatrix();
 
-		std::dynamic_pointer_cast<OpenGLShader>(s_Data->colorShader)->Bind();
-		std::dynamic_pointer_cast<OpenGLShader>(s_Data->colorShader)->SetUniformFloatMatrix4("u_Projection", projectionMatrix);
-		std::dynamic_pointer_cast<OpenGLShader>(s_Data->colorShader)->SetUniformFloatMatrix4("u_View", viewMatrix);
+		s_Data->colorShader->Bind();
+		s_Data->colorShader->SetMatrix4("u_Projection", projectionMatrix);
+		s_Data->colorShader->SetMatrix4("u_View", viewMatrix);
 
-		std::dynamic_pointer_cast<OpenGLShader>(s_Data->textureShader)->Bind();
-		std::dynamic_pointer_cast<OpenGLShader>(s_Data->textureShader)->SetUniformFloatMatrix4("u_Projection", projectionMatrix);
-		std::dynamic_pointer_cast<OpenGLShader>(s_Data->textureShader)->SetUniformFloatMatrix4("u_View", viewMatrix);
+		s_Data->textureShader->Bind();
+		s_Data->textureShader->SetMatrix4("u_Projection", projectionMatrix);
+		s_Data->textureShader->SetMatrix4("u_View", viewMatrix);
 
 		const float gray = 0.69f / 5;
 		RenderCommand::SetClearColor(glm::vec4(glm::vec3(gray), 1.0f));
 		RenderCommand::Clear();
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
+	void Renderer2D::DrawQuad(const Transform2D& transform, const glm::vec4& color)
 	{
-		DrawQuad(glm::vec3(position, 0.0f), size, color);
-	}
+		const auto& shader = s_Data->colorShader;
+		shader->Bind();
+		shader->SetFloat4("u_Color", color);
+		shader->SetMatrix4("u_Model", transform.GetModel());
 
-	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color)
-	{
-		auto glShader = std::dynamic_pointer_cast<OpenGLShader>(s_Data->colorShader);
-		glShader->Bind();
-		glShader->SetUniformFloatVector4("u_Color", color);
-
-		const auto model =
-			translate(glm::mat4(1.0f), position) *
-			scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
-		glShader->SetUniformFloatMatrix4("u_Model", model);
-		
 		s_Data->quadVertexArray->Bind();
 		RenderCommand::DrawIndexed(s_Data->quadVertexArray);
 	}
@@ -102,10 +94,10 @@ namespace Letgen
 	{
 		const auto model = sprite->GetTransform()->GetModel();
 
-		auto glShader = std::dynamic_pointer_cast<OpenGLShader>(s_Data->textureShader);
-		glShader->Bind();
-		glShader->SetUniformFloatMatrix4("u_Model", model);
-		glShader->SetUniformInt("u_Texture", 0);
+		const auto& shader = s_Data->textureShader;
+		shader->Bind();
+		shader->SetMatrix4("u_Model", model);
+		shader->SetInt("u_Texture", 0);
 		
 		s_Data->quadVertexArray->Bind();
 		sprite->GetTexture()->Bind();

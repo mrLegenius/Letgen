@@ -16,11 +16,14 @@ void Sandbox2D::OnUpdate()
 	m_CameraController.Update();
 
 	Letgen::Renderer2D::BeginScene(m_CameraController.GetCamera());
-
-	Letgen::Renderer2D::DrawQuad(
-		{ -1.0f, 1.0f },
-		{ 1.0f, 1.0f },
+	
+	Letgen::Renderer2D::DrawQuad({
+		{1.0f, 1.0f},45.0f,{1.0f, 1.0f} },
 		{ 0.5f, 0.2f, 0.7f, 1.0f });
+
+	Letgen::Renderer2D::DrawQuad({
+		{-1.0f, -1.0f},30.0f,{0.6f, 0.8f} },
+		{ 0.8f, 0.3f, 0.4f, 1.0f });
 	
 	Letgen::Renderer2D::DrawSprite(m_Sprite);
 
