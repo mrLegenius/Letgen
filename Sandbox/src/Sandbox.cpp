@@ -11,56 +11,56 @@ public:
 	{
 		float vertices[] =
 		{
-			-0.5f, -0.5f, 0.0f,  0.69f / 1, 0.69f / 3, 0.69f / 1, 1.0f,
-			0.5f, -0.5f, 0.0f,  0.69f / 2, 0.69f / 2, 0.69f / 1, 1.0f,
-			0.0f, 0.5f, 0.0f, 0.69f / 3, 0.69f / 1, 0.69f / 1, 1.0f
+			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+			 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+			 0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+			-0.5f,  0.5f, 0.0f, 0.0f, 1.0f
 		};
 
-		uint32_t indices[3] = { 0, 1, 2 };
+		uint32_t indices[] = { 0, 1, 2, 2, 3, 0 };
 		m_VertexArray.reset(Letgen::VertexArray::Create());
 		Letgen::Ref<Letgen::VertexBuffer> vertexBuffer(Letgen::VertexBuffer::Create(vertices, sizeof vertices));
 
 		vertexBuffer->SetLayout({
 			{ Letgen::ShaderDataType::Float3, "a_Position" },
-			{ Letgen::ShaderDataType::Float4, "a_Color" }
+			{ Letgen::ShaderDataType::Float2, "a_TexCoord" }
 		});
 
 		const Letgen::Ref<Letgen::IndexBuffer> indexBuffer(Letgen::IndexBuffer::Create(indices, sizeof indices / sizeof(uint32_t)));
 
 		m_VertexArray->AddVertexBuffer(vertexBuffer);
 		m_VertexArray->SetIndexBuffer(indexBuffer);
-		m_Shader.reset(Letgen::Shader::Create("C:/Projects/C++/Letgen/Letgen/res/shaders/Unlit_Color.shader"));
+		
+		m_Shader.reset(Letgen::Shader::Create("assets/shaders/Unlit_Texture.shader"));
+		
+		m_Texture = Letgen::Texture2D::Create("assets/textures/love.jpg");
+
+		Letgen::Log::Debug("Texture size: {0}x{1}", m_Texture->GetWidth(), m_Texture->GetHeight());
+		
+		std::dynamic_pointer_cast<Letgen::OpenGLShader>(m_Shader)->Bind();
+		std::dynamic_pointer_cast<Letgen::OpenGLShader>(m_Shader)->SetUniformInt("u_Texture", 0);
 	}
 
 	void OnUpdate() override
 	{
-		Letgen::Log::Info("Delta time {0}ms", Letgen::Time::GetDeltaTime().GetMilliseconds());
 		const float gray = 0.69f / 5;
-
-		if(Letgen::Input::IsKeyPressed(KeyCode::A))
-		{
-			m_Transform.position.x -= 1.0f * Letgen::Time::GetDeltaTime();
-		}
-		if (Letgen::Input::IsKeyPressed(KeyCode::D))
-		{
-			m_Transform.position.x += 1.0f * Letgen::Time::GetDeltaTime();
-		}
 		
 		Letgen::RenderCommand::SetClearColor(glm::vec4(glm::vec3(gray), 1.0f));
 		Letgen::RenderCommand::Clear();
 
 		Letgen::Renderer::BeginScene();
 
-		m_Camera.SetPosition(m_Position);
 		const auto view = m_Camera.GetViewMatrix();
 		const auto projection = m_Camera.GetProjectionMatrix();
 
 		auto glShader = std::dynamic_pointer_cast<Letgen::OpenGLShader>(m_Shader);
+
 		glShader->Bind();
 		glShader->SetUniformFloatMatrix4("u_Model", m_Transform.GetModel());
 		glShader->SetUniformFloatMatrix4("u_View", view);
 		glShader->SetUniformFloatMatrix4("u_Projection", projection);
 
+		m_Texture->Bind();
 		Letgen::Renderer::Submit(m_VertexArray);
 
 		Letgen::Renderer::EndScene();
@@ -82,8 +82,8 @@ private:
 
 	Letgen::Ref<Letgen::VertexArray> m_VertexArray;
 	Letgen::Ref<Letgen::Shader> m_Shader;
-
-	Letgen::OrthographicCamera m_Camera{-1.0f, 1.0f, -1.0f, 1.0f};
+	Letgen::Ref<Letgen::Texture> m_Texture;
+	Letgen::OrthographicCamera m_Camera{(720.0f / 1280.0f), 2.0f};
 };
 
 

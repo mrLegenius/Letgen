@@ -6,7 +6,7 @@ namespace Letgen
 	class OrthographicCamera
 	{
 	public:
-		OrthographicCamera(float left, float right, float bottom, float top);
+		OrthographicCamera(float aspectRatio, float orthographicSize);
 		~OrthographicCamera() = default;
 
 		[[nodiscard]] const glm::vec3& GetPosition() const { return m_Position; }

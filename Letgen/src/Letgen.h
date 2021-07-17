@@ -23,8 +23,10 @@
 #include "Core/Renderer/RenderCommand.h"
 
 #include "Core/Renderer/Buffer.h"
-#include "Core/Renderer/Shader.h"
 #include "Core/Renderer/VertexArray.h"
+
+#include "Core/Renderer/Shader.h"
+#include "Core/Renderer/Texture.h"
 
 #include "Core/Renderer/Camera/OrthographicCamera.h"
 

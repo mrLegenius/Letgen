@@ -12,10 +12,12 @@ workspace "Letgen"
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
+
 IncludeDir["GLFW"] = "Letgen/vendor/GLFW/include"
 IncludeDir["GLAD"] = "Letgen/vendor/GLAD/include"
 IncludeDir["ImGui"] = "Letgen/vendor/ImGui"
 IncludeDir["GLM"] = "Letgen/vendor/GLM"
+IncludeDir["stb_image"] = "Letgen/vendor/stb_image"
 
 group "Dependencies"
     include "Letgen/vendor/GLFW"
@@ -40,6 +42,8 @@ project "Letgen"
     {
         "%{prj.name}/src/**.h",
         "%{prj.name}/src/**.cpp",
+        "%{prj.name}/vendor/stb_image/**.h",
+        "%{prj.name}/vendor/stb_image/**.cpp",
         "%{prj.name}/vendor/GLM/glm/**.hpp",
         "%{prj.name}/vendor/GLM/glm/**.inl"
     }
@@ -56,7 +60,8 @@ project "Letgen"
         "%{IncludeDir.GLFW}",
         "%{IncludeDir.GLAD}",
         "%{IncludeDir.ImGui}",
-        "%{IncludeDir.GLM}"
+        "%{IncludeDir.GLM}",
+        "%{IncludeDir.stb_image}"
     }
 
     links

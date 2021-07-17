@@ -6,8 +6,8 @@
 
 namespace Letgen
 {
-	OrthographicCamera::OrthographicCamera(const float left, const float right, const float bottom, const float top)
-		: m_ProjectionMatrix(glm::ortho(left, right, bottom, top, -1.0f, 1.0f)), m_ViewMatrix(1.0f)
+	OrthographicCamera::OrthographicCamera(float aspectRatio, float orthographicSize)
+		: m_ProjectionMatrix(glm::ortho(-orthographicSize, orthographicSize, aspectRatio * -orthographicSize, aspectRatio * orthographicSize, -1.0f, 1.0f)), m_ViewMatrix(1.0f)
 	{
 	}
 
