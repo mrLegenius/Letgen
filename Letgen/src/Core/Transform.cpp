@@ -20,5 +20,15 @@ namespace Letgen
 			glm::rotate(glm::mat4(1.0f), glm::radians(eulerAngles.z), glm::vec3(0, 0, 1.0f)) *
 			glm::scale(glm::mat4(1.0f), scale);
 	}
+
+	glm::vec3 Transform::Front() const
+	{
+		const glm::vec3 front{
+			cos(glm::radians(eulerAngles.y)) * cos(glm::radians(eulerAngles.x)),
+			sin(glm::radians(eulerAngles.x)),
+			sin(glm::radians(eulerAngles.y)) * cos(glm::radians(eulerAngles.x))
+		};
+		return normalize(front);
+	}
 }
 

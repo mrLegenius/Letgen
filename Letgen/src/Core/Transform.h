@@ -16,14 +16,6 @@ namespace Letgen
 
 		glm::mat4 GetModel() const;
 
-		glm::vec3 Front() const
-		{
-			const glm::vec3 front{
-				cos(glm::radians(eulerAngles.y)) * cos(glm::radians(eulerAngles.x)),
-				sin(glm::radians(eulerAngles.x)),
-				sin(glm::radians(eulerAngles.y)) * cos(glm::radians(eulerAngles.x))
-			};
-			return normalize(front);
-		}
+		glm::vec3 Front() const;
 	};
 }

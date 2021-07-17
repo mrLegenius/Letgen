@@ -46,6 +46,8 @@ public:
 
 	void OnUpdate() override
 	{
+		m_CameraController.Update();
+		
 		const float gray = 0.69f / 5;
 		
 		Letgen::RenderCommand::SetClearColor(glm::vec4(glm::vec3(gray), 1.0f));
@@ -53,8 +55,8 @@ public:
 
 		Letgen::Renderer::BeginScene();
 
-		const auto view = m_Camera.GetViewMatrix();
-		const auto projection = m_Camera.GetProjectionMatrix();
+		const auto view = m_CameraController.GetCamera().GetViewMatrix();
+		const auto projection = m_CameraController.GetCamera().GetProjectionMatrix();
 
 		auto glShader = std::dynamic_pointer_cast<Letgen::OpenGLShader>(m_Shader);
 
@@ -76,17 +78,16 @@ public:
 	
 	void OnEvent(Letgen::Event& event) override
 	{
+		m_CameraController.OnEvent(event);
 	}
 
 private:
-	glm::vec3 m_Position{ 0.0f };
-	float m_CameraSpeed{ 0.1f };
 	Letgen::Transform m_Transform;
 
 	Letgen::Ref<Letgen::VertexArray> m_VertexArray;
 	Letgen::Ref<Letgen::Shader> m_Shader;
 	Letgen::Ref<Letgen::Texture> m_Texture;
-	Letgen::OrthographicCamera m_Camera{(720.0f / 1280.0f), 2.0f};
+	Letgen::OrthographicCameraController m_CameraController{ 1280.0f / 720.0f , true };
 };
 
 

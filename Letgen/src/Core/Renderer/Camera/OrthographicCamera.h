@@ -23,10 +23,14 @@ namespace Letgen
 			RecalculateViewMatrix();
 		}
 
+		void SetAspectRatio(float aspectRatio);
+		void SetOrthographicSize(float size);
+
 		[[nodiscard]] glm::mat4 GetViewMatrix() const { return m_ViewMatrix; }
 		[[nodiscard]] glm::mat4 GetProjectionMatrix() const { return m_ProjectionMatrix; }
 	
 	private:
+		void RecalculateProjectionMatrix();
 		void RecalculateViewMatrix();
 		
 		glm::mat4 m_ProjectionMatrix;
@@ -34,5 +38,8 @@ namespace Letgen
 		
 		glm::vec3 m_Position {0.0f};
 		float m_Rotation = 0.0f;
+
+		float m_AspectRatio;
+		float m_OrthographicSize;
 	};
 }

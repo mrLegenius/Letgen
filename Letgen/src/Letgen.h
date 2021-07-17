@@ -1,7 +1,8 @@
 #pragma once
 
-
-#pragma region ***Client side includes***
+// /////////////////////////////////////////////////////////
+// -- Core -------------------------------------------------
+// \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 #include "Core/Application.h"
 #include "Core/Layer.h"
@@ -16,9 +17,10 @@
 
 #include "Core/GUI/ImGuiLayer.h"
 
-#include "Core/Transform.h"
+// /////////////////////////////////////////////////////////
+// -- Renderer ---------------------------------------------
+// \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-#pragma region ***Renderer***
 #include "Core/Renderer/Renderer.h"
 #include "Core/Renderer/RenderCommand.h"
 
@@ -30,10 +32,15 @@
 
 #include "Core/Renderer/Camera/OrthographicCamera.h"
 
-#pragma endregion 
-#pragma endregion 
+// /////////////////////////////////////////////////////////
+// -- Components -------------------------------------------
+// \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
+#include "Core/Transform.h"
+#include "Core/Components/CameraControllers/OrthographicCameraController.h"
 
-#pragma region ***EntryPoint***
+// /////////////////////////////////////////////////////////
+// -- Entry Point ------------------------------------------
+// \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
 #include "Core/EntryPoint.h"
-#pragma endregion 
