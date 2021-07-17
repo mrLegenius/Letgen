@@ -20,4 +20,9 @@ namespace Letgen
 		vertexArray->Bind();
 		RenderCommand::DrawIndexed(vertexArray);
 	}
+
+	void Renderer::Init()
+	{
+		RenderCommand::Init();
+	}
 }

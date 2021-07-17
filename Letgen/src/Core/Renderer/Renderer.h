@@ -13,5 +13,6 @@ namespace Letgen
 		static void Submit(const Ref<VertexArray>& vertexArray);
 		
 		static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
+		static void Init();
 	};
 }

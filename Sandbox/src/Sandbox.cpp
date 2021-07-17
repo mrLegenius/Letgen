@@ -33,7 +33,7 @@ public:
 		
 		m_Shader.reset(Letgen::Shader::Create("assets/shaders/Unlit_Texture.shader"));
 		
-		m_Texture = Letgen::Texture2D::Create("assets/textures/love.jpg");
+		m_Texture = Letgen::Texture2D::Create("assets/textures/voenmeh.png");
 
 		Letgen::Log::Debug("Texture size: {0}x{1}", m_Texture->GetWidth(), m_Texture->GetHeight());
 		
