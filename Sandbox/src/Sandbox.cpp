@@ -2,6 +2,7 @@
 #include <glm/glm.hpp>
 
 #include "imgui/imgui.h"
+#include "Platform/OpenGL/OpenGLShader.h"
 
 class ExampleLayer : public Letgen::Layer
 {
@@ -28,8 +29,7 @@ public:
 
 		m_VertexArray->AddVertexBuffer(vertexBuffer);
 		m_VertexArray->SetIndexBuffer(indexBuffer);
-
-		m_Shader.reset(new Letgen::Shader("C:/Projects/C++/Letgen/Letgen/res/shaders/Unlit_Color.shader"));
+		m_Shader.reset(Letgen::Shader::Create("C:/Projects/C++/Letgen/Letgen/res/shaders/Unlit_Color.shader"));
 	}
 
 	void OnUpdate() override
@@ -55,10 +55,11 @@ public:
 		const auto view = m_Camera.GetViewMatrix();
 		const auto projection = m_Camera.GetProjectionMatrix();
 
-		m_Shader->Bind();
-		m_Shader->SetUniformMat4f("u_Model", m_Transform.GetModel());
-		m_Shader->SetUniformMat4f("u_View", view);
-		m_Shader->SetUniformMat4f("u_Projection", projection);
+		auto glShader = std::dynamic_pointer_cast<Letgen::OpenGLShader>(m_Shader);
+		glShader->Bind();
+		glShader->SetUniformFloatMatrix4("u_Model", m_Transform.GetModel());
+		glShader->SetUniformFloatMatrix4("u_View", view);
+		glShader->SetUniformFloatMatrix4("u_Projection", projection);
 
 		Letgen::Renderer::Submit(m_VertexArray);
 
