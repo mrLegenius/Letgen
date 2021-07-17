@@ -1,95 +1,35 @@
 ﻿#include "pch.h"
 #include "OpenGLShader.h"
 
-#include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
+#include <glad/glad.h>
 
 #include "Core/Asserts.h"
 
 namespace Letgen
 {
+	static GLenum ShaderTypeFromString(const std::string& type)
+	{
+		if (type == "vertex")
+			return GL_VERTEX_SHADER;
+
+		if (type == "fragment" || type == "pixel")
+			return GL_FRAGMENT_SHADER;
+
+		LE_CORE_ASSERT(false, "Unknown shader type '{1}'", type)
+		return 0;
+	}
+	
 	OpenGLShader::OpenGLShader(const std::string& filepath) : m_FilePath(filepath)
 	{
-		const auto [vertexShader, fragmentShader] = ParseShader(filepath);
-		m_RendererID = CreateShader(vertexShader, fragmentShader);
+		const std::string source = ReadFile(filepath);
+		const auto shaderSources = Preprocess(source);
+		Compile(shaderSources);
 	}
 
 	OpenGLShader::~OpenGLShader()
 	{
 		glDeleteProgram(m_RendererID);
-	}
-
-	ShaderProgramSource OpenGLShader::ParseShader(const std::string& filePath) const
-	{
-		std::ifstream stream(filePath);
-		const bool isOpened = stream.is_open();
-		LE_CORE_ASSERT(isOpened, "Can't open " + filePath + " shader file!");
-
-		enum class ShaderType
-		{
-			None = -1, Vertex = 0, Fragment = 1
-		};
-
-		std::string line;
-		std::stringstream ss[2];
-		auto type = ShaderType::None;
-		while (getline(stream, line))
-		{
-			if (line.find("#shader") != std::string::npos)
-			{
-				if (line.find("vertex") != std::string::npos)
-					type = ShaderType::Vertex;
-				else if (line.find("fragment") != std::string::npos)
-				{
-					type = ShaderType::Fragment;
-				}
-			}
-			else
-			{
-				ss[static_cast<int>(type)] << line.c_str() << "\n";
-			}
-		}
-
-		return { ss[0].str(), ss[1].str() };
-	}
-
-	unsigned int OpenGLShader::CompileShader(const unsigned int type, const std::string& source) const
-	{
-		const unsigned int id = glCreateShader(type);
-		const char* src = source.c_str();
-		glShaderSource(id, 1, &src, nullptr);
-		glCompileShader(id);
-
-		int result;
-		glGetShaderiv(id, GL_COMPILE_STATUS, &result);
-		if (result == GL_FALSE)
-		{
-			int length;
-			glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
-			const auto message = static_cast<char*>(nullptr);
-			glGetShaderInfoLog(id, length, &length, message);
-			Log::CoreError("Failed to compile {0}", type == GL_VERTEX_SHADER ? "vertex" : "fragment");
-			Log::CoreError(message);
-			glDeleteShader(id);
-			return 0;
-		}
-
-		return id;
-	}
-	unsigned int OpenGLShader::CreateShader(const std::string& vertexShader, const std::string& fragmentShader) const
-	{
-		const unsigned int program = glCreateProgram();
-		const unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
-		const unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
-
-		glAttachShader(program, vs);
-		glAttachShader(program, fs);
-		glLinkProgram(program);
-		glValidateProgram(program);
-		glDeleteShader(vs);
-		glDeleteShader(fs);
-
-		return program;
 	}
 
 	void OpenGLShader::Bind() const
@@ -140,7 +80,7 @@ namespace Letgen
 	{
 		glUniform4fv(GetUniformLocation(name), 1, &vector[0]);
 	}
-
+	
 	void OpenGLShader::SetUniformFloatMatrix2(const std::string& name, const glm::mat2& matrix)
 	{
 		glUniformMatrix2fv(GetUniformLocation(name), 1, GL_FALSE, glm::value_ptr(matrix));
@@ -152,6 +92,118 @@ namespace Letgen
 	void OpenGLShader::SetUniformFloatMatrix4(const std::string& name, const glm::mat4& matrix)
 	{
 		glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, value_ptr(matrix));
+	}
+
+	std::string OpenGLShader::ReadFile(const std::string& filepath) const
+	{
+		std::string result;
+		std::ifstream in(filepath, std::ios::binary);
+		if(in)
+		{
+			in.seekg(0, std::ios::end);
+			result.resize(in.tellg());
+			in.seekg(0, std::ios::beg);
+			in.read(&result[0], result.size());
+			in.close();
+		}
+		else
+		{
+			Log::CoreError("Could not open file '{0}'", filepath);
+		}
+
+		return result;
+	}
+
+	std::unordered_map<GLenum, std::string> OpenGLShader::Preprocess(const std::string& source) const
+	{
+		std::unordered_map<GLenum, std::string> shaderSources;
+
+		const auto typeToken = "#shader";
+		const size_t typeTokenLength = strlen(typeToken);
+		size_t pos = source.find(typeToken, 0);
+		while(pos != std::string::npos)
+		{
+			const size_t eol = source.find_first_of("\r\n", pos);
+			LE_CORE_ASSERT(eol != std::string::npos, "Syntax error")
+			const size_t begin = pos + typeTokenLength + 1;
+			std::string type = source.substr(begin, eol - begin);
+			LE_CORE_ASSERT(ShaderTypeFromString(type), "Unkown shader type!")
+			
+			const size_t nextLinePos = source.find_first_not_of("\r\n", eol);
+			pos = source.find(typeToken, nextLinePos);
+			shaderSources[ShaderTypeFromString(type)] = source.substr(nextLinePos,
+					pos - (nextLinePos == std::string::npos ? source.size() - 1 : nextLinePos));
+		}
+
+		return shaderSources;
+	}
+
+	void OpenGLShader::Compile(const std::unordered_map<GLenum, std::string>& shaderSources)
+	{
+		const auto program = glCreateProgram();
+		std::vector<GLuint> glShaderIDs(shaderSources.size());
+		
+		for (auto& [type, source] : shaderSources)
+		{
+			const GLuint shader = glCreateShader(type);
+			const char* src = source.c_str();
+			
+			glShaderSource(shader, 1, &src, nullptr);
+			glCompileShader(shader);
+
+			GLint success;
+			glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+			if (success == GL_FALSE)
+			{
+				GLint length;
+				glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length);
+				
+				const auto message = static_cast<char*>(nullptr);
+				glGetShaderInfoLog(shader, length, &length, message);
+				
+				Log::CoreError("Failed to compile {0}", type == GL_VERTEX_SHADER ? "vertex" : "fragment");
+				Log::CoreError(message);
+				LE_CORE_ASSERT(false)
+				
+				glDeleteShader(shader);
+				return;
+			}
+
+			glAttachShader(program, shader);
+			glShaderIDs.push_back(shader);
+		}
+		
+		glLinkProgram(program);
+
+		GLint isLinked = 0;
+		glGetProgramiv(program, GL_LINK_STATUS, &isLinked);
+
+		if(isLinked == GL_FALSE)
+		{
+			GLint length;
+			glGetProgramiv(program, GL_INFO_LOG_LENGTH, &length);
+
+			const auto message = static_cast<char*>(nullptr);
+			glGetProgramInfoLog(program, length, &length, message);
+
+			for (auto shader : glShaderIDs)
+			{
+				glDeleteShader(shader);
+			}
+			
+			Log::CoreError(message);
+			LE_CORE_ASSERT(false, "Shader link failure!")
+			
+			return;
+		}
+		
+		glValidateProgram(program);
+		for (auto shader : glShaderIDs)
+		{
+			glDeleteShader(shader);
+		}
+
+		m_RendererID = program;
 	}
 
 	int OpenGLShader::GetUniformLocation(const std::string& name)

@@ -1,6 +1,11 @@
 ﻿#pragma once
 #include "Core/Renderer/Shader.h"
-#include "glm/glm.hpp"
+
+
+#include <glm/glm.hpp>
+
+//TODO: Remove!
+typedef unsigned int GLenum;
 
 namespace Letgen
 {
@@ -31,10 +36,11 @@ namespace Letgen
 		void SetUniformFloatMatrix3(const std::string& name, const glm::mat3& matrix);
 		void SetUniformFloatMatrix4(const std::string& name, const glm::mat4& matrix);
 	private:
-		[[nodiscard]] ShaderProgramSource ParseShader(const std::string& filePath) const;
-		[[nodiscard]] uint32_t CompileShader(unsigned int type, const std::string& source) const;
-		[[nodiscard]] uint32_t CreateShader(const std::string& vertexShader, const std::string& fragmentShader) const;
+		[[nodiscard]] std::string ReadFile(const std::string& filepath) const;
+		[[nodiscard]] std::unordered_map<GLenum, std::string> Preprocess(const std::string& source) const;
 
+		void Compile(const std::unordered_map<GLenum, std::string>& shaderSources);
+		
 		[[nodiscard]] int GetUniformLocation(const std::string& name);
 
 		std::string m_FilePath;
