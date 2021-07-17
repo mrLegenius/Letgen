@@ -1,114 +1,16 @@
 #include <Letgen.h>
-#include <glm/glm.hpp>
+#include <Letgen/Core/EntryPoint.h>
 
-#include "imgui/imgui.h"
-#include "Platform/OpenGL/OpenGLShader.h"
-
-class ExampleLayer : public Letgen::Layer
-{
-public:
-	ExampleLayer() : Layer("Example")
-	{
-		Letgen::ShaderLibrary lib;
-		lib.Load("assets/shaders/Unlit_Texture.shader");
-		
-		float vertices[] =
-		{
-			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-			 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-			 0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
-			-0.5f,  0.5f, 0.0f, 0.0f, 1.0f
-		};
-
-		uint32_t indices[] = { 0, 1, 2, 2, 3, 0 };
-		m_VertexArray.reset(Letgen::VertexArray::Create());
-		Letgen::Ref<Letgen::VertexBuffer> vertexBuffer(Letgen::VertexBuffer::Create(vertices, sizeof vertices));
-
-		vertexBuffer->SetLayout({
-			{ Letgen::ShaderDataType::Float3, "a_Position" },
-			{ Letgen::ShaderDataType::Float2, "a_TexCoord" }
-		});
-
-		const Letgen::Ref<Letgen::IndexBuffer> indexBuffer(Letgen::IndexBuffer::Create(indices, sizeof indices / sizeof(uint32_t)));
-
-		m_VertexArray->AddVertexBuffer(vertexBuffer);
-		m_VertexArray->SetIndexBuffer(indexBuffer);
-		
-		m_Shader = lib.Get("Unlit_Texture");
-		
-		m_Texture = Letgen::Texture2D::Create("assets/textures/voenmeh.png");
-
-		Letgen::Log::Debug("Texture size: {0}x{1}", m_Texture->GetWidth(), m_Texture->GetHeight());
-		
-		std::dynamic_pointer_cast<Letgen::OpenGLShader>(m_Shader)->Bind();
-		std::dynamic_pointer_cast<Letgen::OpenGLShader>(m_Shader)->SetUniformInt("u_Texture", 0);
-	}
-
-	void OnUpdate() override
-	{
-		m_CameraController.Update();
-		
-		const float gray = 0.69f / 5;
-		
-		Letgen::RenderCommand::SetClearColor(glm::vec4(glm::vec3(gray), 1.0f));
-		Letgen::RenderCommand::Clear();
-
-		Letgen::Renderer::BeginScene();
-
-		const auto view = m_CameraController.GetCamera().GetViewMatrix();
-		const auto projection = m_CameraController.GetCamera().GetProjectionMatrix();
-
-		auto glShader = std::dynamic_pointer_cast<Letgen::OpenGLShader>(m_Shader);
-
-		glShader->Bind();
-		glShader->SetUniformFloatMatrix4("u_Model", m_Transform.GetModel());
-		glShader->SetUniformFloatMatrix4("u_View", view);
-		glShader->SetUniformFloatMatrix4("u_Projection", projection);
-
-		m_Texture->Bind();
-		Letgen::Renderer::Submit(m_VertexArray);
-
-		Letgen::Renderer::EndScene();
-	}
-
-	void OnImGuiRender() override
-	{
-
-	}
-	
-	void OnEvent(Letgen::Event& event) override
-	{
-		m_CameraController.OnEvent(event);
-
-		if(event.GetEventType() == Letgen::EventType::WindowResize)
-		{
-			auto& re = static_cast<Letgen::WindowResizedEvent&>(event);
-
-			//float zoom = re.GetWidth() / 1280.0f;
-			
-			//m_CameraController.SetZoom(zoom);
-			
-		}
-	}
-
-private:
-	Letgen::Transform m_Transform;
-
-	Letgen::Ref<Letgen::VertexArray> m_VertexArray;
-	Letgen::Ref<Letgen::Shader> m_Shader;
-	Letgen::Ref<Letgen::Texture> m_Texture;
-	Letgen::OrthographicCameraController m_CameraController{ 1280.0f / 720.0f , true };
-};
-
+#include "Sandbox2D.h"
 
 class Sandbox : public Letgen::Application
 {
 public:
 	Sandbox()
 	{
-		PushLayer(new ExampleLayer);
+		PushLayer(new Sandbox2D);
 	}
-	~Sandbox() { }
+	~Sandbox() = default;
 };
 
 Letgen::Application* Letgen::CreateApplication()

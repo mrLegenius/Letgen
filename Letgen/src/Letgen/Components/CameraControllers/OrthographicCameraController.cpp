@@ -50,6 +50,11 @@ namespace Letgen
 		{
 			cameraRotation -= m_RotationSpeed * deltaTime;
 		}
+
+		if (cameraRotation >= 180.0f)
+			cameraRotation -= 360.0f;
+		else if (cameraRotation <= -180.0f)
+			cameraRotation += 360.0f;
 		
 		m_Camera.SetRotation(cameraRotation);
 	}

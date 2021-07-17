@@ -24,6 +24,18 @@ namespace Letgen
 		Log::CoreInfo("	Vendor: {0}", glGetString(GL_VENDOR));
 		Log::CoreInfo("	Renderer: {0}", glGetString(GL_RENDERER));
 		Log::CoreInfo("	Version: {0}", glGetString(GL_VERSION));
+
+#ifdef LE_ENABLE_ASSERTS
+		int versionMajor, versionMinor;
+		glGetIntegerv(GL_MAJOR_VERSION, &versionMajor);
+		glGetIntegerv(GL_MINOR_VERSION, &versionMinor);
+		const bool isOpenGLVersionSupported = 
+			versionMajor > 4 || versionMajor == 4 && versionMinor >= 5;
+		
+		LE_CORE_ASSERT(isOpenGLVersionSupported, "LetGen requires at least OpenGL 4.5!!!")
+#endif
+		
+		
 	}
 
 	void OpenGLContext::SwapBuffers()

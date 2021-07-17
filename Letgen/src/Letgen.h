@@ -32,15 +32,11 @@
 
 #include "Letgen/Renderer/Camera/OrthographicCamera.h"
 
+#include "Letgen/Renderer/Sprite.h"
+
 // /////////////////////////////////////////////////////////
 // -- Components -------------------------------------------
 // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 #include "Letgen/Components/Transform.h"
 #include "Letgen/Components/CameraControllers/OrthographicCameraController.h"
-
-// /////////////////////////////////////////////////////////
-// -- Entry Point ------------------------------------------
-// \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
-#include "Letgen/Core/EntryPoint.h"
