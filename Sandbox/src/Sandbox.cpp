@@ -9,6 +9,9 @@ class ExampleLayer : public Letgen::Layer
 public:
 	ExampleLayer() : Layer("Example")
 	{
+		Letgen::ShaderLibrary lib;
+		lib.Load("assets/shaders/Unlit_Texture.shader");
+		
 		float vertices[] =
 		{
 			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
@@ -31,7 +34,7 @@ public:
 		m_VertexArray->AddVertexBuffer(vertexBuffer);
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 		
-		m_Shader.reset(Letgen::Shader::Create("assets/shaders/Unlit_Texture.shader"));
+		m_Shader = lib.Get("Unlit_Texture");
 		
 		m_Texture = Letgen::Texture2D::Create("assets/textures/voenmeh.png");
 

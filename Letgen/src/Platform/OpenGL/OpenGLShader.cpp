@@ -25,6 +25,13 @@ namespace Letgen
 		const std::string source = ReadFile(filepath);
 		const auto shaderSources = Preprocess(source);
 		Compile(shaderSources);
+
+		auto lastSlash = filepath.find_last_of("/\\");
+		lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
+		const auto lastDot = filepath.rfind('.');
+
+		const auto count = lastDot == std::string::npos ? filepath.size() - lastSlash : lastDot - lastSlash;
+		m_Name = filepath.substr(lastSlash, count);
 	}
 
 	OpenGLShader::~OpenGLShader()
@@ -97,7 +104,7 @@ namespace Letgen
 	std::string OpenGLShader::ReadFile(const std::string& filepath) const
 	{
 		std::string result;
-		std::ifstream in(filepath, std::ios::binary);
+		std::ifstream in(filepath, std::ios::in | std::ios::binary);
 		if(in)
 		{
 			in.seekg(0, std::ios::end);
@@ -140,8 +147,13 @@ namespace Letgen
 
 	void OpenGLShader::Compile(const std::unordered_map<GLenum, std::string>& shaderSources)
 	{
+		const int maxNumberOfShaders = 3;
+		LE_CORE_ASSERT(shaderSources.size() <= maxNumberOfShaders, "Only supports {0} of shader so far!", maxNumberOfShaders)
+
 		const auto program = glCreateProgram();
-		std::vector<GLuint> glShaderIDs(shaderSources.size());
+		
+		std::array<GLuint, maxNumberOfShaders> glShaderIDs{};
+		int glShaderIDIndex = 0;
 		
 		for (auto& [type, source] : shaderSources)
 		{
@@ -170,7 +182,7 @@ namespace Letgen
 			}
 
 			glAttachShader(program, shader);
-			glShaderIDs.push_back(shader);
+			glShaderIDs[glShaderIDIndex++] = shader;
 		}
 		
 		glLinkProgram(program);

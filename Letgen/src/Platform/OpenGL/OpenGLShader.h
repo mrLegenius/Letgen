@@ -19,6 +19,8 @@ namespace Letgen
 		void Bind() const override;
 		void Unbind() const override;
 
+		const std::string& GetName() const override { return m_Name; }
+		
 		void SetUniformBool(const std::string& name, bool value);
 
 		void SetUniformInt(const std::string& name, int value);
@@ -42,8 +44,10 @@ namespace Letgen
 		void Compile(const std::unordered_map<GLenum, std::string>& shaderSources);
 		
 		[[nodiscard]] int GetUniformLocation(const std::string& name);
-
+	private:
 		std::string m_FilePath;
+		std::string m_Name;
+		
 		uint32_t m_RendererID = 0;
 		
 		std::unordered_map<std::string, int> m_UniformLocationCache;
