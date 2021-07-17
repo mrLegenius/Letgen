@@ -17,7 +17,6 @@ public:
 
 		uint32_t indices[3] = { 0, 1, 2 };
 		m_VertexArray.reset(Letgen::VertexArray::Create());
-
 		std::shared_ptr<Letgen::VertexBuffer> vertexBuffer(Letgen::VertexBuffer::Create(vertices, sizeof vertices));
 
 		vertexBuffer->SetLayout({
@@ -34,9 +33,19 @@ public:
 	}
 
 	void OnUpdate() override
-	{		
+	{
+		Letgen::Log::Info("Delta time {0}ms", Letgen::Time::GetDeltaTime().GetMilliseconds());
 		const float gray = 0.69f / 5;
 
+		if(Letgen::Input::IsKeyPressed(KeyCode::A))
+		{
+			m_Transform.position.x -= 1.0f * Letgen::Time::GetDeltaTime();
+		}
+		if (Letgen::Input::IsKeyPressed(KeyCode::D))
+		{
+			m_Transform.position.x += 1.0f * Letgen::Time::GetDeltaTime();
+		}
+		
 		Letgen::RenderCommand::SetClearColor(glm::vec4(glm::vec3(gray), 1.0f));
 		Letgen::RenderCommand::Clear();
 
@@ -47,7 +56,7 @@ public:
 		const auto projection = m_Camera.GetProjectionMatrix();
 
 		m_Shader->Bind();
-
+		m_Shader->SetUniformMat4f("u_Model", m_Transform.GetModel());
 		m_Shader->SetUniformMat4f("u_View", view);
 		m_Shader->SetUniformMat4f("u_Projection", projection);
 
@@ -68,6 +77,7 @@ public:
 private:
 	glm::vec3 m_Position{ 0.0f };
 	float m_CameraSpeed{ 0.1f };
+	Letgen::Transform m_Transform;
 	
 	std::shared_ptr<Letgen::VertexArray> m_VertexArray;
 	std::shared_ptr<Letgen::Shader> m_Shader;

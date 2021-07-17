@@ -4,13 +4,12 @@
 #include "Events/ApplicationEvent.h"
 #include "Events/Event.h"
 #include "Asserts.h"
-#include "Input.h"
-#include "Events/KeyEvent.h"
 
-#include "Renderer/Buffer.h"
-#include "Renderer/RenderCommand.h"
 #include "Renderer/Renderer.h"
-#include "Renderer/Shader.h"
+
+#include <GLFW/glfw3.h>
+
+#include "Time.h"
 
 namespace Letgen
 {
@@ -23,7 +22,7 @@ namespace Letgen
 		
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(LE_BIND_EVENT_FN(Application::OnEvent));
-
+		
 		m_ImGuiLayer = new ImGuiLayer;
 		PushOverlay(m_ImGuiLayer);
 	}
@@ -35,7 +34,12 @@ namespace Letgen
 	void Application::Run()
 	{		
 		while (m_IsRunning)
-		{			
+		{
+			const float time = static_cast<float>(glfwGetTime()); //Platform::GetTime
+			const float timestep = time - m_LastFrameTime;
+			m_LastFrameTime = time;
+			
+			Time::s_DeltaTime = timestep;
 			for (Layer* layer : m_LayerStack)
 			{
 				layer->OnUpdate();

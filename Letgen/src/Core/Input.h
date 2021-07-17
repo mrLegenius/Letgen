@@ -1,7 +1,7 @@
 #pragma once
 #include "Core/Core.h"
 #include "KeyCodes.h"
-#include "MouseButton.h"
+#include "MouseButtonCodes.h"
 
 namespace Letgen
 {

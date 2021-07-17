@@ -6,9 +6,9 @@
 #include "Window.h"
 #include "Events/ApplicationEvent.h"
 
+#include "Timestep.h"
+
 #include "GUI/ImGuiLayer.h"
-#include "Renderer/Camera/OrthographicCamera.h"
-#include "Renderer/VertexArray.h"
 
 namespace Letgen
 {
@@ -35,10 +35,9 @@ namespace Letgen
 
 		std::unique_ptr<Window> m_Window;
 		ImGuiLayer* m_ImGuiLayer;
-
 		bool m_IsRunning = true;
-
 		LayerStack m_LayerStack;
+		float m_LastFrameTime = 0.0f;
 		
 		static Application* s_Instance;
 	};
