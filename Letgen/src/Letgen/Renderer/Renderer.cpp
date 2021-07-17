@@ -5,6 +5,16 @@
 
 namespace Letgen
 {
+	void Renderer::Init()
+	{
+		RenderCommand::Init();
+	}
+
+	void Renderer::OnWindowResized(const uint32_t width, const uint32_t height)
+	{
+		RenderCommand::SetViewport(0, 0, width, height);
+	}
+	
 	void Renderer::BeginScene()
 	{
 		
@@ -19,10 +29,5 @@ namespace Letgen
 	{
 		vertexArray->Bind();
 		RenderCommand::DrawIndexed(vertexArray);
-	}
-
-	void Renderer::Init()
-	{
-		RenderCommand::Init();
 	}
 }

@@ -14,7 +14,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "Core/Logger.h"
+#include "Letgen/Core/Logger.h"
 
 #ifdef LE_PLATFORM_WINDOWS
 	#include <Windows.h>

@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
-#include "Core/Asserts.h"
+#include "Letgen/Core/Asserts.h"
 
 namespace Letgen
 {

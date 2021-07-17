@@ -1,5 +1,5 @@
 #pragma once
-#include "Core/Logger.h"
+#include "Letgen/Core/Logger.h"
 
 #ifdef LE_DEBUG
 #define LE_ENABLE_ASSERTS 1

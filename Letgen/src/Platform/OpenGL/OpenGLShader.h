@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "Core/Renderer/Shader.h"
+#include "Letgen/Renderer/Shader.h"
 
 
 #include <glm/glm.hpp>

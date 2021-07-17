@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "Core/Renderer/Texture.h"
+#include "Letgen/Renderer/Texture.h"
 
 namespace Letgen
 {

@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "Core/Renderer/Buffer.h"
+#include "Letgen/Renderer/Buffer.h"
 
 namespace Letgen
 {

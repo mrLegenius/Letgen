@@ -1,8 +1,8 @@
 #pragma once
-#include "Core/Renderer/Camera/OrthographicCamera.h"
+#include "Letgen/Renderer/Camera/OrthographicCamera.h"
 
-#include "Core/Events/ApplicationEvent.h"
-#include "Core/Events/MouseEvent.h"
+#include "Letgen/Events/ApplicationEvent.h"
+#include "Letgen/Events/MouseEvent.h"
 
 namespace Letgen
 {
@@ -11,11 +11,16 @@ namespace Letgen
 	public:
 		explicit OrthographicCameraController(float aspectRatio, bool isRotatable);
 
+		void Update();
+		void OnEvent(Event& event);
+		
 		[[nodiscard]] const OrthographicCamera& GetCamera() const { return m_Camera; }
 		[[nodiscard]] OrthographicCamera& GetCamera() { return m_Camera; }
 		
-		void Update();
-		void OnEvent(Event& event);
+		
+		[[nodiscard]] float GetZoom() const { return m_Zoom; }
+		void SetZoom(const float zoom) { m_Zoom = zoom; }
+	
 	private:
 		bool OnMouseScrolled(MouseScrolledEvent& e);
 		bool OnWindowResized(WindowResizedEvent& e);

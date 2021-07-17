@@ -4,43 +4,43 @@
 // -- Core -------------------------------------------------
 // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-#include "Core/Application.h"
-#include "Core/Layer.h"
-#include "Core/Logger.h"
+#include "Letgen/Core/Application.h"
+#include "Letgen/Core/Layer.h"
+#include "Letgen/Core/Logger.h"
 
-#include "Core/Timestep.h"
-#include "Core/Time.h"
+#include "Letgen/Core/Timestep.h"
+#include "Letgen/Core/Time.h"
 
-#include "Core/Input.h"
-#include "Core/KeyCodes.h"
-#include "Core/MouseButtonCodes.h"
+#include "Letgen/Input/Input.h"
+#include "Letgen/Input/KeyCodes.h"
+#include "Letgen/Input/MouseButtonCodes.h"
 
-#include "Core/GUI/ImGuiLayer.h"
+#include "Letgen/GUI/ImGuiLayer.h"
 
 // /////////////////////////////////////////////////////////
 // -- Renderer ---------------------------------------------
 // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-#include "Core/Renderer/Renderer.h"
-#include "Core/Renderer/RenderCommand.h"
+#include "Letgen/Renderer/Renderer.h"
+#include "Letgen/Renderer/RenderCommand.h"
+				 
+#include "Letgen/Renderer/Buffer.h"
+#include "Letgen/Renderer/VertexArray.h"
 
-#include "Core/Renderer/Buffer.h"
-#include "Core/Renderer/VertexArray.h"
+#include "Letgen/Renderer/Shader.h"
+#include "Letgen/Renderer/Texture.h"
 
-#include "Core/Renderer/Shader.h"
-#include "Core/Renderer/Texture.h"
-
-#include "Core/Renderer/Camera/OrthographicCamera.h"
+#include "Letgen/Renderer/Camera/OrthographicCamera.h"
 
 // /////////////////////////////////////////////////////////
 // -- Components -------------------------------------------
 // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-#include "Core/Transform.h"
-#include "Core/Components/CameraControllers/OrthographicCameraController.h"
+#include "Letgen/Components/Transform.h"
+#include "Letgen/Components/CameraControllers/OrthographicCameraController.h"
 
 // /////////////////////////////////////////////////////////
 // -- Entry Point ------------------------------------------
 // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-#include "Core/EntryPoint.h"
+#include "Letgen/Core/EntryPoint.h"

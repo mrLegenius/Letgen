@@ -2,7 +2,7 @@
 #include <string>
 #include <functional>
 
-#include "Core/Core.h"
+#include "Letgen/Core/Core.h"
 namespace Letgen
 {
 	enum class EventType

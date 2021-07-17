@@ -4,11 +4,11 @@
 #include "Layer.h"
 #include "LayerStack.h"
 #include "Window.h"
-#include "Events/ApplicationEvent.h"
+#include "Letgen/Events/ApplicationEvent.h"
 
 #include "Timestep.h"
 
-#include "GUI/ImGuiLayer.h"
+#include "Letgen/GUI/ImGuiLayer.h"
 
 namespace Letgen
 {
@@ -29,16 +29,19 @@ namespace Letgen
 		void PushOverlay(Layer* overlay);
 
 		static Application& Get() { return *s_Instance; }
-		Window& GetWindow() const { return *m_Window; }
+		[[nodiscard]] Window& GetWindow() const { return *m_Window; }
 	private:
 		bool OnWindowClosed(WindowClosedEvent& e);
+		bool OnWindowResized(WindowResizedEvent& e);
 
 		std::unique_ptr<Window> m_Window;
 		ImGuiLayer* m_ImGuiLayer;
 		bool m_IsRunning = true;
 		LayerStack m_LayerStack;
-		float m_LastFrameTime = 0.0f;
 		
+		float m_LastFrameTime = 0.0f;
+		bool m_Minimized = false;
+
 		static Application* s_Instance;
 	};
 

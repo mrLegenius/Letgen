@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 
 #include "WindowsInput.h"
-#include "Core/Application.h"
+#include "Letgen/Core/Application.h"
 
 namespace Letgen
 {

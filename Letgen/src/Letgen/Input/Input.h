@@ -1,5 +1,5 @@
 #pragma once
-#include "Core/Core.h"
+#include "Letgen/Core/Core.h"
 #include "KeyCodes.h"
 #include "MouseButtonCodes.h"
 

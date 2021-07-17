@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "Core/Asserts.h"
+#include "Letgen/Core/Asserts.h"
 
 namespace Letgen
 {

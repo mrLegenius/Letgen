@@ -1,10 +1,11 @@
 #pragma once
-#include "Core.h"
+#include "Letgen/Core/Core.h"
 
 #include "spdlog/spdlog.h"
 
 //Able to log custom classes
 #include "spdlog/fmt/ostr.h"
+
 namespace Letgen::Log
 {
 	class LETGEN_API Logger

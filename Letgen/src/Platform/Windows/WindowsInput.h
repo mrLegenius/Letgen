@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "Core/Input.h"
+#include "Letgen/Input/Input.h"
 
 namespace Letgen
 {

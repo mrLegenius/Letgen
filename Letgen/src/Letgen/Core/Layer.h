@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "Core.h"
-#include "Events/Event.h"
+#include "Letgen/Events/Event.h"
 
 namespace Letgen
 {

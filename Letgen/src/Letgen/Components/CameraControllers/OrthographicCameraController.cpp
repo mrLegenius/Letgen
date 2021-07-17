@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "OrthographicCameraController.h"
 
-#include "Core/Input.h"
-#include "Core/Time.h"
+#include "Letgen/Input/Input.h"
+#include "Letgen/Core/Time.h"
 
 namespace Letgen
 {
@@ -74,6 +74,7 @@ namespace Letgen
 	bool OrthographicCameraController::OnWindowResized(WindowResizedEvent& e)
 	{
 		const auto aspectRatio = static_cast<float>(e.GetWidth()) / static_cast<float>(e.GetHeight());
+
 		m_Camera.SetAspectRatio(aspectRatio);
 		return false;
 	}

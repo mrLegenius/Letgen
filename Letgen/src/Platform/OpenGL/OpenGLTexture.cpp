@@ -4,7 +4,7 @@
 #include <glad/glad.h>
 
 #include "stb_image.h"
-#include "Core/Asserts.h"
+#include "Letgen/Core/Asserts.h"
 
 namespace Letgen
 {

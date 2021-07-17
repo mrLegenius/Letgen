@@ -79,6 +79,16 @@ public:
 	void OnEvent(Letgen::Event& event) override
 	{
 		m_CameraController.OnEvent(event);
+
+		if(event.GetEventType() == Letgen::EventType::WindowResize)
+		{
+			auto& re = static_cast<Letgen::WindowResizedEvent&>(event);
+
+			//float zoom = re.GetWidth() / 1280.0f;
+			
+			//m_CameraController.SetZoom(zoom);
+			
+		}
 	}
 
 private:

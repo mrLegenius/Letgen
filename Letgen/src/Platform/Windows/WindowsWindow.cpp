@@ -1,12 +1,12 @@
 #include "pch.h"
 #include "WindowsWindow.h"
 
-#include "Core/Window.h"
+#include "Letgen/Core/Window.h"
 
-#include "Core/Asserts.h"
-#include "Core/Events/ApplicationEvent.h"
-#include "Core/Events/KeyEvent.h"
-#include "Core/Events/MouseEvent.h"
+#include "Letgen/Core/Asserts.h"
+#include "Letgen/Events/ApplicationEvent.h"
+#include "Letgen/Events/KeyEvent.h"
+#include "Letgen/Events/MouseEvent.h"
 
 #include "Platform/OpenGL/OpenGLContext.h"
 

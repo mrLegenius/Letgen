@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Logger.h"
+#include "Letgen/Core/Logger.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
 namespace Letgen::Log

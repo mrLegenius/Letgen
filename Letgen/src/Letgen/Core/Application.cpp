@@ -1,11 +1,11 @@
 ﻿#include "pch.h"
 #include "Application.h"
 
-#include "Events/ApplicationEvent.h"
-#include "Events/Event.h"
-#include "Asserts.h"
+#include "Letgen/Events/ApplicationEvent.h"
+#include "Letgen/Events/Event.h"
+#include "Letgen/Core/Asserts.h"
 
-#include "Renderer/Renderer.h"
+#include "Letgen/Renderer/Renderer.h"
 
 #include <GLFW/glfw3.h>
 
@@ -40,11 +40,14 @@ namespace Letgen
 			const float time = static_cast<float>(glfwGetTime()); //Platform::GetTime
 			const float timestep = time - m_LastFrameTime;
 			m_LastFrameTime = time;
+			Time::s_DeltaTime = timestep;	
 			
-			Time::s_DeltaTime = timestep;
-			for (Layer* layer : m_LayerStack)
+			if(!m_Minimized)
 			{
-				layer->OnUpdate();
+				for (Layer* layer : m_LayerStack)
+				{
+					layer->OnUpdate();
+				}		
 			}
 
 			m_ImGuiLayer->Begin();
@@ -61,6 +64,7 @@ namespace Letgen
 		EventDispatcher dispatcher(e);
 
 		dispatcher.Dispatch<WindowClosedEvent>(LE_BIND_EVENT_FN(Application::OnWindowClosed));
+		dispatcher.Dispatch<WindowResizedEvent>(LE_BIND_EVENT_FN(Application::OnWindowResized));
 
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
 		{
@@ -86,5 +90,21 @@ namespace Letgen
 	{
 		m_IsRunning = false;
 		return true;
+	}
+
+	bool Application::OnWindowResized(WindowResizedEvent& e)
+	{
+		if(e.GetWidth() == 0 || e.GetHeight() == 0)
+		{
+			m_Minimized = true;
+			
+			return false;
+		}
+
+		m_Minimized = false;
+
+		Renderer::OnWindowResized(e.GetWidth(), e.GetHeight());
+		
+		return false;
 	}
 }

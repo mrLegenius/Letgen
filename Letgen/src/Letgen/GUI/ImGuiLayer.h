@@ -1,6 +1,6 @@
 #pragma once
-#include "Core/Core.h"
-#include "Core/Layer.h"
+#include "Letgen/Core/Core.h"
+#include "Letgen/Core/Layer.h"
 
 namespace Letgen
 {
