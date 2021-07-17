@@ -18,14 +18,14 @@ public:
 
 		uint32_t indices[3] = { 0, 1, 2 };
 		m_VertexArray.reset(Letgen::VertexArray::Create());
-		std::shared_ptr<Letgen::VertexBuffer> vertexBuffer(Letgen::VertexBuffer::Create(vertices, sizeof vertices));
+		Letgen::Ref<Letgen::VertexBuffer> vertexBuffer(Letgen::VertexBuffer::Create(vertices, sizeof vertices));
 
 		vertexBuffer->SetLayout({
 			{ Letgen::ShaderDataType::Float3, "a_Position" },
 			{ Letgen::ShaderDataType::Float4, "a_Color" }
 		});
 
-		const std::shared_ptr<Letgen::IndexBuffer> indexBuffer(Letgen::IndexBuffer::Create(indices, sizeof indices / sizeof(uint32_t)));
+		const Letgen::Ref<Letgen::IndexBuffer> indexBuffer(Letgen::IndexBuffer::Create(indices, sizeof indices / sizeof(uint32_t)));
 
 		m_VertexArray->AddVertexBuffer(vertexBuffer);
 		m_VertexArray->SetIndexBuffer(indexBuffer);
@@ -79,9 +79,9 @@ private:
 	glm::vec3 m_Position{ 0.0f };
 	float m_CameraSpeed{ 0.1f };
 	Letgen::Transform m_Transform;
-	
-	std::shared_ptr<Letgen::VertexArray> m_VertexArray;
-	std::shared_ptr<Letgen::Shader> m_Shader;
+
+	Letgen::Ref<Letgen::VertexArray> m_VertexArray;
+	Letgen::Ref<Letgen::Shader> m_Shader;
 
 	Letgen::OrthographicCamera m_Camera{-1.0f, 1.0f, -1.0f, 1.0f};
 };

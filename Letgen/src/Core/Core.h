@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #ifdef LE_PLATFORM_WINDOWS
 	#ifdef LE_DYNAMIC_LINK
 		#ifdef LE_BUILD_DLL
@@ -17,3 +19,12 @@
 #define LE_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
 
 constexpr int Bit(const int offset) { return 1 << offset; }
+
+namespace Letgen
+{
+	template<typename T>
+	using Scope = std::unique_ptr<T>;
+	
+	template<typename T>
+	using Ref = std::shared_ptr<T>;
+}

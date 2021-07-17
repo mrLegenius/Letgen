@@ -13,7 +13,7 @@ void Letgen::OpenGLRendererAPI::Clear()
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void Letgen::OpenGLRendererAPI::DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray)
+void Letgen::OpenGLRendererAPI::DrawIndexed(const Ref<VertexArray>& vertexArray)
 {
 	glDrawElements(GL_TRIANGLES, vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
 }
