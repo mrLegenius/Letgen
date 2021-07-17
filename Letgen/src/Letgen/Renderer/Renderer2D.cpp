@@ -8,13 +8,11 @@
 
 namespace Letgen
 {
-	Renderer2D::SceneData* Renderer2D::s_SceneData = new SceneData;
-
 	struct Renderer2DStorage
 	{
 		Ref<VertexArray> quadVertexArray;
-		Ref<Shader> colorShader;
-		Ref<Shader> textureShader;
+		Ref<Shader> ultimateShader;
+		Ref<Texture2D> blankTexture;
 	};
 
 	static Renderer2DStorage* s_Data;
@@ -43,22 +41,21 @@ namespace Letgen
 
 		const Ref<IndexBuffer> indexBuffer(IndexBuffer::Create(quadIndices, sizeof quadIndices / sizeof(uint32_t)));
 
+		data.blankTexture = Texture2D::Create(1, 1);
+		const uint32_t blankTextureData = 0xffffffff;
+		data.blankTexture->SetData((void*)&blankTextureData, sizeof(uint32_t));
+		
 		data.quadVertexArray->AddVertexBuffer(vertexBuffer);
 		data.quadVertexArray->SetIndexBuffer(indexBuffer);
 
-		data.colorShader = Shader::Create("assets/shaders/Unlit_Color.shader");
-		data.textureShader = Shader::Create("assets/shaders/Unlit_Texture.shader");
+		data.ultimateShader = Shader::Create("assets/shaders/Ultimate2D.shader");
+		data.ultimateShader->Bind();
+		data.ultimateShader->SetInt("u_Texture", 0);
 	}
 
 	void Renderer2D::Shutdown()
 	{
 		delete s_Data;
-		delete s_SceneData;
-	}
-
-	void Renderer2D::OnWindowResized(const uint32_t width, const uint32_t height)
-	{
-		RenderCommand::SetViewport(0, 0, width, height);
 	}
 
 	void Renderer2D::BeginScene(const OrthographicCamera& camera)
@@ -66,13 +63,9 @@ namespace Letgen
 		const auto projectionMatrix = camera.GetProjectionMatrix();
 		const auto viewMatrix = camera.GetViewMatrix();
 
-		s_Data->colorShader->Bind();
-		s_Data->colorShader->SetMatrix4("u_Projection", projectionMatrix);
-		s_Data->colorShader->SetMatrix4("u_View", viewMatrix);
-
-		s_Data->textureShader->Bind();
-		s_Data->textureShader->SetMatrix4("u_Projection", projectionMatrix);
-		s_Data->textureShader->SetMatrix4("u_View", viewMatrix);
+		s_Data->ultimateShader->Bind();
+		s_Data->ultimateShader->SetMatrix4("u_Projection", projectionMatrix);
+		s_Data->ultimateShader->SetMatrix4("u_View", viewMatrix);
 
 		const float gray = 0.69f / 5;
 		RenderCommand::SetClearColor(glm::vec4(glm::vec3(gray), 1.0f));
@@ -81,26 +74,36 @@ namespace Letgen
 
 	void Renderer2D::DrawQuad(const Transform2D& transform, const glm::vec4& color)
 	{
-		const auto& shader = s_Data->colorShader;
-		shader->Bind();
-		shader->SetFloat4("u_Color", color);
-		shader->SetMatrix4("u_Model", transform.GetModel());
-
-		s_Data->quadVertexArray->Bind();
-		RenderCommand::DrawIndexed(s_Data->quadVertexArray);
+		Draw(
+			transform.GetModel(),
+			color,
+			s_Data->blankTexture,
+			1.0f);
 	}
 
 	void Renderer2D::DrawSprite(const Ref<Sprite>& sprite)
 	{
-		const auto model = sprite->GetTransform()->GetModel();
+		Draw(
+			sprite->GetTransform()->GetModel(), 
+			glm::vec4(1.0f), 
+			sprite->GetTexture(), 
+			1.0f);
+	}
 
-		const auto& shader = s_Data->textureShader;
-		shader->Bind();
+	void Renderer2D::DrawSprite(const Transform2D& transform, const Ref<Texture2D>& texture)
+	{
+		Draw(transform.GetModel(), glm::vec4(1.0f), texture, 10.0f);
+	}
+
+	void Renderer2D::Draw(const glm::mat4& model, const glm::vec4& color, const Ref<Texture2D>& texture, const float tiling)
+	{
+		const auto& shader = s_Data->ultimateShader;
 		shader->SetMatrix4("u_Model", model);
-		shader->SetInt("u_Texture", 0);
-		
+		shader->SetFloat4("u_Color", color);
+		shader->SetFloat("u_TexTiling", tiling);
+
 		s_Data->quadVertexArray->Bind();
-		sprite->GetTexture()->Bind();
+		texture->Bind();
 		RenderCommand::DrawIndexed(s_Data->quadVertexArray);
 	}
 
