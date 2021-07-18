@@ -6,13 +6,16 @@
 
 namespace Letgen
 {
-	OrthographicCameraController::OrthographicCameraController(const float aspectRatio, const bool isRotatable) :
-
-		m_IsRotatable(isRotatable),
-		m_Camera(aspectRatio, m_Zoom) { }
+	OrthographicCameraController::OrthographicCameraController(
+		const float aspectRatio, 
+		const bool isRotatable) :
+			m_IsRotatable(isRotatable),
+			m_Camera(aspectRatio, m_Zoom) { }
 
 	void OrthographicCameraController::Update()
 	{
+		LE_PROFILE_FUNCTION();
+		
 		const auto deltaTime = Time::GetDeltaTime();
 
 		auto cameraPosition = m_Camera.GetPosition();
@@ -61,6 +64,8 @@ namespace Letgen
 
 	void OrthographicCameraController::OnEvent(Event& event)
 	{
+		LE_PROFILE_FUNCTION();
+		
 		EventDispatcher dispatcher(event);
 		dispatcher.Dispatch<MouseScrolledEvent>(LE_BIND_EVENT_FN(OrthographicCameraController::OnMouseScrolled));
 		dispatcher.Dispatch<WindowResizedEvent>(LE_BIND_EVENT_FN(OrthographicCameraController::OnWindowResized));
@@ -68,6 +73,8 @@ namespace Letgen
 
 	bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& e)
 	{
+		LE_PROFILE_FUNCTION();
+		
 		m_Zoom += e.GetYOffset() * 0.25f;
 
 		m_Zoom = std::max(m_Zoom, 0.1f);
@@ -78,6 +85,8 @@ namespace Letgen
 
 	bool OrthographicCameraController::OnWindowResized(WindowResizedEvent& e)
 	{
+		LE_PROFILE_FUNCTION();
+		
 		const auto aspectRatio = static_cast<float>(e.GetWidth()) / static_cast<float>(e.GetHeight());
 
 		m_Camera.SetAspectRatio(aspectRatio);

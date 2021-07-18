@@ -20,32 +20,39 @@ namespace Letgen
 		Log::Error("GLFW Error ({0}): {1}", error, description);
 	}
 
-	Window* Window::Create(const WindowAttributes& attributes)
+	Scope<Window> Window::Create(const WindowAttributes& attributes)
 	{
-		return new WindowsWindow(attributes);
+		return CreateScope<WindowsWindow>(attributes);
 	}
 
 	WindowsWindow::WindowsWindow(const WindowAttributes& attributes)
 	{
+		LE_PROFILE_FUNCTION();
+		
 		WindowsWindow::Init(attributes);
 	}
 
 	WindowsWindow::~WindowsWindow()
 	{
+		LE_PROFILE_FUNCTION();
+		
 		WindowsWindow::Close();
 	}
 
 	void WindowsWindow::Init(const WindowAttributes& attributes)
 	{
+		LE_PROFILE_FUNCTION();
+
 		m_Data.title = attributes.title;
 		m_Data.width = attributes.width;
 		m_Data.height = attributes.height;
-		
+
 		Log::CoreInfo("Creating window {0} ({1}x{2})",
-			attributes.title, attributes.width, attributes.height);	
-		
+			attributes.title, attributes.width, attributes.height);
+
 		if (!is_window_initialized)
 		{
+			LE_PROFILE_SCOPE("glfwInit");
 			int success = glfwInit();
 			LE_CORE_ASSERT(success, "Could not initialize GLFW");
 
@@ -53,13 +60,16 @@ namespace Letgen
 			is_window_initialized = true;
 		}
 
-		m_Window = glfwCreateWindow(
-			static_cast<int>(m_Data.width),
-			static_cast<int>(m_Data.height),
-			m_Data.title.c_str(),
-			nullptr,
-			nullptr);
+		{
+			LE_PROFILE_SCOPE("glfwCreateWindow");
 
+			m_Window = glfwCreateWindow(
+				static_cast<int>(m_Data.width),
+				static_cast<int>(m_Data.height),
+				m_Data.title.c_str(),
+				nullptr,
+				nullptr);
+		}
 		m_Context = new OpenGLContext(m_Window);
 		m_Context->Init();
 		
@@ -158,17 +168,23 @@ namespace Letgen
 
 	void WindowsWindow::Close()
 	{
+		LE_PROFILE_FUNCTION();
+		
 		glfwDestroyWindow(m_Window);
 	}
 	
 	void WindowsWindow::Update()
 	{
+		LE_PROFILE_FUNCTION();
+		
 		glfwPollEvents();
 		m_Context->SwapBuffers();
 	}
 	
 	void WindowsWindow::SetVSync(const bool enabled)
 	{
+		LE_PROFILE_FUNCTION();
+		
 		glfwSwapInterval(enabled ? 1 : 0);
 
 		m_Data.vSync = enabled;

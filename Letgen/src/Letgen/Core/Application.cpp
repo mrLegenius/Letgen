@@ -17,10 +17,12 @@ namespace Letgen
 	
 	Application::Application()
 	{
+		LE_PROFILE_FUNCTION();
+		
 		LE_CORE_ASSERT(!s_Instance, "Only one applications allowed");
 		s_Instance = this;
 		
-		m_Window = std::unique_ptr<Window>(Window::Create());
+		m_Window = Window::Create();
 		m_Window->SetEventCallback(LE_BIND_EVENT_FN(Application::OnEvent));
 
 		Renderer::Init();
@@ -35,9 +37,13 @@ namespace Letgen
 	}
 
 	void Application::Run()
-	{		
+	{
+		LE_PROFILE_FUNCTION();
+		
 		while (m_IsRunning)
 		{
+			LE_PROFILE_SCOPE("Run loop");
+			
 			const auto time = static_cast<float>(glfwGetTime()); //Platform::GetTime
 			const float timestep = time - m_LastFrameTime;
 			m_LastFrameTime = time;
@@ -45,6 +51,7 @@ namespace Letgen
 			
 			if(!m_Minimized)
 			{
+				LE_PROFILE_SCOPE("LayerStack OnUpdate");
 				for (Layer* layer : m_LayerStack)
 				{
 					layer->OnUpdate();
@@ -52,8 +59,11 @@ namespace Letgen
 			}
 
 			m_ImGuiLayer->Begin();
-			for (Layer* layer : m_LayerStack)
-				layer->OnImGuiRender();
+			{
+				LE_PROFILE_SCOPE("LayerStack OnImGuiRender");
+				for (Layer* layer : m_LayerStack)
+					layer->OnImGuiRender();
+			}
 			m_ImGuiLayer->End();
 			
 			m_Window->Update();
@@ -62,6 +72,8 @@ namespace Letgen
 	
 	void Application::OnEvent(Event& e)
 	{
+		LE_PROFILE_FUNCTION();
+		
 		EventDispatcher dispatcher(e);
 
 		dispatcher.Dispatch<WindowClosedEvent>(LE_BIND_EVENT_FN(Application::OnWindowClosed));
@@ -77,12 +89,16 @@ namespace Letgen
 
 	void Application::PushLayer(Layer* layer)
 	{
+		LE_PROFILE_FUNCTION();
+		
 		m_LayerStack.PushLayer(layer);
 		layer->OnAttach();
 	}
 
 	void Application::PushOverlay(Layer* overlay)
 	{
+		LE_PROFILE_FUNCTION();
+		
 		m_LayerStack.PushOverlay(overlay);
 		overlay->OnAttach();
 	}
@@ -95,6 +111,8 @@ namespace Letgen
 
 	bool Application::OnWindowResized(WindowResizedEvent& e)
 	{
+		LE_PROFILE_FUNCTION();
+		
 		if(e.GetWidth() == 0 || e.GetHeight() == 0)
 		{
 			m_Minimized = true;

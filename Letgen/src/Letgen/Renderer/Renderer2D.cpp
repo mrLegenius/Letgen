@@ -19,6 +19,8 @@ namespace Letgen
 	
 	void Renderer2D::Init()
 	{
+		LE_PROFILE_FUNCTION();
+		
 		s_Data = new Renderer2DStorage;
 		auto& data = *s_Data;
 		data.quadVertexArray = VertexArray::Create();
@@ -60,6 +62,8 @@ namespace Letgen
 
 	void Renderer2D::BeginScene(const OrthographicCamera& camera)
 	{
+		LE_PROFILE_FUNCTION();
+		
 		const auto projectionMatrix = camera.GetProjectionMatrix();
 		const auto viewMatrix = camera.GetViewMatrix();
 
@@ -73,7 +77,7 @@ namespace Letgen
 	}
 
 	void Renderer2D::DrawQuad(const Transform2D& transform, const glm::vec4& color)
-	{
+	{	
 		Draw(
 			transform.GetModel(),
 			color,
@@ -97,6 +101,8 @@ namespace Letgen
 
 	void Renderer2D::Draw(const glm::mat4& model, const glm::vec4& color, const Ref<Texture2D>& texture, const float tiling)
 	{
+		LE_PROFILE_FUNCTION();
+		
 		const auto& shader = s_Data->ultimateShader;
 		shader->SetMatrix4("u_Model", model);
 		shader->SetFloat4("u_Color", color);
@@ -109,6 +115,7 @@ namespace Letgen
 
 	void Renderer2D::EndScene()
 	{
+		LE_PROFILE_FUNCTION();
 		
 	}
 }

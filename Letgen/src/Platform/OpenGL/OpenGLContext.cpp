@@ -16,6 +16,8 @@ namespace Letgen
 
 	void OpenGLContext::Init()
 	{
+		LE_PROFILE_FUNCTION();
+		
 		glfwMakeContextCurrent(m_WindowHandle);
 		const int success = gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
 		LE_CORE_ASSERT(success, "Could not initialize GLAD");
@@ -40,6 +42,8 @@ namespace Letgen
 
 	void OpenGLContext::SwapBuffers()
 	{
+		LE_PROFILE_FUNCTION();
+		
 		glfwSwapBuffers(m_WindowHandle);
 	}
 }

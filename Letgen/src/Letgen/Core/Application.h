@@ -6,8 +6,6 @@
 #include "Window.h"
 #include "Letgen/Events/ApplicationEvent.h"
 
-#include "Timestep.h"
-
 #include "Letgen/GUI/ImGuiLayer.h"
 
 namespace Letgen

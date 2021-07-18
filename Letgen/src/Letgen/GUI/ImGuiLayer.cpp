@@ -16,12 +16,10 @@ namespace Letgen
 		
 	}
 
-	ImGuiLayer::~ImGuiLayer()
-	{
-	}
-
 	void ImGuiLayer::OnAttach()
 	{
+		LE_PROFILE_FUNCTION();
+		
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -50,6 +48,8 @@ namespace Letgen
 
 	void ImGuiLayer::OnDetach()
 	{
+		LE_PROFILE_FUNCTION();
+		
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
@@ -61,6 +61,8 @@ namespace Letgen
 
 	void ImGuiLayer::Begin()
 	{
+		LE_PROFILE_FUNCTION();
+		
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
@@ -68,6 +70,8 @@ namespace Letgen
 
 	void ImGuiLayer::End()
 	{
+		LE_PROFILE_FUNCTION();
+		
 		ImGuiIO& io = ImGui::GetIO();
 		auto& app = Application::Get();
 		auto& window = app.GetWindow();

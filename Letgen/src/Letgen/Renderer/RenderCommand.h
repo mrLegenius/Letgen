@@ -7,7 +7,10 @@ namespace Letgen
 	class RenderCommand
 	{
 	public:
-		static void Init() { s_RendererAPI->Init(); }
+		static void Init()
+		{
+			s_RendererAPI->Init();
+		}
 
 		static void SetViewport(int x, int y, uint32_t width, uint32_t height)
 		{

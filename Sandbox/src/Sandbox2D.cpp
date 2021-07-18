@@ -7,20 +7,22 @@ Sandbox2D::Sandbox2D() : Layer("Sandbox2D") { }
 
 void Sandbox2D::OnAttach()
 {
+	LE_PROFILE_FUNCTION();
+	
 	m_Sprite = std::make_shared<Letgen::Sprite>("assets/textures/voenmeh.png");
 }
 
 void Sandbox2D::OnDetach()
 {
+	LE_PROFILE_FUNCTION();
+	
 }
 
 void Sandbox2D::OnUpdate()
 {
 	LE_PROFILE_FUNCTION();
-	{
-		LE_PROFILE_SCOPE("CameraController::OnUpdate");
-		m_CameraController.Update();
-	}
+	
+	m_CameraController.Update();
 	
 	{
 		LE_PROFILE_SCOPE("Renderer Begin");

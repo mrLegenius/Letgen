@@ -26,6 +26,8 @@ namespace Letgen
 
 	void OrthographicCamera::RecalculateProjectionMatrix()
 	{
+		LE_PROFILE_FUNCTION();
+		
 		m_ProjectionMatrix = glm::ortho(
 			-m_OrthographicSize * m_AspectRatio,
 			m_OrthographicSize * m_AspectRatio,
@@ -37,6 +39,8 @@ namespace Letgen
 
 	void OrthographicCamera::RecalculateViewMatrix()
 	{
+		LE_PROFILE_FUNCTION();
+		
 		const glm::mat4 transform = translate(glm::mat4(1.0f), m_Position) * 
 			rotate(glm::mat4(1.0f), glm::radians(m_Rotation), glm::vec3(0.0, 0.0f, 1.0f));
 

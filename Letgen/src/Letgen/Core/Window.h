@@ -36,6 +36,6 @@ namespace Letgen
 
 		virtual void* GetNativeWindow() const = 0;
 
-		static Window* Create(const WindowAttributes& attributes = WindowAttributes());
+		static Scope<Window> Create(const WindowAttributes& attributes = WindowAttributes());
 	};
 }

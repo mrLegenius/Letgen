@@ -22,6 +22,8 @@ namespace Letgen
 	
 	OpenGLShader::OpenGLShader(const std::string& filepath) : m_FilePath(filepath)
 	{
+		LE_PROFILE_FUNCTION();
+		
 		const std::string source = ReadFile(filepath);
 		const auto shaderSources = Preprocess(source);
 		Compile(shaderSources);
@@ -36,15 +38,21 @@ namespace Letgen
 
 	OpenGLShader::~OpenGLShader()
 	{
+		LE_PROFILE_FUNCTION();
+		
 		glDeleteProgram(m_RendererID);
 	}
 
 	void OpenGLShader::Bind() const
 	{
+		LE_PROFILE_FUNCTION();
+		
 		glUseProgram(m_RendererID);
 	}
 	void OpenGLShader::Unbind() const
 	{
+		LE_PROFILE_FUNCTION();
+		
 		glUseProgram(0);
 	}
 
@@ -89,6 +97,8 @@ namespace Letgen
 
 	std::string OpenGLShader::ReadFile(const std::string& filepath) const
 	{
+		LE_PROFILE_FUNCTION();
+		
 		std::string result;
 		std::ifstream in(filepath, std::ios::in | std::ios::binary);
 		if(in)
@@ -109,6 +119,8 @@ namespace Letgen
 
 	std::unordered_map<GLenum, std::string> OpenGLShader::Preprocess(const std::string& source) const
 	{
+		LE_PROFILE_FUNCTION();
+		
 		std::unordered_map<GLenum, std::string> shaderSources;
 
 		const auto typeToken = "#shader";
@@ -133,6 +145,8 @@ namespace Letgen
 
 	void OpenGLShader::Compile(const std::unordered_map<GLenum, std::string>& shaderSources)
 	{
+		LE_PROFILE_FUNCTION();
+		
 		const int maxNumberOfShaders = 3;
 		LE_CORE_ASSERT(shaderSources.size() <= maxNumberOfShaders, "Only supports {0} of shader so far!", maxNumberOfShaders)
 
@@ -206,6 +220,8 @@ namespace Letgen
 
 	int OpenGLShader::GetUniformLocation(const std::string& name)
 	{
+		LE_PROFILE_FUNCTION();
+		
 		if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end())
 			return m_UniformLocationCache[name];
 
