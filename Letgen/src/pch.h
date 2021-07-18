@@ -16,6 +16,8 @@
 
 #include "Letgen/Core/Logger.h"
 
+#include "Letgen/Debug/Instrumentor.h"
+
 #ifdef LE_PLATFORM_WINDOWS
 	#include <Windows.h>
 #endif
