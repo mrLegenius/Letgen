@@ -21,6 +21,6 @@ namespace Letgen
 		static void Flush();
 	private:
 		static void Draw(const Transform2D& transform, const glm::vec4& color, const Ref<Texture2D>& texture, float tiling);
-		static void AddQuadToVertexBuffer(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
+		static void AddQuadToVertexBuffer(const glm::mat4& model, const glm::vec4& color, const Ref<Texture2D>& texture);
 	};
 }

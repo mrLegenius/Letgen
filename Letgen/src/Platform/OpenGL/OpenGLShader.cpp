@@ -64,6 +64,12 @@ namespace Letgen
 	{
 		glUniform1i(GetUniformLocation(name), value);
 	}
+
+	void OpenGLShader::SetIntArray(const std::string& name, int* array, uint32_t count)
+	{
+		glUniform1iv(GetUniformLocation(name), count, array);
+	}
+
 	void OpenGLShader::SetFloat(const std::string& name, const float value)
 	{
 		glUniform1f(GetUniformLocation(name), value);
@@ -84,7 +90,7 @@ namespace Letgen
 	
 	void OpenGLShader::SetMatrix2(const std::string& name, const glm::mat2& matrix)
 	{
-		glUniformMatrix2fv(GetUniformLocation(name), 1, GL_FALSE, glm::value_ptr(matrix));
+		glUniformMatrix2fv(GetUniformLocation(name), 1, GL_FALSE, value_ptr(matrix));
 	}
 	void OpenGLShader::SetMatrix3(const std::string& name, const glm::mat3& matrix)
 	{

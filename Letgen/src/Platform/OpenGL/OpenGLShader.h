@@ -23,8 +23,9 @@ namespace Letgen
 
 		void SetBool(const std::string& name, bool value) override;
 		void SetInt(const std::string& name, int value) override;
-		void SetFloat(const std::string& name, float value) override;
+		void SetIntArray(const std::string& name, int* array, uint32_t count) override;
 
+		void SetFloat(const std::string& name, float value) override;
 		void SetFloat2(const std::string& name, const glm::vec2& vector) override;
 		void SetFloat3(const std::string& name, const glm::vec3& vector) override;
 		void SetFloat4(const std::string& name, const glm::vec4& vector) override;
@@ -39,6 +40,7 @@ namespace Letgen
 		void Compile(const std::unordered_map<GLenum, std::string>& shaderSources);
 		
 		[[nodiscard]] int GetUniformLocation(const std::string& name);
+
 	
 	private:
 		std::string m_FilePath;

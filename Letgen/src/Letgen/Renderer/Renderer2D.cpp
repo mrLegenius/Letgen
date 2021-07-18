@@ -13,12 +13,14 @@ namespace Letgen
 		glm::vec3 position;
 		glm::vec4 color;
 		glm::vec2 texCoord;
+		float texIndex;
 	};
 	
 	struct Renderer2DData
 	{
-		const uint8_t verticesPerQuad = 4;
-		const uint8_t indicesPerQuad = 6;
+		const uint32_t verticesPerQuad = 4;
+		const uint32_t indicesPerQuad = 6;
+		static const uint32_t maxTextureSlots = 32; //TODO: Render Capabilities;
 		
 		const uint32_t maxQuads = 10'000;
 		const uint32_t maxVertices = maxQuads * verticesPerQuad;
@@ -32,6 +34,9 @@ namespace Letgen
 		uint32_t quadIndexCount = 0;
 		QuadVertex* quadVertexBufferBase = nullptr;
 		QuadVertex* quadVertexBufferPtr = nullptr;
+
+		std::array<Ref<Texture2D>, maxTextureSlots> textureSlots;
+		uint32_t textureSlotIndex = 1; // slot 0 - blank texture
 	};
 
 	static Renderer2DData* s_Data;
@@ -53,7 +58,9 @@ namespace Letgen
 		s_Data->quadVertexBuffer->SetLayout({
 			{ShaderDataType::Float3, "a_Position" },
 			{ShaderDataType::Float4, "a_Color" },
-			{ShaderDataType::Float2, "a_TexCoord" }});
+			{ShaderDataType::Float2, "a_TexCoord" },
+			{ShaderDataType::Float, "a_TexIndex" },
+		});
 
 		const auto quadIndices = new uint32_t[s_Data->maxIndices];
 
@@ -68,7 +75,7 @@ namespace Letgen
 			quadIndices[i + 4] = offset + 3;
 			quadIndices[i + 5] = offset + 0;
 
-			offset += 4;
+			offset += s_Data->verticesPerQuad;
 		}
 		
 		const Ref<IndexBuffer> quadIB = IndexBuffer::Create(quadIndices, s_Data->maxIndices);
@@ -76,34 +83,39 @@ namespace Letgen
 		delete[] quadIndices;
 		
 		data.blankTexture = Texture2D::Create(1, 1);
-		const uint32_t blankTextureData = 0xffffffff;
-		data.blankTexture->SetData((void*)&blankTextureData, sizeof(uint32_t));
+		uint32_t blankTextureData = 0xffffffff;
+		data.blankTexture->SetData(&blankTextureData, sizeof(uint32_t));
+		s_Data->textureSlots[0] = s_Data->blankTexture;
 
+		int32_t samplers[Renderer2DData::maxTextureSlots];
+		for(int32_t i = 0; i < Renderer2DData::maxTextureSlots; i++)
+		{
+			samplers[i] = i;
+		}
+		
 		data.quadVertexArray->AddVertexBuffer(s_Data->quadVertexBuffer);
 
 		data.ultimateShader = Shader::Create("assets/shaders/Ultimate2D.shader");
 		data.ultimateShader->Bind();
-		data.ultimateShader->SetInt("u_Texture", 0);
+		data.ultimateShader->SetIntArray("u_Textures", samplers, Renderer2DData::maxTextureSlots);
 	}
 
 	void Renderer2D::Shutdown()
 	{
-		delete s_Data;
+		delete s_Data->quadVertexBufferBase;
 	}
 
 	void Renderer2D::BeginScene(const OrthographicCamera& camera)
 	{
 		LE_PROFILE_FUNCTION();
-		
-		const auto projectionMatrix = camera.GetProjectionMatrix();
-		const auto viewMatrix = camera.GetViewMatrix();
 
 		s_Data->ultimateShader->Bind();
-		s_Data->ultimateShader->SetMatrix4("u_Projection", projectionMatrix);
-		s_Data->ultimateShader->SetMatrix4("u_View", viewMatrix);
+		s_Data->ultimateShader->SetMatrix4("u_Projection", camera.GetProjectionMatrix());
+		s_Data->ultimateShader->SetMatrix4("u_View", camera.GetViewMatrix());
 
 		s_Data->quadVertexBufferPtr = s_Data->quadVertexBufferBase;
 		s_Data->quadIndexCount = 0;
+		s_Data->textureSlotIndex = 1;
 		
 		const float gray = 0.69f / 5;
 		RenderCommand::SetClearColor(glm::vec4(glm::vec3(gray), 1.0f));
@@ -114,14 +126,23 @@ namespace Letgen
 	{
 		LE_PROFILE_FUNCTION();
 
-		const uint32_t dataSize = reinterpret_cast<uint8_t*>(s_Data->quadVertexBufferPtr) - reinterpret_cast<uint8_t*>(s_Data->quadVertexBufferBase);
-		s_Data->quadVertexBuffer->SetData(s_Data->quadVertexBufferBase, dataSize);
-		
 		Flush();
 	}
 
 	void Renderer2D::Flush()
 	{
+		if(s_Data->quadIndexCount == 0)
+			return;
+
+		const uint32_t dataSize = (uint32_t)((uint8_t*)s_Data->quadVertexBufferPtr - (uint8_t*)s_Data->quadVertexBufferBase);
+		s_Data->quadVertexBuffer->SetData(s_Data->quadVertexBufferBase, dataSize);
+
+		for(uint32_t i = 0; i < s_Data->textureSlotIndex; i++)
+		{
+			s_Data->textureSlots[i]->Bind(i);
+		}
+
+		s_Data->ultimateShader->Bind();
 		RenderCommand::DrawIndexed(s_Data->quadVertexArray, s_Data->quadIndexCount);
 	}
 
@@ -152,14 +173,9 @@ namespace Letgen
 	{
 		LE_PROFILE_FUNCTION();
 
-		AddQuadToVertexBuffer(transform.position, transform.scale, color);
+		AddQuadToVertexBuffer(transform.GetModel(), color, texture);
 
-		const auto model = transform.angle < 0.000001f ? glm::mat4(1.0f) :
-			rotate(glm::mat4(1.0f), transform.angle, glm::vec3(0.0f, 0.0f, 1.0f));
-		
 		const auto& shader = s_Data->ultimateShader;
-		shader->SetMatrix4("u_Model", model);
-		shader->SetFloat4("u_Color", color);
 		shader->SetFloat("u_TexTiling", tiling);
 
 		s_Data->quadVertexArray->Bind();
@@ -167,27 +183,47 @@ namespace Letgen
 		RenderCommand::DrawIndexed(s_Data->quadVertexArray);
 	}
 
-	void Renderer2D::AddQuadToVertexBuffer(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
+	void Renderer2D::AddQuadToVertexBuffer(const glm::mat4& model, const glm::vec4& color, const Ref<Texture2D>& texture)
 	{
-		s_Data->quadVertexBufferPtr->position = { position.x, position.y, 0.0f };
-		s_Data->quadVertexBufferPtr->color = color;
-		s_Data->quadVertexBufferPtr->texCoord = { 0.0f, 0.0f };
-		s_Data->quadVertexBufferPtr++;
+		float textureIndex = -1.0f;
 
-		s_Data->quadVertexBufferPtr->position = { position.x + size.x, position.y, 0.0f };
-		s_Data->quadVertexBufferPtr->color = color;
-		s_Data->quadVertexBufferPtr->texCoord = { 1.0f, 0.0f };
-		s_Data->quadVertexBufferPtr++;
+		for(uint32_t i = 0; i < s_Data->textureSlotIndex; i++)
+		{
+			if(*s_Data->textureSlots[i] == *texture)
+			{
+				textureIndex = static_cast<float>(i);
+				break;
+			}
+		}
 		
-		s_Data->quadVertexBufferPtr->position = { position.x + size.x, position.y + size.y, 0.0f };
-		s_Data->quadVertexBufferPtr->color = color;
-		s_Data->quadVertexBufferPtr->texCoord = { 1.0f, 1.0f };
-		s_Data->quadVertexBufferPtr++;
-
-		s_Data->quadVertexBufferPtr->position = { position.x, position.y + size.y, 0.0f };
-		s_Data->quadVertexBufferPtr->color = color;
-		s_Data->quadVertexBufferPtr->texCoord = { 0.0f, 1.0f };
-		s_Data->quadVertexBufferPtr++;
+		if(textureIndex == -1.0f)
+		{
+			textureIndex = static_cast<float>(s_Data->textureSlotIndex);
+			s_Data->textureSlots[s_Data->textureSlotIndex] = texture;
+			s_Data->textureSlotIndex++;
+		}
+		
+		constexpr glm::vec2 textureCoords[] = {
+			{ 0.0f, 0.0f },
+			{ 1.0f, 0.0f },
+			{ 1.0f, 1.0f },
+			{ 0.0f, 1.0f } };
+		
+		constexpr glm::vec4 quadVertexPositions[] {
+			{ -0.5f, -0.5f, 0.0f, 1.0f },
+			{ 0.5f, -0.5f, 0.0f, 1.0f },
+			{ 0.5f,  0.5f, 0.0f, 1.0f },
+			{ -0.5f,  0.5f, 0.0f, 1.0f },
+		};
+		
+		for (uint32_t i = 0; i < s_Data->verticesPerQuad; i++)
+		{
+			s_Data->quadVertexBufferPtr->position = model * quadVertexPositions[i];
+			s_Data->quadVertexBufferPtr->color = color;
+			s_Data->quadVertexBufferPtr->texCoord = textureCoords[i];
+			s_Data->quadVertexBufferPtr->texIndex = textureIndex;
+			s_Data->quadVertexBufferPtr++;
+		}
 
 		s_Data->quadIndexCount += s_Data->indicesPerQuad;
 	}

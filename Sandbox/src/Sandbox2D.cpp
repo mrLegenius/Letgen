@@ -9,7 +9,7 @@ void Sandbox2D::OnAttach()
 {
 	LE_PROFILE_FUNCTION();
 	
-	m_Sprite = std::make_shared<Letgen::Sprite>("assets/textures/voenmeh.png");
+	m_Sprite = std::make_shared<Letgen::Sprite>("assets/textures/love.jpg");
 }
 
 void Sandbox2D::OnDetach()
@@ -40,10 +40,6 @@ void Sandbox2D::OnUpdate()
 			{ 0.8f, 0.3f, 0.4f, 1.0f });
 
 		Letgen::Renderer2D::DrawSprite(m_Sprite);
-
-		m_Sprite->GetTransform()->position.x += m_Offset;
-		Letgen::Renderer2D::DrawSprite(m_Sprite);
-		m_Sprite->GetTransform()->position.x -= m_Offset;
 	}
 	{
 		LE_PROFILE_SCOPE("Renderer End");
