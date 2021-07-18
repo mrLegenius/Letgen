@@ -28,8 +28,8 @@ namespace Letgen
 
 		if (channels == 3)
 		{
-			m_InternalFormat = GL_RGBA8;
-			m_DataFormat = GL_RGBA;
+			m_InternalFormat = GL_RGB8;
+			m_DataFormat = GL_RGB;
 		}
 		else if(channels == 4)
 		{
