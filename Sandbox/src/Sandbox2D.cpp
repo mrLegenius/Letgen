@@ -21,7 +21,7 @@ void Sandbox2D::OnDetach()
 void Sandbox2D::OnUpdate()
 {
 	LE_PROFILE_FUNCTION();
-	
+
 	m_CameraController.Update();
 	
 	{
