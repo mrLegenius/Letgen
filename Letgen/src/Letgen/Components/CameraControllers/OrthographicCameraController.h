@@ -14,12 +14,12 @@ namespace Letgen
 		void Update();
 		void OnEvent(Event& event);
 		
-		[[nodiscard]] const OrthographicCamera& GetCamera() const { return m_Camera; }
-		[[nodiscard]] OrthographicCamera& GetCamera() { return m_Camera; }
+		_NODISCARD const OrthographicCamera& GetCamera() const { return m_Camera;  }
+		_NODISCARD OrthographicCamera& GetCamera() { return m_Camera; }
 		
 		
-		[[nodiscard]] float GetZoom() const { return m_Zoom; }
-		void SetZoom(const float zoom) { m_Zoom = zoom; }
+		_NODISCARD float GetZoom() const { return m_Zoom; }
+		void SetZoom(const float zoom) { m_Zoom = zoom; m_Camera.SetOrthographicSize(m_Zoom); }
 	
 	private:
 		bool OnMouseScrolled(MouseScrolledEvent& e);

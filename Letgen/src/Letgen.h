@@ -27,6 +27,7 @@
 				 
 #include "Letgen/Renderer/Buffer.h"
 #include "Letgen/Renderer/VertexArray.h"
+#include "Letgen/Renderer/Framebuffer.h"
 
 #include "Letgen/Renderer/Shader.h"
 #include "Letgen/Renderer/Texture.h"

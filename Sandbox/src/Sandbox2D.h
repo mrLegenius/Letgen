@@ -16,5 +16,6 @@ public:
 private:
 	Letgen::OrthographicCameraController m_CameraController{ 1280.0f / 720.0f , true };
 	Letgen::Ref<Letgen::Sprite> m_Sprite;
+	Letgen::Ref<Letgen::Framebuffer> m_Framebuffer;
 	float m_Offset = 1.5f;
 };

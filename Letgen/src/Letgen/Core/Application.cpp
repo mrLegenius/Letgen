@@ -69,7 +69,12 @@ namespace Letgen
 			m_Window->Update();
 		}
 	}
-	
+
+	void Application::Close()
+	{
+		m_IsRunning = false;
+	}
+
 	void Application::OnEvent(Event& e)
 	{
 		LE_PROFILE_FUNCTION();
@@ -105,7 +110,7 @@ namespace Letgen
 	
 	bool Application::OnWindowClosed(WindowClosedEvent& e)
 	{
-		m_IsRunning = false;
+		Close();
 		return true;
 	}
 

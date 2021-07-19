@@ -18,13 +18,13 @@ namespace Letgen
 	
 	struct Renderer2DData
 	{
-		const uint32_t verticesPerQuad = 4;
-		const uint32_t indicesPerQuad = 6;
+		static const uint32_t verticesPerQuad = 4;
+		static const uint32_t indicesPerQuad = 6;
 		static const uint32_t maxTextureSlots = 32; //TODO: Render Capabilities;
 		
-		const uint32_t maxQuads = 10'000;
-		const uint32_t maxVertices = maxQuads * verticesPerQuad;
-		const uint32_t maxIndices = maxQuads * indicesPerQuad;
+		static const uint32_t maxQuads = 20'000;
+		static const uint32_t maxVertices = maxQuads * verticesPerQuad;
+		static const uint32_t maxIndices = maxQuads * indicesPerQuad;
 		
 		Ref<VertexArray> quadVertexArray;
 		Ref<VertexBuffer> quadVertexBuffer;
@@ -37,6 +37,8 @@ namespace Letgen
 
 		std::array<Ref<Texture2D>, maxTextureSlots> textureSlots;
 		uint32_t textureSlotIndex = 1; // slot 0 - blank texture
+
+		Renderer2D::Statistics stats;
 	};
 
 	static Renderer2DData* s_Data;
@@ -51,9 +53,9 @@ namespace Letgen
 		auto& data = *s_Data;
 		data.quadVertexArray = VertexArray::Create();
 
-		s_Data->quadVertexBuffer = VertexBuffer::Create(s_Data->maxVertices * sizeof QuadVertex);
+		s_Data->quadVertexBuffer = VertexBuffer::Create(Renderer2DData::maxVertices * sizeof QuadVertex);
 
-		s_Data->quadVertexBufferBase = new QuadVertex[s_Data->maxVertices];
+		s_Data->quadVertexBufferBase = new QuadVertex[Renderer2DData::maxVertices];
 		
 		s_Data->quadVertexBuffer->SetLayout({
 			{ShaderDataType::Float3, "a_Position" },
@@ -62,10 +64,10 @@ namespace Letgen
 			{ShaderDataType::Float, "a_TexIndex" },
 		});
 
-		const auto quadIndices = new uint32_t[s_Data->maxIndices];
+		const auto quadIndices = new uint32_t[Renderer2DData::maxIndices];
 
 		uint32_t offset = 0;
-		for(uint32_t i = 0; i < s_Data->maxIndices; i += s_Data->indicesPerQuad)
+		for(uint32_t i = 0; i < Renderer2DData::maxIndices; i += Renderer2DData::indicesPerQuad)
 		{
 			quadIndices[i + 0] = offset + 0;
 			quadIndices[i + 1] = offset + 1;
@@ -75,7 +77,7 @@ namespace Letgen
 			quadIndices[i + 4] = offset + 3;
 			quadIndices[i + 5] = offset + 0;
 
-			offset += s_Data->verticesPerQuad;
+			offset += Renderer2DData::verticesPerQuad;
 		}
 		
 		const Ref<IndexBuffer> quadIB = IndexBuffer::Create(quadIndices, s_Data->maxIndices);
@@ -113,9 +115,7 @@ namespace Letgen
 		s_Data->ultimateShader->SetMatrix4("u_Projection", camera.GetProjectionMatrix());
 		s_Data->ultimateShader->SetMatrix4("u_View", camera.GetViewMatrix());
 
-		s_Data->quadVertexBufferPtr = s_Data->quadVertexBufferBase;
-		s_Data->quadIndexCount = 0;
-		s_Data->textureSlotIndex = 1;
+		StartBatch();
 		
 		const float gray = 0.69f / 5;
 		RenderCommand::SetClearColor(glm::vec4(glm::vec3(gray), 1.0f));
@@ -129,6 +129,14 @@ namespace Letgen
 		Flush();
 	}
 
+	void Renderer2D::StartBatch()
+	{
+		s_Data->quadIndexCount = 0;
+		s_Data->quadVertexBufferPtr = s_Data->quadVertexBufferBase;
+
+		s_Data->textureSlotIndex = 1;
+	}
+	
 	void Renderer2D::Flush()
 	{
 		if(s_Data->quadIndexCount == 0)
@@ -144,6 +152,13 @@ namespace Letgen
 
 		s_Data->ultimateShader->Bind();
 		RenderCommand::DrawIndexed(s_Data->quadVertexArray, s_Data->quadIndexCount);
+		s_Data->stats.drawCalls++;
+	}
+
+	void Renderer2D::NextBatch()
+	{
+		Flush();
+		StartBatch();
 	}
 
 	void Renderer2D::DrawQuad(const Transform2D& transform, const glm::vec4& color)
@@ -181,10 +196,16 @@ namespace Letgen
 		s_Data->quadVertexArray->Bind();
 		texture->Bind();
 		RenderCommand::DrawIndexed(s_Data->quadVertexArray);
+
 	}
 
 	void Renderer2D::AddQuadToVertexBuffer(const glm::mat4& model, const glm::vec4& color, const Ref<Texture2D>& texture)
 	{
+		LE_PROFILE_FUNCTION();
+		
+		if (s_Data->quadIndexCount >= Renderer2DData::maxIndices)
+			NextBatch();
+		
 		float textureIndex = -1.0f;
 
 		for(uint32_t i = 0; i < s_Data->textureSlotIndex; i++)
@@ -198,6 +219,9 @@ namespace Letgen
 		
 		if(textureIndex == -1.0f)
 		{
+			if (s_Data->textureSlotIndex >= Renderer2DData::maxTextureSlots)
+				NextBatch();
+			
 			textureIndex = static_cast<float>(s_Data->textureSlotIndex);
 			s_Data->textureSlots[s_Data->textureSlotIndex] = texture;
 			s_Data->textureSlotIndex++;
@@ -216,7 +240,7 @@ namespace Letgen
 			{ -0.5f,  0.5f, 0.0f, 1.0f },
 		};
 		
-		for (uint32_t i = 0; i < s_Data->verticesPerQuad; i++)
+		for (uint32_t i = 0; i < Renderer2DData::verticesPerQuad; i++)
 		{
 			s_Data->quadVertexBufferPtr->position = model * quadVertexPositions[i];
 			s_Data->quadVertexBufferPtr->color = color;
@@ -225,6 +249,18 @@ namespace Letgen
 			s_Data->quadVertexBufferPtr++;
 		}
 
-		s_Data->quadIndexCount += s_Data->indicesPerQuad;
+		s_Data->quadIndexCount += Renderer2DData::indicesPerQuad;
+
+		s_Data->stats.quadCount++;
+	}
+
+	void Renderer2D::ResetStats()
+	{
+		memset(&s_Data->stats, 0, sizeof(Statistics));
+	}
+
+	Renderer2D::Statistics Renderer2D::GetStats()
+	{
+		return s_Data->stats;
 	}
 }
