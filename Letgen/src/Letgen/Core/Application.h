@@ -1,6 +1,5 @@
 ﻿#pragma once
 
-#include "Core.h"
 #include "Layer.h"
 #include "LayerStack.h"
 #include "Window.h"
@@ -10,13 +9,11 @@
 
 namespace Letgen
 {
-	class Shader;
-
-	class LETGEN_API Application
+	class Application
 	{
 	public:
 		
-		Application();
+		Application(const std::string& name = "Letgen App");
 		~Application();
 
 		void OnEvent(Event& e);

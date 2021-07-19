@@ -15,14 +15,14 @@ namespace Letgen
 {
 	Application* Application::s_Instance = nullptr;
 	
-	Application::Application()
+	Application::Application(const std::string& name)
 	{
 		LE_PROFILE_FUNCTION();
 		
 		LE_CORE_ASSERT(!s_Instance, "Only one applications allowed");
 		s_Instance = this;
 		
-		m_Window = Window::Create();
+		m_Window = Window::Create(WindowAttributes(name));
 		m_Window->SetEventCallback(LE_BIND_EVENT_FN(Application::OnEvent));
 
 		Renderer::Init();

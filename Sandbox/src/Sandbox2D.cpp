@@ -148,7 +148,7 @@ void Sandbox2D::OnImGuiRender()
     ImGui::Text("Vertices Count: %d", stats.GetTotalVertexCount());
     ImGui::Text("Indices Count: %d", stats.GetTotalIndexCount());
     uint32_t textureId = m_Framebuffer->GetColorAttachmentRendererID();
-    ImGui::Image((void*)textureId, ImVec2(1280, 720));
+    ImGui::Image((void*)textureId, ImVec2(1280, 720), ImVec2(0, 1), ImVec2(1, 0));
 
     ImGui::End();
 

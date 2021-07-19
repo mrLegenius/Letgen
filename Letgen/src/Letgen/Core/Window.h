@@ -7,8 +7,8 @@ namespace Letgen
 	struct LETGEN_API WindowAttributes
 	{
 		std::string title;
-		unsigned int width;
-		unsigned int height;
+		uint32_t width;
+		uint32_t height;
 
 		explicit WindowAttributes(std::string title = "Letgen",
 			const unsigned int width = 1280,
@@ -27,8 +27,8 @@ namespace Letgen
 
 		virtual void Update() = 0;
 
-		virtual unsigned int GetWidth() const = 0;
-		virtual unsigned int GetHeight() const = 0;
+		virtual uint32_t GetWidth() const = 0;
+		virtual uint32_t GetHeight() const = 0;
 
 		virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
 		virtual void SetVSync(bool enabled) = 0;

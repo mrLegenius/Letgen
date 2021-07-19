@@ -6,7 +6,7 @@
 class Sandbox : public Letgen::Application
 {
 public:
-	Sandbox()
+	Sandbox() : Application("Sandbox")
 	{
 		PushLayer(new Sandbox2D);
 	}

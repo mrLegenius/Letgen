@@ -1,10 +1,9 @@
 ﻿#pragma once
-#include "Core.h"
 #include "Letgen/Events/Event.h"
 
 namespace Letgen
 {
-	class LETGEN_API Layer
+	class Layer
 	{
 	public:
 		explicit Layer(const std::string& name = "Layer");
