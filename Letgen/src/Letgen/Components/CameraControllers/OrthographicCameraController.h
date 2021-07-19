@@ -17,6 +17,7 @@ namespace Letgen
 		_NODISCARD const OrthographicCamera& GetCamera() const { return m_Camera;  }
 		_NODISCARD OrthographicCamera& GetCamera() { return m_Camera; }
 		
+		void SetAspectRatio(const float aspect) { m_Camera.SetAspectRatio(aspect); }
 		
 		_NODISCARD float GetZoom() const { return m_Zoom; }
 		void SetZoom(const float zoom) { m_Zoom = zoom; m_Camera.SetOrthographicSize(m_Zoom); }

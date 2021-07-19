@@ -16,7 +16,10 @@ namespace Letgen
 		void OnImGuiRender() override;
 
 	private:
-		OrthographicCameraController m_CameraController{ 1280.0f / 720.0f , true };
+		void DrawViewport();
+		OrthographicCameraController m_CameraController { 1280.0f / 720.0f , true };
 		Ref<Framebuffer> m_Framebuffer;
+
+		glm::vec2 m_ViewportSize { 0.0f};
 	};
 }

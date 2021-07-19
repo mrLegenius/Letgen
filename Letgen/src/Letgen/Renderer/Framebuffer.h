@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include "glm/glm.hpp"
+
 namespace Letgen
 {
 	struct FramebufferSpecification
@@ -21,10 +23,11 @@ namespace Letgen
 
 		virtual uint32_t GetColorAttachmentRendererID() const = 0;
 		virtual uint32_t GetDepthAttachmentRendererID() const = 0;
-		
+		virtual void Resize(uint32_t width, uint32_t height) = 0;
+
 		_NODISCARD virtual const FramebufferSpecification& GetSpecification() const = 0;
 		_NODISCARD virtual FramebufferSpecification& GetSpecification() = 0;
-		
+
 		_NODISCARD static Ref<Framebuffer> Create(const FramebufferSpecification& spec);
 	};
 }

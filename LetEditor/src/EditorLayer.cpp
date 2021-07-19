@@ -134,9 +134,10 @@ namespace Letgen
             ImGui::EndMenuBar();
         }
 
-
         ImGui::End();
 
+        DrawViewport();
+    	
         ImGui::Begin("Statistics");
 
         const auto stats = Renderer2D::GetStats();
@@ -146,10 +147,35 @@ namespace Letgen
         ImGui::Text("Quads Count: %d", stats.quadCount);
         ImGui::Text("Vertices Count: %d", stats.GetTotalVertexCount());
         ImGui::Text("Indices Count: %d", stats.GetTotalIndexCount());
-        uint32_t textureId = m_Framebuffer->GetColorAttachmentRendererID();
-        ImGui::Image((void*)textureId, ImVec2(1280, 720), ImVec2(0, 1), ImVec2(1, 0));
 
         ImGui::End();
 
+    }
+
+    void EditorLayer::DrawViewport()
+    {
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+        ImGui::Begin("Viewport");
+
+        const ImVec2 viewportSize = ImGui::GetContentRegionAvail();
+        if (m_ViewportSize != *((glm::vec2*)(&viewportSize)))
+        {
+            m_Framebuffer->Resize(static_cast<uint32_t>(viewportSize.x), static_cast<uint32_t>(viewportSize.y));
+            m_ViewportSize = { viewportSize.x, viewportSize.y };
+
+            m_CameraController.SetAspectRatio(viewportSize.x / viewportSize.y);
+        }
+
+        const uint32_t textureId =
+            m_Framebuffer->GetColorAttachmentRendererID();
+
+        ImGui::Image(
+            (void*)textureId,
+            ImVec2(m_ViewportSize.x, m_ViewportSize.y),
+            ImVec2(0, 1),
+            ImVec2(1, 0)
+        );
+        ImGui::End();
+        ImGui::PopStyleVar();
     }
 }
