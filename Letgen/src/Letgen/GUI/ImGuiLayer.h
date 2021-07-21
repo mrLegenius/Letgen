@@ -8,13 +8,17 @@ namespace Letgen
 	{
 	public:
 		ImGuiLayer();
-		~ImGuiLayer() = default;
+		~ImGuiLayer() override = default;
 
 		void OnAttach() override;
 		void OnDetach() override;
+		void OnEvent(Event& event) override;
 		void OnImGuiRender() override;
 		
 		void Begin();
 		void End();
+		void BlockEvents(bool value);
+	private:
+		bool m_IsBlockingEvents = true;
 	};
 }

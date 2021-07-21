@@ -21,5 +21,8 @@ namespace Letgen
 		Ref<Framebuffer> m_Framebuffer;
 
 		glm::vec2 m_ViewportSize { 0.0f};
+
+		bool m_ViewportFocused;
+		bool m_ViewportHovered;
 	};
 }

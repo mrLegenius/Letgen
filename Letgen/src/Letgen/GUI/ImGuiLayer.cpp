@@ -46,6 +46,15 @@ namespace Letgen
 		ImGui_ImplOpenGL3_Init("#version 410");
 	}
 
+	void ImGuiLayer::OnEvent(Event& event)
+	{
+		if(m_IsBlockingEvents)
+		{
+			ImGuiIO& io = ImGui::GetIO();
+			event.handled |= event.IsInCategory(EventCategoryMouse) & io.WantCaptureMouse;
+			event.handled |= event.IsInCategory(EventCategoryKeyboard) & io.WantCaptureKeyboard;
+		}
+	}
 	void ImGuiLayer::OnDetach()
 	{
 		LE_PROFILE_FUNCTION();
@@ -87,5 +96,10 @@ namespace Letgen
 			ImGui::RenderPlatformWindowsDefault();
 			glfwMakeContextCurrent(backup_current_context);
 		}
+	}
+
+	void ImGuiLayer::BlockEvents(const bool value)
+	{
+		m_IsBlockingEvents = value;
 	}
 }

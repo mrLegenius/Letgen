@@ -27,8 +27,8 @@ namespace Letgen
     void EditorLayer::OnUpdate()
     {
         LE_PROFILE_FUNCTION();
-
-        m_CameraController.Update();
+        if (m_ViewportFocused)
+			m_CameraController.Update();
 
         Renderer2D::ResetStats();
 
@@ -61,7 +61,7 @@ namespace Letgen
 
     void EditorLayer::OnEvent(Event& event)
     {
-        m_CameraController.OnEvent(event);
+		m_CameraController.OnEvent(event);
     }
 
     void EditorLayer::OnImGuiRender()
@@ -157,6 +157,10 @@ namespace Letgen
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
         ImGui::Begin("Viewport");
 
+        m_ViewportFocused = ImGui::IsWindowFocused();
+        m_ViewportHovered = ImGui::IsWindowHovered();
+        Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
+    	
         const ImVec2 viewportSize = ImGui::GetContentRegionAvail();
         if (m_ViewportSize != *((glm::vec2*)(&viewportSize)))
         {
