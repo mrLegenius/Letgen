@@ -2,50 +2,84 @@
 
 #include <GLFW/glfw3.h>
 
-#include "WindowsInput.h"
 #include "Letgen/Core/Application.h"
+#include "Letgen/Input/Input.h"
 
 namespace Letgen
 {
-	Input* Input::s_Instance = new WindowsInput;
+	std::unordered_map<KeyCode, bool> Input::s_KeyStates;
+	std::unordered_map<MouseButton, bool> Input::s_ButtonStates;
 	
-	bool WindowsInput::IsKeyPressedImpl(const int keycode)
+	bool Input::IsKeyPressed(const KeyCode keycode)
+	{
+		const bool isDown = IsKeyDown(keycode);
+		const bool stateChanged = s_KeyStates[keycode] != isDown;
+		s_KeyStates[keycode] = isDown;
+
+		return stateChanged && s_KeyStates[keycode] == true;
+	}
+	bool Input::IsKeyReleased(const KeyCode keycode)
+	{
+		const bool isUp = IsKeyUp(keycode);
+		const bool stateChanged = s_KeyStates[keycode] != isUp;
+		s_KeyStates[keycode] = isUp;
+
+		return stateChanged && s_KeyStates[keycode] == false;
+	}
+
+	bool Input::IsKeyDown(const KeyCode keycode)
 	{
 		const auto window = static_cast<GLFWwindow*>(
 			Application::Get().GetWindow().GetNativeWindow());
 
-		const auto state = glfwGetKey(window, keycode);
+		const auto state = glfwGetKey(window, static_cast<int>(keycode));
 		return state == GLFW_PRESS || state == GLFW_REPEAT;
 	}
-
-	bool WindowsInput::IsKeyReleasedImpl(const int keycode)
+	bool Input::IsKeyUp(const KeyCode keycode)
 	{
 		const auto window = static_cast<GLFWwindow*>(
 			Application::Get().GetWindow().GetNativeWindow());
 
-		const auto state = glfwGetKey(window, keycode);
+		const auto state = glfwGetKey(window, static_cast<int>(keycode));
 		return state == GLFW_RELEASE;
 	}
 
-	bool WindowsInput::IsMouseButtonPressedImpl(int button)
+	bool Input::IsMouseButtonPressed(const MouseButton button)
+	{
+		const bool isDown = IsMouseButtonDown(button);
+		const bool stateChanged = s_ButtonStates[button] != isDown;
+		s_ButtonStates[button] = isDown;
+
+		return stateChanged && s_ButtonStates[button] == true;
+	}
+	bool Input::IsMouseButtonReleased(const MouseButton button)
+	{
+		const bool isUp = IsMouseButtonUp(button);
+		const bool stateChanged = s_ButtonStates[button] != isUp;
+		s_ButtonStates[button] = isUp;
+
+		return stateChanged && s_ButtonStates[button] == false;
+	}
+
+	bool Input::IsMouseButtonDown(const MouseButton button)
 	{
 		const auto window = static_cast<GLFWwindow*>(
 			Application::Get().GetWindow().GetNativeWindow());
 
-		const auto state = glfwGetMouseButton(window, button);
+		const auto state = glfwGetMouseButton(window, static_cast<int>(button));
 		return state == GLFW_PRESS;
 	}
-
-	bool WindowsInput::IsMouseButtonReleasedImpl(int button)
+	bool Input::IsMouseButtonUp(const MouseButton button)
 	{
 		const auto window = static_cast<GLFWwindow*>(
 			Application::Get().GetWindow().GetNativeWindow());
 
-		const auto state = glfwGetMouseButton(window, button);
+		const auto state = glfwGetMouseButton(window, static_cast<int>(button));
 		return state == GLFW_RELEASE;
 	}
+	
 
-	std::pair<float, float> WindowsInput::GetMousePositionImpl()
+	std::pair<float, float> Input::GetMousePosition()
 	{
 		const auto window = static_cast<GLFWwindow*>(
 			Application::Get().GetWindow().GetNativeWindow());
@@ -55,15 +89,14 @@ namespace Letgen
 		return { static_cast<float>(xPos), static_cast<float>(yPos) };
 	}
 
-	float WindowsInput::GetMouseXImpl()
+	float Input::GetMouseX()
 	{
-		auto [x, y] = GetMousePositionImpl();
+		auto [x, y] = GetMousePosition();
 		return x;
 	}
-
-	float WindowsInput::GetMouseYImpl()
+	float Input::GetMouseY()
 	{
-		auto [x, y] = GetMousePositionImpl();
+		auto [x, y] = GetMousePosition();
 		return y;
 	}
 }

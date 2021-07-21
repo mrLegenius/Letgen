@@ -5,47 +5,23 @@
 
 namespace Letgen
 {
-	class LETGEN_API Input
+	class Input
 	{
 	public:	
-		static bool IsKeyPressed(const KeyCode keycode)
-		{
-			return s_Instance->IsKeyPressedImpl(static_cast<int>(keycode));
-		}
-		static bool IsKeyReleased(const KeyCode keycode)
-		{
-			return s_Instance->IsKeyReleasedImpl(static_cast<int>(keycode));
-		}
-		static bool IsMouseButtonPressed(const MouseButton button)
-		{
-			return s_Instance->IsKeyReleasedImpl(static_cast<int>(button));
-		}
-		static bool IsMouseButtonReleased(const MouseButton button)
-		{
-			return s_Instance->IsKeyReleasedImpl(static_cast<int>(button));
-		}
-		static std::pair<float, float> GetMousePosition()
-		{
-			return s_Instance->GetMousePositionImpl();
-		}
-		static float GetMouseX()
-		{
-			return s_Instance->GetMouseXImpl();
-		}
-		static float GetMouseY()
-		{
-			return s_Instance->GetMouseYImpl();
-		}
+		static bool IsKeyPressed(KeyCode keycode);
+		static bool IsKeyReleased(KeyCode keycode);
+		static bool IsKeyDown(KeyCode keycode);
+		static bool IsKeyUp(KeyCode keycode);
+		static bool IsMouseButtonPressed(MouseButton button);
+		static bool IsMouseButtonReleased(MouseButton button);
+		static bool IsMouseButtonDown(MouseButton button);
+		static bool IsMouseButtonUp(MouseButton button);
 		
-	protected:
-		virtual bool IsKeyPressedImpl(int keycode) = 0;
-		virtual bool IsKeyReleasedImpl(int keycode) = 0;
-		virtual bool IsMouseButtonPressedImpl(int button) = 0;
-		virtual bool IsMouseButtonReleasedImpl(int button) = 0;
-		virtual float GetMouseXImpl() = 0;
-		virtual float GetMouseYImpl() = 0;
-		virtual std::pair<float, float> GetMousePositionImpl() = 0;
+		static std::pair<float, float> GetMousePosition();
+		static float GetMouseX();
+		static float GetMouseY();
 	private:
-		static Input* s_Instance;
+		static std::unordered_map<KeyCode, bool> s_KeyStates;
+		static std::unordered_map<MouseButton, bool> s_ButtonStates;
 	};
 }
