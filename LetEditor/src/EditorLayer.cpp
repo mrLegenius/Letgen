@@ -16,6 +16,11 @@ namespace Letgen
         fbSpec.height = Application::Get().GetWindow().GetHeight();
 
         m_Framebuffer = Framebuffer::Create(fbSpec);
+
+        m_ActiveScene = CreateRef<Scene>();
+
+        auto square = m_ActiveScene->CreateEntity();
+		square.
     }
 
     void EditorLayer::OnDetach()
@@ -30,6 +35,8 @@ namespace Letgen
         if (m_ViewportFocused)
 			m_CameraController.Update();
 
+        m_ActiveScene->OnUpdate();
+    	
         Renderer2D::ResetStats();
 
         {
@@ -162,7 +169,7 @@ namespace Letgen
         Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
     	
         const ImVec2 viewportSize = ImGui::GetContentRegionAvail();
-        if (m_ViewportSize != *((glm::vec2*)(&viewportSize)))
+        if (m_ViewportSize != *(glm::vec2*)&viewportSize)
         {
             m_Framebuffer->Resize(static_cast<uint32_t>(viewportSize.x), static_cast<uint32_t>(viewportSize.y));
             m_ViewportSize = { viewportSize.x, viewportSize.y };

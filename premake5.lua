@@ -18,6 +18,7 @@ IncludeDir["GLAD"] = "Letgen/vendor/GLAD/include"
 IncludeDir["ImGui"] = "Letgen/vendor/ImGui"
 IncludeDir["GLM"] = "Letgen/vendor/GLM"
 IncludeDir["stb_image"] = "Letgen/vendor/stb_image"
+IncludeDir["entt"] = "Letgen/vendor/entt/include"
 
 group "Dependencies"
     include "Letgen/vendor/GLFW"
@@ -61,7 +62,8 @@ project "Letgen"
         "%{IncludeDir.GLAD}",
         "%{IncludeDir.ImGui}",
         "%{IncludeDir.GLM}",
-        "%{IncludeDir.stb_image}"
+        "%{IncludeDir.stb_image}",
+        "%{IncludeDir.entt}"
     }
 
     links
@@ -119,7 +121,8 @@ project "Sandbox"
         "Letgen/vendor/spdlog/include",
         "Letgen/src",
         "Letgen/vendor",
-        "%{IncludeDir.GLM}"
+        "%{IncludeDir.GLM}",
+        "%{IncludeDir.entt}"
     }
 
     links
@@ -171,7 +174,8 @@ project "LetEditor"
         "Letgen/vendor/spdlog/include",
         "Letgen/src",
         "Letgen/vendor",
-        "%{IncludeDir.GLM}"
+        "%{IncludeDir.GLM}",
+        "%{IncludeDir.entt}"
     }
 
     links

@@ -20,6 +20,8 @@ namespace Letgen
 		OrthographicCameraController m_CameraController { 1280.0f / 720.0f , true };
 		Ref<Framebuffer> m_Framebuffer;
 
+		Ref<Scene> m_ActiveScene;
+		
 		glm::vec2 m_ViewportSize { 0.0f};
 
 		bool m_ViewportFocused;

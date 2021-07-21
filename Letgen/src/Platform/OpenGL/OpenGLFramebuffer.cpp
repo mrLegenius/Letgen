@@ -82,7 +82,7 @@ namespace Letgen
 	}
 
 	void OpenGLFramebuffer::Resize(const uint32_t width, const uint32_t height)
-	{
+	{		
 		m_Specification.width = width;
 		m_Specification.height = height;
 		Invalidate();
