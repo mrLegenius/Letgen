@@ -36,7 +36,7 @@ namespace Letgen
 			case ShaderDataType::Int4: return 4 * 4;
 			case ShaderDataType::Bool: return 1;
 			default:
-				LE_CORE_ASSERT(false, "Unknown ShaderDataType!")
+				LET_CORE_ASSERT(false, "Unknown ShaderDataType!")
 				return 0;
 		}
 	}
@@ -73,7 +73,7 @@ namespace Letgen
 				case ShaderDataType::Int4: return 4;
 				case ShaderDataType::Bool: return 1;
 				default:
-					LE_CORE_ASSERT(false, "Unknown ShaderDataType!")
+					LET_CORE_ASSERT(false, "Unknown ShaderDataType!")
 					return 0;
 			}
 		}

@@ -11,19 +11,19 @@ namespace Letgen
 		switch (Renderer::GetAPI()) {
 
 		case RendererAPI::API::None:
-			LE_CORE_ASSERT(false, "None for API was chosen");
+			LET_CORE_ASSERT(false, "None for API was chosen");
 			return nullptr;
 		case RendererAPI::API::OpenGL:
 			return std::make_shared<OpenGLShader>(filepath);
 		}
 
-		LE_CORE_ASSERT(false, "Unknown Renderer API");
+		LET_CORE_ASSERT(false, "Unknown Renderer API");
 		return nullptr;
 	}
 
 	void ShaderLibrary::Add(const std::string& name, const Ref<Shader>& shader)
 	{
-		LE_CORE_ASSERT(!Exists(name), "Shader already exists!")
+		LET_CORE_ASSERT(!Exists(name), "Shader already exists!")
 		m_Shaders[name] = shader;
 	}
 	
@@ -49,7 +49,7 @@ namespace Letgen
 
 	Ref<Shader> ShaderLibrary::Get(const std::string& name)
 	{
-		LE_CORE_ASSERT(Exists(name), "Shader doesn't exists!")
+		LET_CORE_ASSERT(Exists(name), "Shader doesn't exists!")
 		return m_Shaders[name];
 	}
 

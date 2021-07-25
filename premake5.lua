@@ -80,23 +80,23 @@ project "Letgen"
 
         defines
         {
-            "LE_PLATFORM_WINDOWS",
-            "LE_BUILD_DLL",
+            "LET_PLATFORM_WINDOWS",
+            "LET_BUILD_DLL",
             "GLFW_INCLUDE_NONE",
         }
 
     filter "configurations:Debug"
-        defines "LE_DEBUG"
+        defines "LET_DEBUG"
         runtime "Debug"
         symbols "on"
 
     filter "configurations:Release"
-        defines "LE_RELEASE"
+        defines "LET_RELEASE"
         runtime "Release"
         optimize "on"
 
     filter "configurations:Distribution"
-        defines "LE_DIST"
+        defines "LET_DIST"
         runtime "Release"
         optimize "on"
 
@@ -135,21 +135,21 @@ project "Sandbox"
    
     defines
     {
-        "LE_PLATFORM_WINDOWS"
+        "LET_PLATFORM_WINDOWS"
     }
 
     filter "configurations:Debug"
-        defines "LE_DEBUG"
+        defines "LET_DEBUG"
         runtime "Debug"
         symbols "on"
 
     filter "configurations:Release"
-        defines "LE_RELEASE"
+        defines "LET_RELEASE"
         runtime "Release"
         optimize "on"
 
     filter "configurations:Distribution"
-        defines "LE_DIST"
+        defines "LET_DIST"
         runtime "Release"
         optimize "on"
 
@@ -188,20 +188,20 @@ project "LetEditor"
 
     defines
     {
-        "LE_PLATFORM_WINDOWS"
+        "LET_PLATFORM_WINDOWS"
     }
 
     filter "configurations:Debug"
-        defines "LE_DEBUG"
+        defines "LET_DEBUG"
         runtime "Debug"
         symbols "on"
 
     filter "configurations:Release"
-        defines "LE_RELEASE"
+        defines "LET_RELEASE"
         runtime "Release"
         optimize "on"
 
     filter "configurations:Distribution"
-        defines "LE_DIST"
+        defines "LET_DIST"
         runtime "Release"
         optimize "on"

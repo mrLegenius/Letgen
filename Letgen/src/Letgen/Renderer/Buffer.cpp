@@ -11,13 +11,13 @@ namespace Letgen
 		switch (Renderer::GetAPI()) {
 
 		case RendererAPI::API::None:
-			LE_CORE_ASSERT(false, "None for API was chosen");
+			LET_CORE_ASSERT(false, "None for API was chosen");
 			return nullptr;
 		case RendererAPI::API::OpenGL:
 			return std::make_shared<OpenGLVertexBuffer>(size);
 		}
 
-		LE_CORE_ASSERT(false, "Unknown Renderer API");
+		LET_CORE_ASSERT(false, "Unknown Renderer API");
 		return nullptr;
 	}
 
@@ -26,13 +26,13 @@ namespace Letgen
 		switch (Renderer::GetAPI()) {
 
 		case RendererAPI::API::None:
-			LE_CORE_ASSERT(false, "None for API was chosen");
+			LET_CORE_ASSERT(false, "None for API was chosen");
 			return nullptr;
 		case RendererAPI::API::OpenGL:
 			return std::make_shared<OpenGLVertexBuffer>(vertices, size);
 		}
 
-		LE_CORE_ASSERT(false, "Unknown Renderer API");
+		LET_CORE_ASSERT(false, "Unknown Renderer API");
 		return nullptr;
 	}
 
@@ -42,13 +42,13 @@ namespace Letgen
 
 		case RendererAPI::API::None:
 			Log::CoreCritical("None of Renderer API was chosen");
-			LE_CORE_ASSERT(false, "None for API was chosen");
+			LET_CORE_ASSERT(false, "None for API was chosen");
 			return nullptr;
 		case RendererAPI::API::OpenGL:
 			return std::make_shared<OpenGLIndexBuffer>(indices, count);
 		}
 
-		LE_CORE_ASSERT(false, "Unknown Renderer API");
+		LET_CORE_ASSERT(false, "Unknown Renderer API");
 		return nullptr;
 	}
 }

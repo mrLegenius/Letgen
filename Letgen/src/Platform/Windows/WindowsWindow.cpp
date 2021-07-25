@@ -27,21 +27,21 @@ namespace Letgen
 
 	WindowsWindow::WindowsWindow(const WindowAttributes& attributes)
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 		
 		WindowsWindow::Init(attributes);
 	}
 
 	WindowsWindow::~WindowsWindow()
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 		
 		WindowsWindow::Close();
 	}
 
 	void WindowsWindow::Init(const WindowAttributes& attributes)
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 
 		m_Data.title = attributes.title;
 		m_Data.width = attributes.width;
@@ -52,16 +52,16 @@ namespace Letgen
 
 		if (!is_window_initialized)
 		{
-			LE_PROFILE_SCOPE("glfwInit");
+			LET_PROFILE_SCOPE("glfwInit");
 			int success = glfwInit();
-			LE_CORE_ASSERT(success, "Could not initialize GLFW");
+			LET_CORE_ASSERT(success, "Could not initialize GLFW");
 
 			glfwSetErrorCallback(GLFWErrorCallback);
 			is_window_initialized = true;
 		}
 
 		{
-			LE_PROFILE_SCOPE("glfwCreateWindow");
+			LET_PROFILE_SCOPE("glfwCreateWindow");
 
 			m_Window = glfwCreateWindow(
 				static_cast<int>(m_Data.width),
@@ -168,14 +168,14 @@ namespace Letgen
 
 	void WindowsWindow::Close()
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 		
 		glfwDestroyWindow(m_Window);
 	}
 	
 	void WindowsWindow::Update()
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 		
 		glfwPollEvents();
 		m_Context->SwapBuffers();
@@ -183,7 +183,7 @@ namespace Letgen
 	
 	void WindowsWindow::SetVSync(const bool enabled)
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 		
 		glfwSwapInterval(enabled ? 1 : 0);
 

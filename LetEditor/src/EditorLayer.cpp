@@ -9,7 +9,7 @@ namespace Letgen
 
     void EditorLayer::OnAttach()
     {
-        LE_PROFILE_FUNCTION();
+        LET_PROFILE_FUNCTION();
 
         FramebufferSpecification fbSpec;
         fbSpec.width = Application::Get().GetWindow().GetWidth();
@@ -19,19 +19,21 @@ namespace Letgen
 
         m_ActiveScene = CreateRef<Scene>();
 
-        auto square = m_ActiveScene->CreateEntity();
-		square.
+        auto square = m_ActiveScene->CreateEntity("Square");
+    	
+        Log::Info("{0}", square.GetComponent<TagComponent>().tag);
+		
     }
 
     void EditorLayer::OnDetach()
     {
-        LE_PROFILE_FUNCTION();
+        LET_PROFILE_FUNCTION();
 
     }
 
     void EditorLayer::OnUpdate()
     {
-        LE_PROFILE_FUNCTION();
+        LET_PROFILE_FUNCTION();
         if (m_ViewportFocused)
 			m_CameraController.Update();
 
@@ -41,7 +43,7 @@ namespace Letgen
 
         {
             m_Framebuffer->Bind();
-            LE_PROFILE_SCOPE("Renderer Begin");
+            LET_PROFILE_SCOPE("Renderer Begin");
             Renderer2D::BeginScene(m_CameraController.GetCamera());
         }
 
@@ -49,18 +51,18 @@ namespace Letgen
             static float rotation = 0;
             rotation += 45.0f * Time::GetDeltaTime();
 
-            LE_PROFILE_SCOPE("Renderer Draw");
-            for (float i = -5.0f; i < 5.0f; i += 0.5f)
+            LET_PROFILE_SCOPE("Renderer Draw");
+           /* for (float i = -5.0f; i < 5.0f; i += 0.5f)
                 for (float j = -5.0f; j < 5.0f; j += 0.5f)
                 {
                     glm::vec4 c{ (i + 3.0f) / 6.0f, (i + 5.0f) / 10.0f, (i + 10.0f) / 15.0f, 1.0f };
                     Renderer2D::DrawQuad({
                                              {i, j},0.0f,{0.45f, 0.45f} },
                                              c);
-                }
+                }*/
         }
         {
-            LE_PROFILE_SCOPE("Renderer End");
+            LET_PROFILE_SCOPE("Renderer End");
             Renderer2D::EndScene();
             m_Framebuffer->Unbind();
         }
@@ -73,7 +75,7 @@ namespace Letgen
 
     void EditorLayer::OnImGuiRender()
     {
-        LE_PROFILE_FUNCTION();
+        LET_PROFILE_FUNCTION();
 
         static bool open = true;
         static bool opt_fullscreen = true;

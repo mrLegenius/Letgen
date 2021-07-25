@@ -47,7 +47,7 @@ namespace Letgen
 	
 	void Renderer2D::Init()
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 		
 		s_Data = new Renderer2DData;
 		auto& data = *s_Data;
@@ -109,7 +109,7 @@ namespace Letgen
 
 	void Renderer2D::BeginScene(const OrthographicCamera& camera)
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 
 		s_Data->ultimateShader->Bind();
 		s_Data->ultimateShader->SetMatrix4("u_Projection", camera.GetProjectionMatrix());
@@ -124,7 +124,7 @@ namespace Letgen
 	
 	void Renderer2D::EndScene()
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 
 		Flush();
 	}
@@ -186,7 +186,7 @@ namespace Letgen
 
 	void Renderer2D::Draw(const Transform2D& transform, const glm::vec4& color, const Ref<Texture2D>& texture, const float tiling)
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 
 		AddQuadToVertexBuffer(transform.GetModel(), color, texture);
 
@@ -201,7 +201,7 @@ namespace Letgen
 
 	void Renderer2D::AddQuadToVertexBuffer(const glm::mat4& model, const glm::vec4& color, const Ref<Texture2D>& texture)
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 		
 		if (s_Data->quadIndexCount >= Renderer2DData::maxIndices)
 			NextBatch();

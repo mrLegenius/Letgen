@@ -5,7 +5,7 @@
 
 void Letgen::OpenGLRendererAPI::Init()
 {
-	LE_PROFILE_FUNCTION();
+	LET_PROFILE_FUNCTION();
 	
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -15,21 +15,21 @@ void Letgen::OpenGLRendererAPI::Init()
 
 void Letgen::OpenGLRendererAPI::SetClearColor(const glm::vec4& color)
 {
-	LE_PROFILE_FUNCTION();
+	LET_PROFILE_FUNCTION();
 	
 	glClearColor(color.r, color.g, color.b, color.a);
 }
 
 void Letgen::OpenGLRendererAPI::Clear()
 {
-	LE_PROFILE_FUNCTION();
+	LET_PROFILE_FUNCTION();
 	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void Letgen::OpenGLRendererAPI::DrawIndexed(const Ref<VertexArray>& vertexArray, const uint32_t indexCount)
 {
-	LE_PROFILE_FUNCTION();
+	LET_PROFILE_FUNCTION();
 	
 	const uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount();
 	glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
@@ -37,7 +37,7 @@ void Letgen::OpenGLRendererAPI::DrawIndexed(const Ref<VertexArray>& vertexArray,
 
 void Letgen::OpenGLRendererAPI::SetViewport(const int x, const int y, const uint32_t width, const uint32_t height)
 {
-	LE_PROFILE_FUNCTION();
+	LET_PROFILE_FUNCTION();
 	
 	glViewport(x, y, width, height);
 }

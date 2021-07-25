@@ -14,7 +14,7 @@ namespace Letgen
 
 	void OrthographicCameraController::Update()
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 		
 		const auto deltaTime = Time::GetDeltaTime();
 
@@ -64,16 +64,16 @@ namespace Letgen
 
 	void OrthographicCameraController::OnEvent(Event& event)
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 		
 		EventDispatcher dispatcher(event);
-		dispatcher.Dispatch<MouseScrolledEvent>(LE_BIND_EVENT_FN(OrthographicCameraController::OnMouseScrolled));
-		dispatcher.Dispatch<WindowResizedEvent>(LE_BIND_EVENT_FN(OrthographicCameraController::OnWindowResized));
+		dispatcher.Dispatch<MouseScrolledEvent>(LET_BIND_EVENT_FN(OrthographicCameraController::OnMouseScrolled));
+		dispatcher.Dispatch<WindowResizedEvent>(LET_BIND_EVENT_FN(OrthographicCameraController::OnWindowResized));
 	}
 
 	bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& e)
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 		
 		m_Zoom += e.GetYOffset() * 0.25f;
 
@@ -85,7 +85,7 @@ namespace Letgen
 
 	bool OrthographicCameraController::OnWindowResized(WindowResizedEvent& e)
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 		
 		const auto aspectRatio = static_cast<float>(e.GetWidth()) / static_cast<float>(e.GetHeight());
 

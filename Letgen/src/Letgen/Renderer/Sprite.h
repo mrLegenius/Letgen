@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "Texture.h"
-#include "Letgen/Components/Transform2D.h"
+#include "Letgen/Scene/Components/Transform2D.h"
 
 namespace Letgen
 {

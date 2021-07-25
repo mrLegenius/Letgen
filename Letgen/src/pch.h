@@ -18,6 +18,6 @@
 
 #include "Letgen/Debug/Instrumentor.h"
 
-#ifdef LE_PLATFORM_WINDOWS
+#ifdef LET_PLATFORM_WINDOWS
 	#include <Windows.h>
 #endif

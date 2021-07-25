@@ -7,7 +7,7 @@ Sandbox2D::Sandbox2D() : Layer("Sandbox2D") { }
 
 void Sandbox2D::OnAttach()
 {
-	LE_PROFILE_FUNCTION();
+	LET_PROFILE_FUNCTION();
 	
 	m_Sprite = std::make_shared<Letgen::Sprite>("assets/textures/love.jpg");
 
@@ -20,13 +20,13 @@ void Sandbox2D::OnAttach()
 
 void Sandbox2D::OnDetach()
 {
-	LE_PROFILE_FUNCTION();
+	LET_PROFILE_FUNCTION();
 	
 }
 
 void Sandbox2D::OnUpdate()
 {
-	LE_PROFILE_FUNCTION();
+	LET_PROFILE_FUNCTION();
 
 	m_CameraController.Update();
 
@@ -34,7 +34,7 @@ void Sandbox2D::OnUpdate()
 
 	{
         m_Framebuffer->Bind();
-		LE_PROFILE_SCOPE("Renderer Begin");
+		LET_PROFILE_SCOPE("Renderer Begin");
 		Letgen::Renderer2D::BeginScene(m_CameraController.GetCamera());
 	}
 
@@ -42,7 +42,7 @@ void Sandbox2D::OnUpdate()
 		static float rotation = 0;
 		rotation += 45.0f * Letgen::Time::GetDeltaTime();
 
-		LE_PROFILE_SCOPE("Renderer Draw");
+		LET_PROFILE_SCOPE("Renderer Draw");
 		for (float i = -5.0f; i < 5.0f; i  += 0.5f)
 			for (float j = -5.0f; j < 5.0f; j += 0.5f)
 			{
@@ -53,7 +53,7 @@ void Sandbox2D::OnUpdate()
 			}
 	}
 	{
-		LE_PROFILE_SCOPE("Renderer End");
+		LET_PROFILE_SCOPE("Renderer End");
 		Letgen::Renderer2D::EndScene();
 		m_Framebuffer->Unbind();
 	}
@@ -66,7 +66,7 @@ void Sandbox2D::OnEvent(Letgen::Event& event)
 
 void Sandbox2D::OnImGuiRender()
 {
-	LE_PROFILE_FUNCTION();
+	LET_PROFILE_FUNCTION();
 
 
     static bool open = true;

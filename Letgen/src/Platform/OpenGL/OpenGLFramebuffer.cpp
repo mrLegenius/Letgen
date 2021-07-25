@@ -76,7 +76,7 @@ namespace Letgen
 			0
 		);
 
-		LE_CORE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!")
+		LET_CORE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!")
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}

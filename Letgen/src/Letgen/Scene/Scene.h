@@ -1,16 +1,21 @@
 #pragma once
-#include "entt.hpp"
+#include <entt.hpp>
+
 namespace Letgen
 {
+	class Entity;
 	class Scene
 	{
 	public:
-		Scene();
-		~Scene();
+		Scene() = default;
+		~Scene() = default;
 
 		void OnUpdate();
-		entt::entity CreateEntity();
+
+		Entity CreateEntity(const std::string& name = "Entity");
 	private:
 		entt::registry m_Registry;
+
+		friend class Entity;
 	};
 }

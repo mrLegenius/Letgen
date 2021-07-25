@@ -202,39 +202,39 @@ namespace Letgen {
 	}
 }
 
-#define LE_PROFILE 0
-#if LE_PROFILE
+#define LET_PROFILE 0
+#if LET_PROFILE
 // Resolve which function signature macro will be used. Note that this only
 // is resolved when the (pre)compiler starts, so the syntax highlighting
 // could mark the wrong one in your editor!
 #if defined(__GNUC__) || (defined(__MWERKS__) && (__MWERKS__ >= 0x3000)) || (defined(__ICC) && (__ICC >= 600)) || defined(__ghs__)
-#define LE_FUNC_SIG __PRETTY_FUNCTION__
+#define LET_FUNC_SIG __PRETTY_FUNCTION__
 #elif defined(__DMC__) && (__DMC__ >= 0x810)
-#define LE_FUNC_SIG __PRETTY_FUNCTION__
+#define LET_FUNC_SIG __PRETTY_FUNCTION__
 #elif (defined(__FUNCSIG__) || (_MSC_VER))
-#define LE_FUNC_SIG __FUNCSIG__
+#define LET_FUNC_SIG __FUNCSIG__
 #elif (defined(__INTEL_COMPILER) && (__INTEL_COMPILER >= 600)) || (defined(__IBMCPP__) && (__IBMCPP__ >= 500))
-#define LE_FUNC_SIG __FUNCTION__
+#define LET_FUNC_SIG __FUNCTION__
 #elif defined(__BORLANDC__) && (__BORLANDC__ >= 0x550)
-#define LE_FUNC_SIG __FUNC__
+#define LET_FUNC_SIG __FUNC__
 #elif defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901)
-#define LE_FUNC_SIG __func__
+#define LET_FUNC_SIG __func__
 #elif defined(__cplusplus) && (__cplusplus >= 201103)
-#define LE_FUNC_SIG __func__
+#define LET_FUNC_SIG __func__
 #else
-#define LE_FUNC_SIG "LE_FUNC_SIG unknown!"
+#define LET_FUNC_SIG "LE_FUNC_SIG unknown!"
 #endif
 
-#define LE_PROFILE_BEGIN_SESSION(name, filepath) ::Letgen::Instrumentor::Get().BeginSession(name, filepath)
-#define LE_PROFILE_END_SESSION() ::Letgen::Instrumentor::Get().EndSession()
-#define LE_PROFILE_SCOPE_LINE2(name, line) constexpr auto fixedName##line = ::Letgen::InstrumentorUtils::CleanupOutputString(name, "__cdecl ");\
+#define LET_PROFILE_BEGIN_SESSION(name, filepath) ::Letgen::Instrumentor::Get().BeginSession(name, filepath)
+#define LET_PROFILE_END_SESSION() ::Letgen::Instrumentor::Get().EndSession()
+#define LET_PROFILE_SCOPE_LINE2(name, line) constexpr auto fixedName##line = ::Letgen::InstrumentorUtils::CleanupOutputString(name, "__cdecl ");\
 											   ::Letgen::InstrumentationTimer timer##line(fixedName##line.Data)
-#define LE_PROFILE_SCOPE_LINE(name, line) LE_PROFILE_SCOPE_LINE2(name, line)
-#define LE_PROFILE_SCOPE(name) LE_PROFILE_SCOPE_LINE(name, __LINE__)
-#define LE_PROFILE_FUNCTION() LE_PROFILE_SCOPE(LE_FUNC_SIG)
+#define LET_PROFILE_SCOPE_LINE(name, line) LET_PROFILE_SCOPE_LINE2(name, line)
+#define LET_PROFILE_SCOPE(name) LET_PROFILE_SCOPE_LINE(name, __LINE__)
+#define LET_PROFILE_FUNCTION() LET_PROFILE_SCOPE(LE_FUNC_SIG)
 #else
-#define LE_PROFILE_BEGIN_SESSION(name, filepath)
-#define LE_PROFILE_END_SESSION()
-#define LE_PROFILE_SCOPE(name)
-#define LE_PROFILE_FUNCTION()
+#define LET_PROFILE_BEGIN_SESSION(name, filepath)
+#define LET_PROFILE_END_SESSION()
+#define LET_PROFILE_SCOPE(name)
+#define LET_PROFILE_FUNCTION()
 #endif

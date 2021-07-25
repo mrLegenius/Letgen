@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "Sprite.h"
 #include "Camera/OrthographicCamera.h"
-#include "Letgen/Components/Transform2D.h"
+#include "Letgen/Scene/Components/Transform2D.h"
 
 namespace Letgen
 {

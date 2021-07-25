@@ -8,7 +8,7 @@ namespace Letgen
 {
 	void Renderer::Init()
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 		
 		RenderCommand::Init();
 		Renderer2D::Init();

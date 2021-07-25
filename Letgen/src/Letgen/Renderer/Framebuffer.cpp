@@ -12,13 +12,13 @@ namespace Letgen
 		switch (Renderer::GetAPI()) {
 
 		case RendererAPI::API::None:
-			LE_CORE_ASSERT(false, "None for API was chosen");
+			LET_CORE_ASSERT(false, "None for API was chosen");
 			return nullptr;
 		case RendererAPI::API::OpenGL:
 			return CreateRef<OpenGLFramebuffer>(spec);
 		}
 
-		LE_CORE_ASSERT(false, "Unknown Renderer API");
+		LET_CORE_ASSERT(false, "Unknown Renderer API");
 		return nullptr;
 	}
 }

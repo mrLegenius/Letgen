@@ -8,17 +8,30 @@
 #include "Letgen/Core/Layer.h"
 #include "Letgen/Core/Logger.h"
 
+// -- GUI --------------------------------------------------
+
+#include "Letgen/GUI/ImGuiLayer.h"
+
+// -- Time -------------------------------------------------
+
 #include "Letgen/Core/Timestep.h"
 #include "Letgen/Core/Time.h"
+
+// -- Input ------------------------------------------------
 
 #include "Letgen/Input/Input.h"
 #include "Letgen/Input/KeyCodes.h"
 #include "Letgen/Input/MouseButtonCodes.h"
 
-#include "Letgen/GUI/ImGuiLayer.h"
+// -- ECS --------------------------------------------------
 
 #include "Letgen/Scene/Scene.h"
+#include "Letgen/Scene/Entity.h"
 #include "Letgen/Scene/Component.h"
+
+#include "Letgen/Scene/Components/Transform.h"
+#include "Letgen/Scene/Components/Transform2D.h"
+#include "Letgen/Scene/Components/CameraControllers/OrthographicCameraController.h"
 
 // /////////////////////////////////////////////////////////
 // -- Renderer ---------------------------------------------
@@ -43,6 +56,3 @@
 // -- Components -------------------------------------------
 // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-#include "Letgen/Components/Transform.h"
-#include "Letgen/Components/Transform2D.h"
-#include "Letgen/Components/CameraControllers/OrthographicCameraController.h"

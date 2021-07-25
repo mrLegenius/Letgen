@@ -18,13 +18,13 @@ namespace Letgen
 	private:
 		void DrawViewport();
 		OrthographicCameraController m_CameraController { 1280.0f / 720.0f , true };
-		Ref<Framebuffer> m_Framebuffer;
+		Ref<Framebuffer> m_Framebuffer = nullptr;
 
-		Ref<Scene> m_ActiveScene;
+		Ref<Scene> m_ActiveScene = nullptr;
 		
-		glm::vec2 m_ViewportSize { 0.0f};
+		glm::vec2 m_ViewportSize { 0.0f };
 
-		bool m_ViewportFocused;
-		bool m_ViewportHovered;
+		bool m_ViewportFocused = false;
+		bool m_ViewportHovered = false;
 	};
 }

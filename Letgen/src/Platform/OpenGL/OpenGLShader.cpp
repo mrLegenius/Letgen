@@ -16,13 +16,13 @@ namespace Letgen
 		if (type == "fragment" || type == "pixel")
 			return GL_FRAGMENT_SHADER;
 
-		LE_CORE_ASSERT(false, "Unknown shader type '{1}'", type)
+		LET_CORE_ASSERT(false, "Unknown shader type '{1}'", type)
 		return 0;
 	}
 	
 	OpenGLShader::OpenGLShader(const std::string& filepath) : m_FilePath(filepath)
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 		
 		const std::string source = ReadFile(filepath);
 		const auto shaderSources = Preprocess(source);
@@ -38,92 +38,92 @@ namespace Letgen
 
 	OpenGLShader::~OpenGLShader()
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 		
 		glDeleteProgram(m_RendererID);
 	}
 
 	void OpenGLShader::Bind() const
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 		
 		glUseProgram(m_RendererID);
 	}
 	void OpenGLShader::Unbind() const
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 		
 		glUseProgram(0);
 	}
 
 	void OpenGLShader::SetBool(const std::string& name, const bool value)
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 		
 		glUniform1i(GetUniformLocation(name), static_cast<int>(value));
 	}
 	void OpenGLShader::SetInt(const std::string& name, const int value)
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 		
 		glUniform1i(GetUniformLocation(name), value);
 	}
 
 	void OpenGLShader::SetIntArray(const std::string& name, int* array, uint32_t count)
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 		
 		glUniform1iv(GetUniformLocation(name), count, array);
 	}
 
 	void OpenGLShader::SetFloat(const std::string& name, const float value)
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 		
 		glUniform1f(GetUniformLocation(name), value);
 	}
 
 	void OpenGLShader::SetFloat2(const std::string& name, const glm::vec2& vector)
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 		
 		glUniform2fv(GetUniformLocation(name), 1, &vector[0]);
 	}
 	void OpenGLShader::SetFloat3(const std::string& name, const glm::vec3& vector)
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 		
 		glUniform3fv(GetUniformLocation(name), 1, &vector[0]);
 	}
 	void OpenGLShader::SetFloat4(const std::string& name, const glm::vec4& vector)
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 		
 		glUniform4fv(GetUniformLocation(name), 1, &vector[0]);
 	}
 	
 	void OpenGLShader::SetMatrix2(const std::string& name, const glm::mat2& matrix)
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 		
 		glUniformMatrix2fv(GetUniformLocation(name), 1, GL_FALSE, value_ptr(matrix));
 	}
 	void OpenGLShader::SetMatrix3(const std::string& name, const glm::mat3& matrix)
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 		
 		glUniformMatrix3fv(GetUniformLocation(name), 1, GL_FALSE, value_ptr(matrix));
 	}
 	void OpenGLShader::SetMatrix4(const std::string& name, const glm::mat4& matrix)
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 		
 		glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, value_ptr(matrix));
 	}
 
 	std::string OpenGLShader::ReadFile(const std::string& filepath) const
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 		
 		std::string result;
 		std::ifstream in(filepath, std::ios::in | std::ios::binary);
@@ -145,7 +145,7 @@ namespace Letgen
 
 	std::unordered_map<GLenum, std::string> OpenGLShader::Preprocess(const std::string& source) const
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 		
 		std::unordered_map<GLenum, std::string> shaderSources;
 
@@ -155,10 +155,10 @@ namespace Letgen
 		while(pos != std::string::npos)
 		{
 			const size_t eol = source.find_first_of("\r\n", pos);
-			LE_CORE_ASSERT(eol != std::string::npos, "Syntax error")
+			LET_CORE_ASSERT(eol != std::string::npos, "Syntax error")
 			const size_t begin = pos + typeTokenLength + 1;
 			std::string type = source.substr(begin, eol - begin);
-			LE_CORE_ASSERT(ShaderTypeFromString(type), "Unkown shader type!")
+			LET_CORE_ASSERT(ShaderTypeFromString(type), "Unkown shader type!")
 			
 			const size_t nextLinePos = source.find_first_not_of("\r\n", eol);
 			pos = source.find(typeToken, nextLinePos);
@@ -171,10 +171,10 @@ namespace Letgen
 
 	void OpenGLShader::Compile(const std::unordered_map<GLenum, std::string>& shaderSources)
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 		
 		const int maxNumberOfShaders = 3;
-		LE_CORE_ASSERT(shaderSources.size() <= maxNumberOfShaders, "Only supports {0} of shader so far!", maxNumberOfShaders)
+		LET_CORE_ASSERT(shaderSources.size() <= maxNumberOfShaders, "Only supports {0} of shader so far!", maxNumberOfShaders)
 
 		const auto program = glCreateProgram();
 		
@@ -201,7 +201,7 @@ namespace Letgen
 				
 				Log::CoreError("Failed to compile {0}", type == GL_VERTEX_SHADER ? "vertex" : "fragment");
 				Log::CoreError(message);
-				LE_CORE_ASSERT(false)
+				LET_CORE_ASSERT(false)
 				
 				glDeleteShader(shader);
 				return;
@@ -230,7 +230,7 @@ namespace Letgen
 			}
 			
 			Log::CoreError(message);
-			LE_CORE_ASSERT(false, "Shader link failure!")
+			LET_CORE_ASSERT(false, "Shader link failure!")
 			
 			return;
 		}
@@ -246,7 +246,7 @@ namespace Letgen
 
 	int OpenGLShader::GetUniformLocation(const std::string& name)
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 		
 		if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end())
 			return m_UniformLocationCache[name];

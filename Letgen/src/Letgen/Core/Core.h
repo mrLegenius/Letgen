@@ -2,9 +2,9 @@
 
 #include <memory>
 
-#ifdef LE_PLATFORM_WINDOWS
-	#ifdef LE_DYNAMIC_LINK
-		#ifdef LE_BUILD_DLL
+#ifdef LET_PLATFORM_WINDOWS
+	#ifdef LET_DYNAMIC_LINK
+		#ifdef LET_BUILD_DLL
 			#define LETGEN_API __declspec(dllexport)
 		#else
 			#define LETGEN_API __declspec(dllimport)
@@ -16,7 +16,7 @@
 	#error Only supports Windows so far!
 #endif
 
-#define LE_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
+#define LET_BIND_EVENT_FN(fn) [this](auto&&... args) -> decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...); }
 
 constexpr int Bit(const int offset) { return 1 << offset; }
 

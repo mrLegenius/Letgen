@@ -14,7 +14,7 @@ namespace Letgen
 
 	glm::mat4 Transform2D::GetModel() const
 	{
-		LE_PROFILE_FUNCTION();
+		LET_PROFILE_FUNCTION();
 
 		auto model = translate(glm::mat4(1.0f), glm::vec3(position, 0.0f));
 		if (glm::abs(angle) > 0.000001f)
