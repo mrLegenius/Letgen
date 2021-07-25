@@ -1,4 +1,5 @@
 #pragma once
+#include "ScriptableEntity.h"
 #include "glm/glm.hpp"
 #include "Letgen/Renderer/Camera/SceneCamera.h"
 
@@ -48,5 +49,20 @@ namespace Letgen
 
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent&) = default;
+	};
+
+	struct NativeScriptComponent
+	{
+		ScriptableEntity* instance = nullptr;
+
+		ScriptableEntity* (*InstantiateScript)() = nullptr;
+		void (*DestroyScript)(NativeScriptComponent*) = nullptr;
+
+		template<typename T>
+		void Bind()
+		{
+			InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
+			DestroyScript = [](NativeScriptComponent* nsc) { delete nsc->instance; nsc->instance = nullptr; };
+		}
 	};
 }

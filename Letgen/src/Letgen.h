@@ -27,6 +27,7 @@
 
 #include "Letgen/Scene/Scene.h"
 #include "Letgen/Scene/Entity.h"
+#include "Letgen/Scene/ScriptableEntity.h"
 #include "Letgen/Scene/Component.h"
 
 #include "Letgen/Scene/Components/Transform.h"

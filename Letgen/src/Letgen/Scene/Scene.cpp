@@ -10,6 +10,23 @@ namespace Letgen
 {
 	void Scene::OnUpdate()
 	{
+		
+		// Update scripts
+		{
+			m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
+			{
+				//TODO: Move to Scene::OnSceneStarted
+				if (!nsc.instance)
+				{
+					nsc.instance = nsc.InstantiateScript();
+					nsc.instance->m_Entity = Entity{ entity, this };
+					nsc.instance->OnCreate();
+				}
+
+				nsc.instance->OnUpdate();
+			});
+		}
+		
 		Camera* mainCamera = nullptr;
 		glm::mat4* cameraTransform = nullptr;
 		//Render Scene

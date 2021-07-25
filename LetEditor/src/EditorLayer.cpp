@@ -24,9 +24,34 @@ namespace Letgen
         m_SquareEntity.AddComponent<Transform2DComponent>();
         m_SquareEntity.AddComponent<SpriteComponent>(glm::vec4(1.0f, 0.3f, 0.2f, 1.0f));
 
-    	
         m_CameraEntity = m_ActiveScene->CreateEntity("Camera");
-    	m_CameraEntity.AddComponent<CameraComponent>();
+        m_CameraEntity.AddComponent<CameraComponent>();
+    	
+        class CameraController : public ScriptableEntity
+        {
+        public:
+            void OnUpdate() override
+            {
+                auto& translation = GetComponent<TransformComponent>().transform;
+
+                const float speed = 5.0f;
+                const float dt = Time::GetDeltaTime();
+
+                if (Input::IsKeyPressed(KeyCode::A))
+                    translation[3][0] -= speed * dt;
+                if (Input::IsKeyPressed(KeyCode::D))
+                    translation[3][0] += speed * dt;
+                if (Input::IsKeyPressed(KeyCode::W))
+                    translation[3][1] += speed * dt;
+                if (Input::IsKeyPressed(KeyCode::S))
+                    translation[3][1] -= speed * dt;
+            }
+        };
+
+        m_CameraEntity.AddScript<CameraController>();
+    	
+    	
+       
     }
 
     void EditorLayer::OnDetach()
