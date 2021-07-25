@@ -11,6 +11,7 @@ namespace Letgen
 
 		void SetContext(const Ref<Scene>& scene);
 		void DrawEntityNode(Entity entity);
+		void DrawComponents(Entity entity);
 
 		void OnImGuiRender();
 	private:
