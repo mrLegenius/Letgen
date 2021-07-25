@@ -121,6 +121,22 @@ namespace Letgen
 		RenderCommand::SetClearColor(glm::vec4(glm::vec3(gray), 1.0f));
 		RenderCommand::Clear();
 	}
+
+	void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform)
+	{
+		LET_PROFILE_FUNCTION();
+
+		s_Data->ultimateShader->Bind();
+		s_Data->ultimateShader->SetMatrix4("u_Projection", camera.GetProjection());
+		s_Data->ultimateShader->SetMatrix4("u_View", glm::inverse(transform));
+
+		StartBatch();
+
+		const float gray = 0.69f / 5;
+		RenderCommand::SetClearColor(glm::vec4(glm::vec3(gray), 1.0f));
+		RenderCommand::Clear();
+	}
+
 	
 	void Renderer2D::EndScene()
 	{
@@ -161,7 +177,7 @@ namespace Letgen
 		StartBatch();
 	}
 
-	void Renderer2D::DrawQuad(const Transform2D& transform, const glm::vec4& color)
+	void Renderer2D::DrawQuad(const Transform2DComponent& transform, const glm::vec4& color)
 	{
 		Draw(
 			transform,
@@ -179,12 +195,12 @@ namespace Letgen
 			1.0f);
 	}
 
-	void Renderer2D::DrawSprite(const Transform2D& transform, const Ref<Texture2D>& texture)
+	void Renderer2D::DrawSprite(const Transform2DComponent& transform, const Ref<Texture2D>& texture)
 	{
 		Draw(transform, glm::vec4(1.0f), texture, 10.0f);
 	}
 
-	void Renderer2D::Draw(const Transform2D& transform, const glm::vec4& color, const Ref<Texture2D>& texture, const float tiling)
+	void Renderer2D::Draw(const Transform2DComponent& transform, const glm::vec4& color, const Ref<Texture2D>& texture, const float tiling)
 	{
 		LET_PROFILE_FUNCTION();
 

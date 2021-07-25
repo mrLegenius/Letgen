@@ -30,7 +30,7 @@
 #include "Letgen/Scene/Component.h"
 
 #include "Letgen/Scene/Components/Transform.h"
-#include "Letgen/Scene/Components/Transform2D.h"
+#include "Letgen/Scene/Components/Transform2DComponent.h"
 #include "Letgen/Scene/Components/CameraControllers/OrthographicCameraController.h"
 
 // /////////////////////////////////////////////////////////

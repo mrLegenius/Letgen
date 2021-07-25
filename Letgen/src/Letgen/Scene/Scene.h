@@ -12,6 +12,8 @@ namespace Letgen
 
 		void OnUpdate();
 
+		void OnViewportResized(uint32_t width, uint32_t height);
+		
 		Entity CreateEntity(const std::string& name = "Entity");
 	private:
 		entt::registry m_Registry;

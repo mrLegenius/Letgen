@@ -2,6 +2,7 @@
 #include "EditorLayer.h"
 
 #include "ImGui/imgui.h"
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace Letgen
 {
@@ -19,10 +20,13 @@ namespace Letgen
 
         m_ActiveScene = CreateRef<Scene>();
 
-        auto square = m_ActiveScene->CreateEntity("Square");
+        m_SquareEntity = m_ActiveScene->CreateEntity("Square");
+        m_SquareEntity.AddComponent<Transform2DComponent>();
+        m_SquareEntity.AddComponent<SpriteComponent>(glm::vec4(1.0f, 0.3f, 0.2f, 1.0f));
+
     	
-        Log::Info("{0}", square.GetComponent<TagComponent>().tag);
-		
+        m_CameraEntity = m_ActiveScene->CreateEntity("Camera");
+    	m_CameraEntity.AddComponent<CameraComponent>();
     }
 
     void EditorLayer::OnDetach()
@@ -33,39 +37,29 @@ namespace Letgen
 
     void EditorLayer::OnUpdate()
     {
+        const auto width = static_cast<uint32_t>(m_ViewportSize.x);
+        const auto height = static_cast<uint32_t>(m_ViewportSize.y);
+
+        Renderer2D::ResetStats();
+    	
+        if(const FramebufferSpecification spec = m_Framebuffer->GetSpecification();
+            m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f &&
+            (spec.width != width || spec.height != height))
+        {
+            m_Framebuffer->Resize(width, height);
+            m_ActiveScene->OnViewportResized(width, height);
+        }
+    	
         LET_PROFILE_FUNCTION();
         if (m_ViewportFocused)
-			m_CameraController.Update();
+            m_CameraController.Update();
 
+        m_Framebuffer->Bind();
         m_ActiveScene->OnUpdate();
-    	
-        Renderer2D::ResetStats();
 
-        {
-            m_Framebuffer->Bind();
-            LET_PROFILE_SCOPE("Renderer Begin");
-            Renderer2D::BeginScene(m_CameraController.GetCamera());
-        }
-
-        {
-            static float rotation = 0;
-            rotation += 45.0f * Time::GetDeltaTime();
-
-            LET_PROFILE_SCOPE("Renderer Draw");
-           /* for (float i = -5.0f; i < 5.0f; i += 0.5f)
-                for (float j = -5.0f; j < 5.0f; j += 0.5f)
-                {
-                    glm::vec4 c{ (i + 3.0f) / 6.0f, (i + 5.0f) / 10.0f, (i + 10.0f) / 15.0f, 1.0f };
-                    Renderer2D::DrawQuad({
-                                             {i, j},0.0f,{0.45f, 0.45f} },
-                                             c);
-                }*/
-        }
-        {
-            LET_PROFILE_SCOPE("Renderer End");
-            Renderer2D::EndScene();
-            m_Framebuffer->Unbind();
-        }
+        //COOL GRADIENT COLOR
+        //glm::vec4 c{ (i + 3.0f) / 6.0f, (i + 5.0f) / 10.0f, (i + 10.0f) / 15.0f, 1.0f };
+        m_Framebuffer->Unbind();
     }
 
     void EditorLayer::OnEvent(Event& event)
@@ -77,6 +71,60 @@ namespace Letgen
     {
         LET_PROFILE_FUNCTION();
 
+        DrawDockSpace();
+        DrawViewport();	
+        DrawStatistics();
+    }
+
+    void EditorLayer::DrawViewport()
+    {
+        LET_PROFILE_FUNCTION();
+    	
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+        ImGui::Begin("Viewport");
+
+        m_ViewportFocused = ImGui::IsWindowFocused();
+        m_ViewportHovered = ImGui::IsWindowHovered();
+        Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
+    	
+        const ImVec2 viewportSize = ImGui::GetContentRegionAvail();
+
+        m_ViewportSize = { viewportSize.x, viewportSize.y };
+
+        const uint32_t textureId =
+            m_Framebuffer->GetColorAttachmentRendererID();
+
+        ImGui::Image(
+            (void*)textureId,
+            ImVec2(m_ViewportSize.x, m_ViewportSize.y),
+            ImVec2(0, 1),
+            ImVec2(1, 0)
+        );
+        ImGui::End();
+        ImGui::PopStyleVar();
+    }
+
+    void EditorLayer::DrawStatistics()
+    {
+        LET_PROFILE_FUNCTION();
+    	
+        ImGui::Begin("Statistics");
+
+        const auto stats = Renderer2D::GetStats();
+
+        ImGui::Text("Renderer2D Stats:");
+        ImGui::Text("Draw Calls: %d", stats.drawCalls);
+        ImGui::Text("Quads Count: %d", stats.quadCount);
+        ImGui::Text("Vertices Count: %d", stats.GetTotalVertexCount());
+        ImGui::Text("Indices Count: %d", stats.GetTotalIndexCount());
+
+        ImGui::End();
+    }
+
+    void EditorLayer::DrawDockSpace()
+    {
+        LET_PROFILE_FUNCTION();
+    	
         static bool open = true;
         static bool opt_fullscreen = true;
         static bool opt_padding = false;
@@ -134,7 +182,7 @@ namespace Letgen
             {
                 if (ImGui::MenuItem("Exit"))
                 {
-	                Application::Get().Close();
+                    Application::Get().Close();
                 }
 
                 ImGui::EndMenu();
@@ -144,51 +192,5 @@ namespace Letgen
         }
 
         ImGui::End();
-
-        DrawViewport();
-    	
-        ImGui::Begin("Statistics");
-
-        const auto stats = Renderer2D::GetStats();
-
-        ImGui::Text("Renderer2D Stats:");
-        ImGui::Text("Draw Calls: %d", stats.drawCalls);
-        ImGui::Text("Quads Count: %d", stats.quadCount);
-        ImGui::Text("Vertices Count: %d", stats.GetTotalVertexCount());
-        ImGui::Text("Indices Count: %d", stats.GetTotalIndexCount());
-
-        ImGui::End();
-
-    }
-
-    void EditorLayer::DrawViewport()
-    {
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-        ImGui::Begin("Viewport");
-
-        m_ViewportFocused = ImGui::IsWindowFocused();
-        m_ViewportHovered = ImGui::IsWindowHovered();
-        Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
-    	
-        const ImVec2 viewportSize = ImGui::GetContentRegionAvail();
-        if (m_ViewportSize != *(glm::vec2*)&viewportSize)
-        {
-            m_Framebuffer->Resize(static_cast<uint32_t>(viewportSize.x), static_cast<uint32_t>(viewportSize.y));
-            m_ViewportSize = { viewportSize.x, viewportSize.y };
-
-            m_CameraController.SetAspectRatio(viewportSize.x / viewportSize.y);
-        }
-
-        const uint32_t textureId =
-            m_Framebuffer->GetColorAttachmentRendererID();
-
-        ImGui::Image(
-            (void*)textureId,
-            ImVec2(m_ViewportSize.x, m_ViewportSize.y),
-            ImVec2(0, 1),
-            ImVec2(1, 0)
-        );
-        ImGui::End();
-        ImGui::PopStyleVar();
     }
 }

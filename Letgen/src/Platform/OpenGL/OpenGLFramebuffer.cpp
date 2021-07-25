@@ -7,6 +7,8 @@
 
 namespace Letgen
 {
+	static const uint32_t s_MaxFramebufferSize = 8192;
+	
 	OpenGLFramebuffer::OpenGLFramebuffer(const FramebufferSpecification& spec)
 		: m_Specification(spec)
 	{
@@ -82,7 +84,13 @@ namespace Letgen
 	}
 
 	void OpenGLFramebuffer::Resize(const uint32_t width, const uint32_t height)
-	{		
+	{
+		if (width == 0 || height == 0 || width > s_MaxFramebufferSize || height > s_MaxFramebufferSize)
+		{
+			Log::Warning("Attempted to rezize framebuffer to {0}, {1}", width, height);
+			return;
+		}
+		
 		m_Specification.width = width;
 		m_Specification.height = height;
 		Invalidate();
