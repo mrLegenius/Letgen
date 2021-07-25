@@ -64,6 +64,18 @@ namespace Letgen
 		_NODISCARD bool IsCreated() const { return m_EntityID != entt::null; }
 
 		operator bool() const { return IsCreated(); }
+		operator uint32_t() const { return static_cast<uint32_t>(m_EntityID); }
+
+
+		bool operator ==(const Entity& other) const
+		{
+			return m_EntityID == other.m_EntityID &&
+				m_Scene == other.m_Scene;
+		}
+		bool operator !=(const Entity& other) const
+		{
+			return !(*this == other);
+		}
 	private:
 		entt::entity m_EntityID{ entt::null };
 		Scene* m_Scene = nullptr;	

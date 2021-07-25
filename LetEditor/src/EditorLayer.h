@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Letgen.h"
+#include "EditorWindows/SceneHierarchyEditorWindow.h"
 
 namespace Letgen
 {
@@ -31,5 +32,7 @@ namespace Letgen
 
 		bool m_ViewportFocused = false;
 		bool m_ViewportHovered = false;
+
+		SceneHierarchyEditorWindow m_Hierarchy;
 	};
 }

@@ -37,21 +37,20 @@ namespace Letgen
                 const float speed = 5.0f;
                 const float dt = Time::GetDeltaTime();
 
-                if (Input::IsKeyPressed(KeyCode::A))
+                if (Input::IsKeyDown(KeyCode::A))
                     translation[3][0] -= speed * dt;
-                if (Input::IsKeyPressed(KeyCode::D))
+                if (Input::IsKeyDown(KeyCode::D))
                     translation[3][0] += speed * dt;
-                if (Input::IsKeyPressed(KeyCode::W))
+                if (Input::IsKeyDown(KeyCode::W))
                     translation[3][1] += speed * dt;
-                if (Input::IsKeyPressed(KeyCode::S))
+                if (Input::IsKeyDown(KeyCode::S))
                     translation[3][1] -= speed * dt;
             }
         };
 
         m_CameraEntity.AddScript<CameraController>();
-    	
-    	
-       
+
+        m_Hierarchy.SetContext(m_ActiveScene);
     }
 
     void EditorLayer::OnDetach()
@@ -99,6 +98,7 @@ namespace Letgen
         DrawDockSpace();
         DrawViewport();	
         DrawStatistics();
+        m_Hierarchy.OnImGuiRender();
     }
 
     void EditorLayer::DrawViewport()
