@@ -18,6 +18,15 @@ namespace Letgen
 		RecalculateProjection();
 	}
 
+	void SceneCamera::SetPerspective(const float fov, const float nearClip, const float farClip)
+	{
+		m_FieldOfView = fov;
+		m_PerspectiveNear = nearClip;
+		m_PerspectiveFar = farClip;
+
+		RecalculateProjection();
+	}
+
 	void SceneCamera::SetViewportSize(const uint32_t width, const uint32_t height)
 	{
 		m_AspectRatio = static_cast<float>(width) / static_cast<float>(height);
@@ -27,12 +36,19 @@ namespace Letgen
 
 	void SceneCamera::RecalculateProjection()
 	{
-		const float vertical = m_AspectRatio * m_OrthographicSize * 0.5f;
-		const float horizontal = m_OrthographicSize * 0.5f;
+		if(m_ProjectionType == ProjectionType::Orthographic)
+		{
+			const float vertical = m_AspectRatio * m_OrthographicSize * 0.5f;
+			const float horizontal = m_OrthographicSize * 0.5f;
 
-		m_Projection = glm::ortho(
-			-vertical, vertical,
-			-horizontal, horizontal,
-			m_OrthographicNear, m_OrthographicFar);
+			m_Projection = glm::ortho(
+				-vertical, vertical,
+				-horizontal, horizontal,
+				m_OrthographicNear, m_OrthographicFar);
+		}
+		else
+		{
+			m_Projection = glm::perspective(m_FieldOfView, m_AspectRatio, m_PerspectiveNear, m_PerspectiveFar);
+		}
 	}
 }

@@ -87,5 +87,18 @@ namespace Letgen
 				ImGui::TreePop();
 			}
 		}
+
+		if (entity.HasComponent<TransformComponent>())
+		{
+			if (ImGui::TreeNodeEx((void*)typeid(CameraComponent).hash_code(),
+				ImGuiTreeNodeFlags_DefaultOpen, "Camera"))
+			{
+				auto& camera = entity.GetComponent<CameraComponent>();
+
+				
+
+				ImGui::TreePop();
+			}
+		}
 	}
 }
