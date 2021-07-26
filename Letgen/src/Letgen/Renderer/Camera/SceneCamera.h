@@ -12,6 +12,9 @@ namespace Letgen
 		SceneCamera();
 		~SceneCamera() override = default;
 		void SetViewportSize(uint32_t width, uint32_t height);
+		
+		void SetProjectionType(const ProjectionType type) { m_ProjectionType = type; RecalculateProjection(); }
+		_NODISCARD ProjectionType GetProjectionType() const { return m_ProjectionType; }
 	private:
 		void RecalculateProjection();
 

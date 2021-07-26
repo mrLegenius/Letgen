@@ -88,13 +88,65 @@ namespace Letgen
 			}
 		}
 
-		if (entity.HasComponent<TransformComponent>())
+		if (entity.HasComponent<CameraComponent>())
 		{
 			if (ImGui::TreeNodeEx((void*)typeid(CameraComponent).hash_code(),
 				ImGuiTreeNodeFlags_DefaultOpen, "Camera"))
 			{
-				auto& camera = entity.GetComponent<CameraComponent>();
+				auto& cc = entity.GetComponent<CameraComponent>();
 
+				ImGui::Checkbox("Main", &cc.isMain);
+				ImGui::Checkbox("Fixed aspect ratio", &cc.fixedAspectRatio);
+				const char* projectionTypeStrings[] = { "Perspective", "Orthographic" };
+				const char* currentProjectionTypeString = projectionTypeStrings[static_cast<int>(cc.camera.GetProjectionType())];
+				if(ImGui::BeginCombo("Projection", currentProjectionTypeString))
+				{
+					for (int i = 0; i < 2; i++)
+					{
+						const bool isSelected = currentProjectionTypeString == projectionTypeStrings[i];
+						if(ImGui::Selectable(projectionTypeStrings[i], isSelected))
+						{
+							currentProjectionTypeString = projectionTypeStrings[i];
+							cc.camera.SetProjectionType(static_cast<SceneCamera::ProjectionType>(i));
+						}
+
+						if(isSelected)
+						{
+							ImGui::SetItemDefaultFocus();
+						}
+					}
+					
+					ImGui::EndCombo();
+				}
+
+				if(cc.camera.GetProjectionType() == SceneCamera::ProjectionType::Orthographic)
+				{
+					float size = cc.camera.GetOrthographicSize();
+					if(ImGui::DragFloat("Orthographic size", &size))
+						cc.camera.SetOrthographicSize(size);
+
+					float nearClip = cc.camera.GetOrthographicNear();
+					if(ImGui::DragFloat("Near clip", &nearClip))
+						cc.camera.SetOrthographicNear(nearClip);
+
+					float farClip = cc.camera.GetOrthographicFar();
+					if(ImGui::DragFloat("Far clip", &farClip))
+						cc.camera.SetOrthographicFar(farClip);
+				}
+				else if (cc.camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective)
+				{
+					float fov = glm::degrees(cc.camera.GetFieldOfView());
+					ImGui::DragFloat("Field of View", &fov);
+					cc.camera.SetFieldOfView(glm::radians(fov));
+
+					float nearClip = cc.camera.GetPerspectiveNear();
+					ImGui::DragFloat("Near clip", &nearClip);
+					cc.camera.SetPerspectiveNear(nearClip);
+
+					float farClip = cc.camera.GetPerspectiveFar();
+					ImGui::DragFloat("Far clip", &farClip);
+					cc.camera.SetPerspectiveFar(farClip);
+				}
 				
 
 				ImGui::TreePop();
