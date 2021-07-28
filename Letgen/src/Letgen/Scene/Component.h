@@ -28,13 +28,14 @@ namespace Letgen
 		operator const glm::mat4& () const { return transform; }
 	};
 
-	struct SpriteComponent
+	struct SpriteRendererComponent
 	{
 		glm::vec4 color {1.0f};
+		std::string texture;
 
-		SpriteComponent() = default;
-		SpriteComponent(const SpriteComponent&) = default;
-		SpriteComponent(const glm::vec4& other)
+		SpriteRendererComponent() = default;
+		SpriteRendererComponent(const SpriteRendererComponent&) = default;
+		SpriteRendererComponent(const glm::vec4& other)
 			: color(other) { }
 
 		operator glm::vec4& () { return color; }

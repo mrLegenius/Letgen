@@ -48,10 +48,10 @@ namespace Letgen
 
 		Renderer2D::BeginScene(*mainCamera, *cameraTransform);
 
-		auto group = m_Registry.group<Transform2DComponent>(entt::get<SpriteComponent>);
+		auto group = m_Registry.group<Transform2DComponent>(entt::get<SpriteRendererComponent>);
 		for (auto entity : group)
 		{
-			auto& [transform, sprite] = group.get<Transform2DComponent, SpriteComponent>(entity);
+			auto& [transform, sprite] = group.get<Transform2DComponent, SpriteRendererComponent>(entity);
 
 			Renderer2D::DrawQuad(transform, sprite.color);
 		}

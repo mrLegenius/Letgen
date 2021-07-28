@@ -155,6 +155,8 @@ namespace Letgen
 	
 	void Renderer2D::Flush()
 	{
+		LET_PROFILE_FUNCTION();
+		
 		if(s_Data->quadIndexCount == 0)
 			return;
 
@@ -212,7 +214,6 @@ namespace Letgen
 		s_Data->quadVertexArray->Bind();
 		texture->Bind();
 		RenderCommand::DrawIndexed(s_Data->quadVertexArray);
-
 	}
 
 	void Renderer2D::AddQuadToVertexBuffer(const glm::mat4& model, const glm::vec4& color, const Ref<Texture2D>& texture)

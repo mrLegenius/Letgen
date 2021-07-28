@@ -22,7 +22,7 @@ namespace Letgen
 
         m_SquareEntity = m_ActiveScene->CreateEntity("Square");
         m_SquareEntity.AddComponent<Transform2DComponent>();
-        m_SquareEntity.AddComponent<SpriteComponent>(glm::vec4(1.0f, 0.3f, 0.2f, 1.0f));
+        m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4(1.0f, 0.3f, 0.2f, 1.0f));
 
         m_CameraEntity = m_ActiveScene->CreateEntity("Camera");
         m_CameraEntity.AddComponent<CameraComponent>();

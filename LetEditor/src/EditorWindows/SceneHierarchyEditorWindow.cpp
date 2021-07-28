@@ -148,7 +148,28 @@ namespace Letgen
 					cc.camera.SetPerspectiveFar(farClip);
 				}
 				
+				ImGui::TreePop();
+			}
+		}
 
+		if (entity.HasComponent<SpriteRendererComponent>())
+		{
+			if (ImGui::TreeNodeEx((void*)typeid(SpriteRendererComponent).hash_code(),
+				ImGuiTreeNodeFlags_DefaultOpen, "Sprite Renderer"))
+			{
+				auto& spriteRenderer = entity.GetComponent<SpriteRendererComponent>();
+
+				ImGui::ColorEdit4("Color", value_ptr(spriteRenderer.color));
+
+				char buffer[256];
+				memset(buffer, 0, sizeof buffer);
+				strcpy_s(buffer, sizeof buffer, spriteRenderer.texture.c_str());
+
+				if (ImGui::InputText("Texture", buffer, sizeof buffer))
+				{
+					spriteRenderer.texture = std::string(buffer);
+				}
+				
 				ImGui::TreePop();
 			}
 		}
