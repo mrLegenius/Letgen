@@ -17,7 +17,6 @@ namespace Letgen
 	}
 
 
-
 	void SceneHierarchyEditorWindow::OnImGuiRender()
 	{
 		ImGui::Begin("Scene Hierarchy");
@@ -31,12 +30,44 @@ namespace Letgen
 		if (ImGui::IsWindowHovered() && ImGui::IsMouseDown(0))
 			m_SelectionContext = {};
 
+		//Right click on a blank space
+		if (ImGui::BeginPopupContextWindow(nullptr, 1, false))
+		{
+			if (ImGui::MenuItem("Create New Entity"))
+				m_Context->CreateEntity("New Entity");
+
+			ImGui::EndPopup();
+		}
+		
 		ImGui::End();
 
 		ImGui::Begin("Properties");
 
 		if (m_SelectionContext)
+		{
 			DrawComponents(m_SelectionContext);
+
+			if (ImGui::Button("Add Component"))
+				ImGui::OpenPopup("AddComponent");
+
+			if(ImGui::BeginPopup("AddComponent"))
+			{
+				if(ImGui::MenuItem("Camera"))
+				{
+					m_SelectionContext.AddComponent<CameraComponent>();
+					ImGui::CloseCurrentPopup();
+				}
+
+				if (ImGui::MenuItem("Sprite Renderer"))
+				{
+					m_SelectionContext.AddComponent<SpriteRendererComponent>();
+					ImGui::CloseCurrentPopup();
+				}
+				
+				ImGui::EndPopup();
+			}
+		}
+			
 
 		ImGui::End();
 	}
@@ -56,9 +87,27 @@ namespace Letgen
 			m_SelectionContext = entity;
 		}
 
-		if (!opened) return;
+		bool entityDeleted = false;
+		if (ImGui::BeginPopupContextItem())
+		{
+			if (ImGui::MenuItem("Delete Entity"))
+				entityDeleted = true;
 
-		ImGui::TreePop();
+			ImGui::EndPopup();
+		}
+
+		if (opened)
+		{
+			ImGui::TreePop();
+		}
+
+		if (entityDeleted)
+		{
+			m_Context->DestroyEntity(entity);
+			if (m_SelectionContext == entity)
+				m_SelectionContext = { };
+		}
+
 	}
 
 	static void DrawVector3Control(const std::string& label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 100.0f)
@@ -143,10 +192,15 @@ namespace Letgen
 			}
 		}
 
+		const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen
+			| ImGuiTreeNodeFlags_AllowItemOverlap;
+		
 		if (entity.HasComponent<TransformComponent>())
 		{
-			if (ImGui::TreeNodeEx((void*)typeid(TransformComponent).hash_code(),
-				ImGuiTreeNodeFlags_DefaultOpen,"Transform"))
+			const bool opened = ImGui::TreeNodeEx((void*)typeid(TransformComponent).hash_code(),
+				treeNodeFlags, "Transform");
+			
+			if (opened)
 			{
 				auto& transform = entity.GetComponent<TransformComponent>();
 				DrawVector3Control("Position", transform.position);
@@ -164,7 +218,7 @@ namespace Letgen
 		if (entity.HasComponent<CameraComponent>())
 		{
 			if (ImGui::TreeNodeEx((void*)typeid(CameraComponent).hash_code(),
-				ImGuiTreeNodeFlags_DefaultOpen, "Camera"))
+				treeNodeFlags, "Camera"))
 			{
 				auto& cc = entity.GetComponent<CameraComponent>();
 
@@ -227,8 +281,33 @@ namespace Letgen
 
 		if (entity.HasComponent<SpriteRendererComponent>())
 		{
-			if (ImGui::TreeNodeEx((void*)typeid(SpriteRendererComponent).hash_code(),
-				ImGuiTreeNodeFlags_DefaultOpen, "Sprite Renderer"))
+			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 });
+			
+			const bool opened = ImGui::TreeNodeEx((void*)typeid(SpriteRendererComponent).hash_code(),
+				treeNodeFlags, "Sprite Renderer");
+			
+			ImGui::SameLine(ImGui::GetWindowWidth() - 45.0f);
+
+			if (ImGui::Button("...", ImVec2{25.0f, 20.0f}))
+			{
+				ImGui::OpenPopup("ComponentSettings");
+			}
+			ImGui::PopStyleVar();
+
+			bool removeComponent = false;
+			if (ImGui::BeginPopup("ComponentSettings"))
+			{
+				if (ImGui::MenuItem("Remove component"))
+				{
+					removeComponent = true;
+					ImGui::CloseCurrentPopup();
+				}
+
+
+				ImGui::EndPopup();
+			}
+			
+			if (opened)
 			{
 				auto& spriteRenderer = entity.GetComponent<SpriteRendererComponent>();
 
@@ -245,6 +324,9 @@ namespace Letgen
 				
 				ImGui::TreePop();
 			}
+
+			if (removeComponent)
+				entity.RemoveComponent<TransformComponent>();
 		}
 	}
 }

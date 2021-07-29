@@ -64,6 +64,9 @@ namespace Letgen
 
 	void Scene::OnViewportResized(const uint32_t width, const uint32_t height)
 	{
+		m_ViewportWidth = width;
+		m_ViewportHeight = height;
+		
 		auto view = m_Registry.view<CameraComponent>();
 		for (auto entity : view)
 		{
@@ -82,5 +85,38 @@ namespace Letgen
 		entity.AddComponent<TagComponent>(name);
 
 		return entity;
+	}
+
+	void Scene::DestroyEntity(const Entity entity)
+	{
+		m_Registry.destroy(entity);
+	}
+
+	template <typename T>
+	void Scene::OnComponentAdded(Entity entity, T& component)
+	{
+			
+	}
+
+	template <>
+	void Scene::OnComponentAdded<TagComponent>(Entity entity, TagComponent& component)
+	{
+	}
+	template <>
+	void Scene::OnComponentAdded<TransformComponent>(Entity entity, TransformComponent& component)
+	{
+	}
+	template <>
+	void Scene::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& component)
+	{
+		component.camera.SetViewportSize(m_ViewportWidth, m_ViewportHeight);
+	}
+	template <>
+	void Scene::OnComponentAdded<SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component)
+	{
+	}
+	template <>
+	void Scene::OnComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component)
+	{
 	}
 }
