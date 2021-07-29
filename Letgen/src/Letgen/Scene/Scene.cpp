@@ -28,35 +28,38 @@ namespace Letgen
 		}
 		
 		Camera* mainCamera = nullptr;
-		glm::mat4* cameraTransform = nullptr;
+		glm::mat4 cameraTransform;
 		//Render Scene
 		{
 			auto group = m_Registry.group<TransformComponent>(entt::get<CameraComponent>);
 			for (auto entity : group)
 			{
-				auto& [transform, camera] = group.get<TransformComponent, CameraComponent>(entity);
+				auto [transform, camera] = group.get<TransformComponent, CameraComponent>(entity);
 
 				if (camera.isMain)
 				{
 					mainCamera = &camera.camera;
-					cameraTransform = &transform.transform;
+					cameraTransform = transform.GetModel();
 					break;
 				}
 			}
 		}
-		if (!mainCamera) return;
-
-		Renderer2D::BeginScene(*mainCamera, *cameraTransform);
-
-		auto group = m_Registry.group<Transform2DComponent>(entt::get<SpriteRendererComponent>);
-		for (auto entity : group)
+		
+		if (mainCamera)
 		{
-			auto& [transform, sprite] = group.get<Transform2DComponent, SpriteRendererComponent>(entity);
+			Renderer2D::BeginScene(*mainCamera, cameraTransform);
 
-			Renderer2D::DrawQuad(transform, sprite.color);
+			auto view = m_Registry.view<TransformComponent, SpriteRendererComponent>();
+			for (auto entity : view)
+			{
+				auto [transform, sprite] = view.get<TransformComponent, SpriteRendererComponent>(entity);
+
+				Renderer2D::DrawQuad(transform.GetModel(), sprite.color);
+			}
+
+
+			Renderer2D::EndScene();
 		}
-
-		Renderer2D::EndScene();
 	}
 
 	void Scene::OnViewportResized(const uint32_t width, const uint32_t height)

@@ -1,9 +1,8 @@
 ﻿#pragma once
-#include "Sprite.h"
+#include "Texture.h"
 #include "Camera/Camera.h"
 #include "Camera/OrthographicCamera.h"
 #include "Letgen/Scene/Component.h"
-#include "Letgen/Scene/Components/Transform2DComponent.h"
 
 namespace Letgen
 {
@@ -19,9 +18,7 @@ namespace Letgen
 		
 		static void Flush();
 		
-		static void DrawQuad(const Transform2DComponent& transform, const glm::vec4& color);
-		static void DrawSprite(const Ref<Sprite>& sprite);
-		static void DrawSprite(const Transform2DComponent& transform, const Ref<Texture2D>& texture);
+		static void DrawQuad(const glm::mat4& transform, const glm::vec4& color);
 
 		struct Statistics
 		{
@@ -39,7 +36,7 @@ namespace Letgen
 		static void NextBatch();
 		static void StartBatch();
 		
-		static void Draw(const Transform2DComponent& transform, const glm::vec4& color, const Ref<Texture2D>& texture, float tiling);
+		static void Draw(const glm::mat4& transform, const glm::vec4& color, const Ref<Texture2D>& texture, float tiling);
 		static void AddQuadToVertexBuffer(const glm::mat4& model, const glm::vec4& color, const Ref<Texture2D>& texture);
 	};
 }

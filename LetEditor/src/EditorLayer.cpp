@@ -21,7 +21,6 @@ namespace Letgen
         m_ActiveScene = CreateRef<Scene>();
 
         m_SquareEntity = m_ActiveScene->CreateEntity("Square");
-        m_SquareEntity.AddComponent<Transform2DComponent>();
         m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4(1.0f, 0.3f, 0.2f, 1.0f));
 
         m_CameraEntity = m_ActiveScene->CreateEntity("Camera");
@@ -32,19 +31,19 @@ namespace Letgen
         public:
             void OnUpdate() override
             {
-                auto& translation = GetComponent<TransformComponent>().transform;
+                auto& translation = GetComponent<TransformComponent>().position;
 
                 const float speed = 5.0f;
                 const float dt = Time::GetDeltaTime();
 
                 if (Input::IsKeyDown(KeyCode::A))
-                    translation[3][0] -= speed * dt;
+                    translation.x -= speed * dt;
                 if (Input::IsKeyDown(KeyCode::D))
-                    translation[3][0] += speed * dt;
+                    translation.x += speed * dt;
                 if (Input::IsKeyDown(KeyCode::W))
-                    translation[3][1] += speed * dt;
+                    translation.y += speed * dt;
                 if (Input::IsKeyDown(KeyCode::S))
-                    translation[3][1] -= speed * dt;
+                    translation.y -= speed * dt;
             }
         };
 

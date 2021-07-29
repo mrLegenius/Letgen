@@ -30,8 +30,6 @@
 #include "Letgen/Scene/ScriptableEntity.h"
 #include "Letgen/Scene/Component.h"
 
-#include "Letgen/Scene/Components/Transform.h"
-#include "Letgen/Scene/Components/Transform2DComponent.h"
 #include "Letgen/Scene/Components/CameraControllers/OrthographicCameraController.h"
 
 // /////////////////////////////////////////////////////////
@@ -50,8 +48,6 @@
 #include "Letgen/Renderer/Texture.h"
 
 #include "Letgen/Renderer/Camera/OrthographicCamera.h"
-
-#include "Letgen/Renderer/Sprite.h"
 
 // /////////////////////////////////////////////////////////
 // -- Components -------------------------------------------

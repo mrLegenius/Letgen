@@ -179,7 +179,7 @@ namespace Letgen
 		StartBatch();
 	}
 
-	void Renderer2D::DrawQuad(const Transform2DComponent& transform, const glm::vec4& color)
+	void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color)
 	{
 		Draw(
 			transform,
@@ -188,25 +188,11 @@ namespace Letgen
 			1.0f);
 	}
 
-	void Renderer2D::DrawSprite(const Ref<Sprite>& sprite)
-	{
-		Draw(
-			*sprite->GetTransform(), 
-			glm::vec4(1.0f), 
-			sprite->GetTexture(), 
-			1.0f);
-	}
-
-	void Renderer2D::DrawSprite(const Transform2DComponent& transform, const Ref<Texture2D>& texture)
-	{
-		Draw(transform, glm::vec4(1.0f), texture, 10.0f);
-	}
-
-	void Renderer2D::Draw(const Transform2DComponent& transform, const glm::vec4& color, const Ref<Texture2D>& texture, const float tiling)
+	void Renderer2D::Draw(const glm::mat4& transform, const glm::vec4& color, const Ref<Texture2D>& texture, const float tiling)
 	{
 		LET_PROFILE_FUNCTION();
 
-		AddQuadToVertexBuffer(transform.GetModel(), color, texture);
+		AddQuadToVertexBuffer(transform, color, texture);
 
 		const auto& shader = s_Data->ultimateShader;
 		shader->SetFloat("u_TexTiling", tiling);
