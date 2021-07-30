@@ -14,6 +14,8 @@ namespace Letgen
 		void OnDetach() override;
 		void OnEvent(Event& event) override;
 		void OnImGuiRender() override;
+
+		void SetDarkThemeColors();
 		
 		void Begin();
 		void End();
