@@ -1,7 +1,11 @@
 #pragma once
 #include "ScriptableEntity.h"
+
 #include "glm/glm.hpp"
 #include "glm/ext/matrix_transform.hpp"
+#define GLM_ENABLE_EXPERIMENTAL
+#include "glm/gtx/quaternion.hpp"
+
 #include "Letgen/Renderer/Camera/SceneCamera.h"
 
 namespace Letgen
@@ -30,9 +34,7 @@ namespace Letgen
 		glm::mat4 GetModel() const
 		{
 			return glm::translate(glm::mat4(1.0f), position) *
-				glm::rotate(glm::mat4(1.0f), rotation.x, glm::vec3(1.0f, 0, 0)) *
-				glm::rotate(glm::mat4(1.0f), rotation.y, glm::vec3(0, 1.0f, 0)) *
-				glm::rotate(glm::mat4(1.0f), rotation.z, glm::vec3(0, 0, 1.0f)) *
+				glm::toMat4(glm::quat(rotation)) * 
 				glm::scale(glm::mat4(1.0f), scale);
 		}
 	};

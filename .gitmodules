@@ -13,3 +13,6 @@
 [submodule "Letgen/vendor/yaml-cpp"]
 	path = Letgen/vendor/yaml-cpp
 	url = https://github.com/mrLegenius/yaml-cpp
+[submodule "Letgen/vendor/ImGuizmo"]
+	path = Letgen/vendor/ImGuizmo
+	url = https://github.com/mrLegenius/ImGuizmo

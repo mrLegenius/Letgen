@@ -1,13 +1,17 @@
 #include "pch.h"
 #include "ImGuiLayer.h"
+
 #include "imgui.h"
 #include "Letgen/Core/Application.h"
 
 #include "backends/imgui_impl_opengl3.h"
 #include "backends/imgui_impl_glfw.h"
+#include "ImGuizmo.h"
 
 //TEMP
 #include <GLFW/glfw3.h>
+
+
 namespace Letgen
 {
 
@@ -114,6 +118,7 @@ namespace Letgen
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+		ImGuizmo::BeginFrame();	
 	}
 
 	void ImGuiLayer::End()

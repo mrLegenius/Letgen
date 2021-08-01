@@ -4,12 +4,12 @@ Entities:
     TagComponent:
       Tag: Camera
     TransformComponent:
-      Position: [-4.19999981, 0, 0]
+      Position: [0, 0, 8.80000019]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     CameraComponent:
       Camera:
-        ProjectionType: 1
+        ProjectionType: 0
         PerspectiveFOV: 0.785398185
         PerspectiveNear: 0.100000001
         PerspectiveFar: 1000
@@ -22,8 +22,8 @@ Entities:
     TagComponent:
       Tag: Square
     TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
+      Position: [0.217716172, 0.457634568, 0.150223985]
+      Rotation: [1.45385933, 1.27409029, 0]
       Scale: [1, 1, 1]
     SpriteRendererComponent:
       Color: [1, 0.300000012, 0.200000003, 1]

@@ -3,10 +3,13 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "glm/gtc/type_ptr.hpp"
 #include "ImGui/imgui.h"
+#include "ImGuizmo/ImGuizmo.h"
 
 #include "Letgen/Scene/SceneSerializer.h"
 #include "Letgen/Utils/PlatformUtils.h"
+#include "Letgen/Math/Math.h"
 
 namespace Letgen
 {
@@ -141,6 +144,27 @@ namespace Letgen
             if (control && shift) { SaveSceneAs(); }
             break;
         }
+        case KeyCode::Q:
+        {
+            m_GizmoType = -1;
+            break;
+        }
+        case KeyCode::W:
+        {
+            m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
+            break;
+        }
+        case KeyCode::E:
+        {
+            m_GizmoType = ImGuizmo::OPERATION::ROTATE;
+            break;
+        }
+        case KeyCode::R:
+        {
+            m_GizmoType = ImGuizmo::OPERATION::SCALE;
+            break;
+        } 
+	    	
 	    default:
             break;
 	    }
@@ -190,7 +214,7 @@ namespace Letgen
 
         m_ViewportFocused = ImGui::IsWindowFocused();
         m_ViewportHovered = ImGui::IsWindowHovered();
-        Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
+        Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused && !m_ViewportHovered);
     	
         const ImVec2 viewportSize = ImGui::GetContentRegionAvail();
 
@@ -205,6 +229,54 @@ namespace Letgen
             ImVec2(0, 1),
             ImVec2(1, 0)
         );
+
+        const bool snap = Input::IsKeyDown(KeyCode::LeftControl);
+        const float snapValue = m_GizmoType == ImGuizmo::OPERATION::ROTATE ? 5.0f : 0.5f;
+    	
+    	//Gizmos
+        Entity selectedEntity = m_Hierarchy.GetSelectedEntity();
+    	if (selectedEntity && m_GizmoType != -1)
+    	{
+            ImGuizmo::SetOrthographic(false);
+            ImGuizmo::SetDrawlist();
+            const auto windowPos = ImGui::GetWindowPos();
+            const auto windowSize = ImGui::GetWindowSize();
+    		
+            ImGuizmo::SetRect(windowPos.x, windowPos.y, windowSize.x, windowSize.y);
+
+    		//Camera
+            auto cameraEntity = m_ActiveScene->GetMainCameraEntity();
+            const auto& camera = cameraEntity.GetComponent<CameraComponent>().camera;
+            glm::mat4 cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetModel());
+            const glm::mat4& cameraProjection = camera.GetProjection();
+
+            float snapValues[3] = { snapValue, snapValue, snapValue };
+    		//Entity transform
+            auto& tc = selectedEntity.GetComponent<TransformComponent>();
+            glm::mat4 model = tc.GetModel();
+    		
+            ImGuizmo::Manipulate(glm::value_ptr(cameraView),
+                glm::value_ptr(cameraProjection),
+                static_cast<ImGuizmo::OPERATION>(m_GizmoType),
+                ImGuizmo::LOCAL,
+                glm::value_ptr(model),
+                nullptr,
+                snap ? snapValues : nullptr);
+
+    		if(ImGuizmo::IsUsing())
+    		{
+                glm::vec3 position, rotation, scale;
+                Math::DecomposeTransform(model, position, rotation, scale);
+    			
+                tc.position = position;
+    			
+                //Adding delta rotation to avoid Gimbal lock
+                tc.rotation += rotation - tc.rotation;
+
+                tc.scale = scale;
+    		}
+    	}
+    	
         ImGui::End();
         ImGui::PopStyleVar();
     }

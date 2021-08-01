@@ -20,6 +20,7 @@ IncludeDir["GLM"] = "Letgen/vendor/GLM"
 IncludeDir["stb_image"] = "Letgen/vendor/stb_image"
 IncludeDir["entt"] = "Letgen/vendor/entt/include"
 IncludeDir["yaml_cpp"] = "Letgen/vendor/yaml-cpp/include"
+IncludeDir["ImGuizmo"] = "Letgen/vendor/ImGuizmo"
 
 group "Dependencies"
     include "Letgen/vendor/GLFW"
@@ -48,7 +49,9 @@ project "Letgen"
         "%{prj.name}/vendor/stb_image/**.h",
         "%{prj.name}/vendor/stb_image/**.cpp",
         "%{prj.name}/vendor/GLM/glm/**.hpp",
-        "%{prj.name}/vendor/GLM/glm/**.inl"
+        "%{prj.name}/vendor/GLM/glm/**.inl",
+        "%{prj.name}/vendor/ImGuizmo/ImGuizmo.h",
+        "%{prj.name}/vendor/ImGuizmo/ImGuizmo.cpp"
     }
 
     defines
@@ -66,7 +69,8 @@ project "Letgen"
         "%{IncludeDir.GLM}",
         "%{IncludeDir.stb_image}",
         "%{IncludeDir.entt}",
-        "%{IncludeDir.yaml_cpp}"
+        "%{IncludeDir.yaml_cpp}",
+        "%{IncludeDir.ImGuizmo}"
     }
 
     links
@@ -77,6 +81,9 @@ project "Letgen"
         "yaml-cpp",
         "opengl32.lib"
     }
+
+    filter "files:vendor/ImGuizmo/**.cpp"
+        flags { "NoPCH" }
 
     filter "system:windows"
 

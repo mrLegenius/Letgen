@@ -35,6 +35,8 @@ namespace Letgen
 		Ref<Scene> m_ActiveScene = nullptr;
 		Entity m_CameraEntity;
 		Entity m_SquareEntity;
+
+		int m_GizmoType = -1;
 		
 		glm::vec2 m_ViewportSize { 0.0f };
 

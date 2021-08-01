@@ -14,6 +14,9 @@ namespace Letgen
 		void DrawComponents(Entity entity);
 
 		void OnImGuiRender();
+
+		
+		Entity GetSelectedEntity() const { return m_SelectionContext; }
 	private:
 		Ref<Scene> m_Context = nullptr;
 		Entity m_SelectionContext;
