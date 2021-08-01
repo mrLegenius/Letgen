@@ -1,6 +1,6 @@
 workspace "Letgen"
     architecture "x64"
-    startproject "Sandbox"
+    startproject "LetEditor"
 
     configurations
     {
@@ -19,11 +19,13 @@ IncludeDir["ImGui"] = "Letgen/vendor/ImGui"
 IncludeDir["GLM"] = "Letgen/vendor/GLM"
 IncludeDir["stb_image"] = "Letgen/vendor/stb_image"
 IncludeDir["entt"] = "Letgen/vendor/entt/include"
+IncludeDir["yaml_cpp"] = "Letgen/vendor/yaml-cpp/include"
 
 group "Dependencies"
     include "Letgen/vendor/GLFW"
     include "Letgen/vendor/GLAD"
     include "Letgen/vendor/ImGui"
+    include "Letgen/vendor/yaml-cpp"
 group ""
 
 project "Letgen"
@@ -63,7 +65,8 @@ project "Letgen"
         "%{IncludeDir.ImGui}",
         "%{IncludeDir.GLM}",
         "%{IncludeDir.stb_image}",
-        "%{IncludeDir.entt}"
+        "%{IncludeDir.entt}",
+        "%{IncludeDir.yaml_cpp}"
     }
 
     links
@@ -71,6 +74,7 @@ project "Letgen"
         "GLFW",
         "GLAD",
         "ImGui",
+        "yaml-cpp",
         "opengl32.lib"
     }
 
@@ -175,7 +179,8 @@ project "LetEditor"
         "Letgen/src",
         "Letgen/vendor",
         "%{IncludeDir.GLM}",
-        "%{IncludeDir.entt}"
+        "%{IncludeDir.entt}",
+        "%{IncludeDir.yaml_cpp}"
     }
 
     links

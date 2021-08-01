@@ -20,8 +20,7 @@ namespace Letgen
 		bool HasComponent()
 		{
 			LET_CORE_ASSERT(IsCreated(), "Entity is not created!");
-			//TODO: Find a proper way to check if component exists
-			return m_Scene->m_Registry.try_get<T>(m_EntityID);
+			return m_Scene->m_Registry.any_of<T>(m_EntityID);
 		}
 
 		template<typename T, typename ... Args>

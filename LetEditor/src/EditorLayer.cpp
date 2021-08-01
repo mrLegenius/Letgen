@@ -1,8 +1,11 @@
 ﻿#include "pch.h"
 #include "EditorLayer.h"
 
-#include "ImGui/imgui.h"
 #include <glm/gtc/matrix_transform.hpp>
+
+#include "ImGui/imgui.h"
+
+#include "Letgen/Scene/SceneSerializer.h"
 
 namespace Letgen
 {
@@ -20,7 +23,7 @@ namespace Letgen
 
         m_ActiveScene = CreateRef<Scene>();
 
-        m_SquareEntity = m_ActiveScene->CreateEntity("Square");
+        /*m_SquareEntity = m_ActiveScene->CreateEntity("Square");
         m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4(1.0f, 0.3f, 0.2f, 1.0f));
 
         m_CameraEntity = m_ActiveScene->CreateEntity("Camera");
@@ -47,7 +50,7 @@ namespace Letgen
             }
         };
 
-        m_CameraEntity.AddScript<CameraController>();
+        m_CameraEntity.AddScript<CameraController>();*/
 
         m_Hierarchy.SetContext(m_ActiveScene);
     }
@@ -207,10 +210,20 @@ namespace Letgen
         {
             if (ImGui::BeginMenu("File"))
             {
-                if (ImGui::MenuItem("Exit"))
+                //TODO: Open File Dialog Window for serialization
+                if(ImGui::MenuItem("Save Scene"))
                 {
-                    Application::Get().Close();
+                    SceneSerializer sceneSerializer(m_ActiveScene);
+                    sceneSerializer.Serialize("assets/scenes/FirstScene.scene");
                 }
+
+                if (ImGui::MenuItem("Load Scene"))
+                {
+                    SceneSerializer sceneSerializer(m_ActiveScene);
+                    sceneSerializer.Deserialize("assets/scenes/FirstScene.scene");
+                }
+            	
+                if (ImGui::MenuItem("Exit")) Application::Get().Close();
 
                 ImGui::EndMenu();
             }

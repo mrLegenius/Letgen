@@ -1,0 +1,5 @@
+
+[*]
+
+# ReSharper properties
+resharper_anonymous_method_declaration_braces = next_line

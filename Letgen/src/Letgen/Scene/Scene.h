@@ -25,6 +25,7 @@ namespace Letgen
 		uint32_t m_ViewportHeight;
 
 		friend class Entity;
+		friend class SceneSerializer;
 		friend class SceneHierarchyEditorWindow;
 	};
 }

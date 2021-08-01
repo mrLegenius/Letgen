@@ -8,7 +8,9 @@
 #if LET_ENABLE_ASSERTS
 	#define LET_ASSERT(x, ...) { if(!(x)) { Log::Error("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
 	#define LET_CORE_ASSERT(x, ...) { if(!(x)) { Log::CoreError("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
+	#define LET_NOT_IMPLEMENTED LET_CORE_ASSERT(false, "Not implemented")
 #else
 	#define LET_ASSERT(x, ...)
 	#define LET_CORE_ASSERT(x, ...)
+	#define LET_NOT_IMPLEMENTED
 #endif

@@ -10,3 +10,6 @@
 [submodule "Letgen/vendor/GLM"]
 	path = Letgen/vendor/GLM
 	url = https://github.com/g-truc/glm
+[submodule "Letgen/vendor/yaml-cpp"]
+	path = Letgen/vendor/yaml-cpp
+	url = https://github.com/mrLegenius/yaml-cpp
