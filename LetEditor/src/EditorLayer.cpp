@@ -6,6 +6,7 @@
 #include "ImGui/imgui.h"
 
 #include "Letgen/Scene/SceneSerializer.h"
+#include "Letgen/Utils/PlatformUtils.h"
 
 namespace Letgen
 {
@@ -53,6 +54,9 @@ namespace Letgen
         m_CameraEntity.AddScript<CameraController>();*/
 
         m_Hierarchy.SetContext(m_ActiveScene);
+
+        SceneSerializer sceneSerializer(m_ActiveScene);
+        sceneSerializer.Deserialize("assets/scenes/FirstScene.letscene");
     }
 
     void EditorLayer::OnDetach()
@@ -91,6 +95,9 @@ namespace Letgen
     void EditorLayer::OnEvent(Event& event)
     {
 		m_CameraController.OnEvent(event);
+
+        EventDispatcher dispatcher(event);
+        dispatcher.Dispatch<KeyPressedEvent>(LET_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
     }
 
     void EditorLayer::OnImGuiRender()
@@ -101,6 +108,77 @@ namespace Letgen
         DrawViewport();	
         DrawStatistics();
         m_Hierarchy.OnImGuiRender();
+    }
+
+    bool EditorLayer::OnKeyPressed(KeyPressedEvent& event)
+    {
+    	//Shortcuts
+        if (event.GetRepeatCount() > 0)
+            return false;
+
+        const bool control = Input::IsKeyDown(KeyCode::LeftControl) ||
+            Input::IsKeyDown(KeyCode::RightControl);
+        const bool shift = Input::IsKeyDown(KeyCode::LeftShift) ||
+            Input::IsKeyDown(KeyCode::RightShift);
+        const bool alt = Input::IsKeyDown(KeyCode::LeftAlt) ||
+            Input::IsKeyDown(KeyCode::RightAlt);
+
+	    switch ((KeyCode)event.GetKeyCode())
+	    {
+        
+        case KeyCode::N:
+        {
+            if (control) { CreateNewScene(); }
+            break;
+        }
+        case KeyCode::O:
+        {
+            if (control) { OpenScene(); }
+            break;
+        }
+        case KeyCode::S:
+        {
+            if (control && shift) { SaveSceneAs(); }
+            break;
+        }
+	    default:
+            break;
+	    }
+    }
+
+    void EditorLayer::CreateNewScene()
+    {
+        m_ActiveScene = CreateRef<Scene>();
+        m_ActiveScene->OnViewportResized(
+            static_cast<uint32_t>(m_ViewportSize.x),
+            static_cast<uint32_t>(m_ViewportSize.y));
+        m_Hierarchy.SetContext(m_ActiveScene);
+    }
+
+    void EditorLayer::OpenScene()
+    {
+        const auto filepath = FileDialogs::OpenFile("Letgen Scene (*.letscene)\0*.letscene\0");
+        if (!filepath.empty())
+        {
+            m_ActiveScene = CreateRef<Scene>();
+            m_ActiveScene->OnViewportResized(
+                static_cast<uint32_t>(m_ViewportSize.x),
+                static_cast<uint32_t>(m_ViewportSize.y));
+            m_Hierarchy.SetContext(m_ActiveScene);
+
+            SceneSerializer sceneSerializer(m_ActiveScene);
+            sceneSerializer.Deserialize(filepath);
+        }
+    }
+
+    void EditorLayer::SaveSceneAs()
+    {
+        const auto filepath = FileDialogs::OpenFile("Letgen Scene (*.letscene)\0*.letscene\0");
+        if (!filepath.empty())
+        {
+            SceneSerializer sceneSerializer(m_ActiveScene);
+            sceneSerializer.Serialize(filepath);
+        }
     }
 
     void EditorLayer::DrawViewport()
@@ -210,17 +288,19 @@ namespace Letgen
         {
             if (ImGui::BeginMenu("File"))
             {
-                //TODO: Open File Dialog Window for serialization
-                if(ImGui::MenuItem("Save Scene"))
+                if (ImGui::MenuItem("New Scene", "Ctrl+N"))
                 {
-                    SceneSerializer sceneSerializer(m_ActiveScene);
-                    sceneSerializer.Serialize("assets/scenes/FirstScene.scene");
+                    CreateNewScene();
                 }
 
-                if (ImGui::MenuItem("Load Scene"))
+                if (ImGui::MenuItem("Open Scene...", "Ctrl+O"))
                 {
-                    SceneSerializer sceneSerializer(m_ActiveScene);
-                    sceneSerializer.Deserialize("assets/scenes/FirstScene.scene");
+                    OpenScene();
+                }
+            	
+                if(ImGui::MenuItem("Save Scene As...", "Ctrl+Shift+S"))
+                {
+                    SaveSceneAs();
                 }
             	
                 if (ImGui::MenuItem("Exit")) Application::Get().Close();

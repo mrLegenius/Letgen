@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "Letgen.h"
 #include "EditorWindows/SceneHierarchyEditorWindow.h"
+#include "Letgen/Events/KeyEvent.h"
 
 namespace Letgen
 {
@@ -17,6 +18,13 @@ namespace Letgen
 		void OnImGuiRender() override;
 
 	private:
+		bool OnKeyPressed(KeyPressedEvent& event);
+
+		void CreateNewScene();
+		void OpenScene();
+		void SaveSceneAs();
+
+		
 		void DrawDockSpace();
 		void DrawViewport();
 		void DrawStatistics();

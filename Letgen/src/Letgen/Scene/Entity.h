@@ -19,14 +19,14 @@ namespace Letgen
 		template<typename T>
 		bool HasComponent()
 		{
-			LET_CORE_ASSERT(IsCreated(), "Entity is not created!");
+			LET_CORE_ASSERT(m_Scene->m_Registry.valid(m_EntityID), "Entity is not valid!");
 			return m_Scene->m_Registry.any_of<T>(m_EntityID);
 		}
 
 		template<typename T, typename ... Args>
 		T& AddComponent(Args&& ... args)
 		{	
-			LET_CORE_ASSERT(IsCreated(), "Entity is not created!");
+			LET_CORE_ASSERT(m_Scene->m_Registry.valid(m_EntityID), "Entity is not valid!");
 			LET_CORE_ASSERT(!HasComponent<T>(), "Entity already has this component!");
 
 			T& component = m_Scene->m_Registry.emplace<T>(m_EntityID, std::forward<Args>(args)...);
@@ -39,7 +39,7 @@ namespace Letgen
 		template<typename T>
 		T& GetComponent()
 		{
-			LET_CORE_ASSERT(IsCreated(), "Entity is not created!");
+			LET_CORE_ASSERT(m_Scene->m_Registry.valid(m_EntityID), "Entity is not valid!");
 			LET_CORE_ASSERT(HasComponent<T>(), "Entity does not have this component!");
 
 			return m_Scene->m_Registry.get<T>(m_EntityID);
@@ -48,7 +48,7 @@ namespace Letgen
 		template<typename T>
 		void RemoveComponent()
 		{
-			LET_CORE_ASSERT(IsCreated(), "Entity is not created!");
+			LET_CORE_ASSERT(m_Scene->m_Registry.valid(m_EntityID), "Entity is not valid!");
 			LET_CORE_ASSERT(HasComponent<T>(), "Entity does not have this component!");
 
 			return m_Scene->m_Registry.remove<T>(m_EntityID);
@@ -57,15 +57,13 @@ namespace Letgen
 		template <typename T>
 		void AddScript()
 		{
-			LET_CORE_ASSERT(IsCreated(), "Entity is not created!");
+			LET_CORE_ASSERT(m_Scene->m_Registry.valid(m_EntityID), "Entity is not valid!");
 			LET_CORE_ASSERT(!HasComponent<T>(), "Entity already has this component!");
 
 			return AddComponent<NativeScriptComponent>().Bind<T>();
 		}
 
-		_NODISCARD bool IsCreated() const { return m_EntityID != entt::null; }
-
-		operator bool() const { return IsCreated(); }
+		operator bool() const { return m_EntityID != entt::null; }
 		operator uint32_t() const { return static_cast<uint32_t>(m_EntityID); }
 		operator entt::entity() const { return m_EntityID; }
 

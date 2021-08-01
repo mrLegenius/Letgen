@@ -14,8 +14,8 @@ namespace Letgen
 	void SceneHierarchyEditorWindow::SetContext(const Ref<Scene>& scene)
 	{
 		m_Context = scene;
+		m_SelectionContext = { };
 	}
-
 
 	void SceneHierarchyEditorWindow::OnImGuiRender()
 	{
@@ -223,7 +223,7 @@ namespace Letgen
 		{
 			auto& tag = entity.GetComponent<TagComponent>().tag;
 
-			char buffer[256];
+			char buffer[256];	
 			memset(buffer, 0, sizeof buffer);
 			strcpy_s(buffer, sizeof buffer, tag.c_str());
 

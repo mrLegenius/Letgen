@@ -8,7 +8,7 @@ namespace Letgen
 	{
 	public:
 		Scene() = default;
-		~Scene() = default;
+		~Scene();
 
 		void OnUpdate();
 

@@ -8,9 +8,13 @@
 
 namespace Letgen
 {
-	void Scene::OnUpdate()
+	Scene::~Scene()
 	{
-		
+		m_Registry.clear();
+	}
+
+	void Scene::OnUpdate()
+	{		
 		// Update scripts
 		{
 			m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
