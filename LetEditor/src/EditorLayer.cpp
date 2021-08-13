@@ -27,34 +27,7 @@ namespace Letgen
 
         m_ActiveScene = CreateRef<Scene>();
 
-        /*m_SquareEntity = m_ActiveScene->CreateEntity("Square");
-        m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4(1.0f, 0.3f, 0.2f, 1.0f));
-
-        m_CameraEntity = m_ActiveScene->CreateEntity("Camera");
-        m_CameraEntity.AddComponent<CameraComponent>();
-    	
-        class CameraController : public ScriptableEntity
-        {
-        public:
-            void OnUpdate() override
-            {
-                auto& translation = GetComponent<TransformComponent>().position;
-
-                const float speed = 5.0f;
-                const float dt = Time::GetDeltaTime();
-
-                if (Input::IsKeyDown(KeyCode::A))
-                    translation.x -= speed * dt;
-                if (Input::IsKeyDown(KeyCode::D))
-                    translation.x += speed * dt;
-                if (Input::IsKeyDown(KeyCode::W))
-                    translation.y += speed * dt;
-                if (Input::IsKeyDown(KeyCode::S))
-                    translation.y -= speed * dt;
-            }
-        };
-
-        m_CameraEntity.AddScript<CameraController>();*/
+        m_EditorCamera = EditorCamera(30.0f, 16.0f / 9.0f, 0.1f, 1000.0f);
 
         m_Hierarchy.SetContext(m_ActiveScene);
 
@@ -70,6 +43,8 @@ namespace Letgen
 
     void EditorLayer::OnUpdate()
     {
+        LET_PROFILE_FUNCTION();
+    	
         const auto width = static_cast<uint32_t>(m_ViewportSize.x);
         const auto height = static_cast<uint32_t>(m_ViewportSize.y);
 
@@ -81,14 +56,13 @@ namespace Letgen
         {
             m_Framebuffer->Resize(width, height);
             m_ActiveScene->OnViewportResized(width, height);
+            m_EditorCamera.SetViewportSize(width, height);
         }
     	
-        LET_PROFILE_FUNCTION();
-        if (m_ViewportFocused)
-            m_CameraController.Update();
-
+        m_EditorCamera.OnUpdate();
+    	
         m_Framebuffer->Bind();
-        m_ActiveScene->OnUpdate();
+        m_ActiveScene->OnUpdateEditor(m_EditorCamera);
 
         //COOL GRADIENT COLOR
         //glm::vec4 c{ (i + 3.0f) / 6.0f, (i + 5.0f) / 10.0f, (i + 10.0f) / 15.0f, 1.0f };
@@ -97,7 +71,7 @@ namespace Letgen
 
     void EditorLayer::OnEvent(Event& event)
     {
-		m_CameraController.OnEvent(event);
+        m_EditorCamera.OnEvent(event);
 
         EventDispatcher dispatcher(event);
         dispatcher.Dispatch<KeyPressedEvent>(LET_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
@@ -212,6 +186,12 @@ namespace Letgen
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
         ImGui::Begin("Viewport");
 
+        const auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
+        const auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
+        const auto viewportOffset = ImGui::GetWindowPos();
+        m_ViewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
+        m_ViewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
+    	
         m_ViewportFocused = ImGui::IsWindowFocused();
         m_ViewportHovered = ImGui::IsWindowHovered();
         Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused && !m_ViewportHovered);
@@ -224,36 +204,32 @@ namespace Letgen
             m_Framebuffer->GetColorAttachmentRendererID();
 
         ImGui::Image(
-            (void*)textureId,
+            reinterpret_cast<void*>(textureId),
             ImVec2(m_ViewportSize.x, m_ViewportSize.y),
             ImVec2(0, 1),
             ImVec2(1, 0)
         );
 
-        const bool snap = Input::IsKeyDown(KeyCode::LeftControl);
-        const float snapValue = m_GizmoType == ImGuizmo::OPERATION::ROTATE ? 5.0f : 0.5f;
-    	
     	//Gizmos
         Entity selectedEntity = m_Hierarchy.GetSelectedEntity();
     	if (selectedEntity && m_GizmoType != -1)
     	{
             ImGuizmo::SetOrthographic(false);
             ImGuizmo::SetDrawlist();
-            const auto windowPos = ImGui::GetWindowPos();
-            const auto windowSize = ImGui::GetWindowSize();
     		
-            ImGuizmo::SetRect(windowPos.x, windowPos.y, windowSize.x, windowSize.y);
+            ImGuizmo::SetRect(m_ViewportBounds[0].x, m_ViewportBounds[0].y, m_ViewportBounds[1].x - m_ViewportBounds[0].x, m_ViewportBounds[1].y - m_ViewportBounds[0].y);
 
-    		//Camera
-            auto cameraEntity = m_ActiveScene->GetMainCameraEntity();
-            const auto& camera = cameraEntity.GetComponent<CameraComponent>().camera;
-            glm::mat4 cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetModel());
-            const glm::mat4& cameraProjection = camera.GetProjection();
+            glm::mat4 cameraView = m_EditorCamera.GetViewMatrix();
+            const glm::mat4& cameraProjection = m_EditorCamera.GetProjection();
 
-            float snapValues[3] = { snapValue, snapValue, snapValue };
-    		//Entity transform
             auto& tc = selectedEntity.GetComponent<TransformComponent>();
             glm::mat4 model = tc.GetModel();
+
+            const bool snap = Input::IsKeyDown(KeyCode::LeftControl);
+            const float snapValue = m_GizmoType == ImGuizmo::OPERATION::ROTATE ? 5.0f : 0.5f;
+
+            float snapValues[3] = { snapValue, snapValue, snapValue };
+            
     		
             ImGuizmo::Manipulate(glm::value_ptr(cameraView),
                 glm::value_ptr(cameraProjection),
@@ -304,7 +280,7 @@ namespace Letgen
     	
         static bool open = true;
         static bool opt_fullscreen = true;
-        static bool opt_padding = false;
+
         static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
 
         // We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
@@ -321,10 +297,6 @@ namespace Letgen
             window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
             window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
         }
-        else
-        {
-            dockspace_flags &= ~ImGuiDockNodeFlags_PassthruCentralNode;
-        }
 
         // When using ImGuiDockNodeFlags_PassthruCentralNode, DockSpace() will render our background
         // and handle the pass-thru hole, so we ask Begin() to not render a background.
@@ -337,7 +309,7 @@ namespace Letgen
         // We cannot preserve the docking relationship between an active window and an inactive docking, otherwise
         // any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-        ImGui::Begin("DockSpace Demo", &open, window_flags);
+        ImGui::Begin("DockSpace", &open, window_flags);
         ImGui::PopStyleVar();
 
         if (opt_fullscreen)

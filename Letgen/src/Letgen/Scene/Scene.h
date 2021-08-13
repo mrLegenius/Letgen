@@ -1,6 +1,8 @@
 #pragma once
 #include <entt.hpp>
 
+#include "Letgen/Renderer/EditorCamera.h"
+
 namespace Letgen
 {
 	class Entity;
@@ -10,7 +12,8 @@ namespace Letgen
 		Scene() = default;
 		~Scene();
 
-		void OnUpdate();
+		void OnUpdateRuntime();
+		void OnUpdateEditor(EditorCamera& camera);
 
 		void OnViewportResized(uint32_t width, uint32_t height);
 		

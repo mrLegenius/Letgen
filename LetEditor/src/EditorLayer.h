@@ -29,19 +29,20 @@ namespace Letgen
 		void DrawViewport();
 		void DrawStatistics();
 
-		OrthographicCameraController m_CameraController { 1280.0f / 720.0f , true };
+		EditorCamera m_EditorCamera;
+		
 		Ref<Framebuffer> m_Framebuffer = nullptr;
 
 		Ref<Scene> m_ActiveScene = nullptr;
 		Entity m_CameraEntity;
 		Entity m_SquareEntity;
 
-		int m_GizmoType = -1;
-		
-		glm::vec2 m_ViewportSize { 0.0f };
-
 		bool m_ViewportFocused = false;
 		bool m_ViewportHovered = false;
+		glm::vec2 m_ViewportSize { 0.0f };
+		glm::vec2 m_ViewportBounds[2];
+
+		int m_GizmoType = -1;
 
 		SceneHierarchyEditorWindow m_Hierarchy;
 	};

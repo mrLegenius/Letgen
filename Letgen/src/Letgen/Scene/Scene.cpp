@@ -13,11 +13,11 @@ namespace Letgen
 		m_Registry.clear();
 	}
 
-	void Scene::OnUpdate()
+	void Scene::OnUpdateRuntime()
 	{		
 		// Update scripts
 		{
-			m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
+			m_Registry.view<NativeScriptComponent>().each([=](auto entity, NativeScriptComponent& nsc)
 			{
 				//TODO: Move to Scene::OnSceneStarted
 				if (!nsc.instance)
@@ -65,6 +65,23 @@ namespace Letgen
 			Renderer2D::EndScene();
 		}
 	}
+
+	void Scene::OnUpdateEditor(EditorCamera& camera)
+	{
+		Renderer2D::BeginScene(camera);
+
+		auto view = m_Registry.view<TransformComponent, SpriteRendererComponent>();
+		for (auto entity : view)
+		{
+			auto [transform, sprite] = view.get<TransformComponent, SpriteRendererComponent>(entity);
+
+			Renderer2D::DrawQuad(transform.GetModel(), sprite.color);
+		}
+
+
+		Renderer2D::EndScene();
+	}
+
 
 	void Scene::OnViewportResized(const uint32_t width, const uint32_t height)
 	{

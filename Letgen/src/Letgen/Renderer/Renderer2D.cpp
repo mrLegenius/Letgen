@@ -137,7 +137,22 @@ namespace Letgen
 		RenderCommand::Clear();
 	}
 
-	
+	void Renderer2D::BeginScene(const EditorCamera& camera)
+	{
+		LET_PROFILE_FUNCTION();
+
+		s_Data->ultimateShader->Bind();
+		s_Data->ultimateShader->SetMatrix4("u_Projection", camera.GetProjection());
+		s_Data->ultimateShader->SetMatrix4("u_View", camera.GetViewMatrix());
+
+		StartBatch();
+
+		const float gray = 0.69f / 5;
+		RenderCommand::SetClearColor(glm::vec4(glm::vec3(gray), 1.0f));
+		RenderCommand::Clear();
+	}
+
+
 	void Renderer2D::EndScene()
 	{
 		LET_PROFILE_FUNCTION();
