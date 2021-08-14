@@ -58,7 +58,7 @@ namespace Letgen
 			{
 				auto [transform, sprite] = view.get<TransformComponent, SpriteRendererComponent>(entity);
 
-				Renderer2D::DrawQuad(transform.GetModel(), sprite.color);
+				Renderer2D::DrawSprite(transform.GetModel(), sprite, static_cast<int>(entity));
 			}
 
 
@@ -75,9 +75,9 @@ namespace Letgen
 		{
 			auto [transform, sprite] = view.get<TransformComponent, SpriteRendererComponent>(entity);
 
-			Renderer2D::DrawQuad(transform.GetModel(), sprite.color);
+			const auto entityID = static_cast<int>(entity);
+			Renderer2D::DrawSprite(transform.GetModel(), sprite, entityID);
 		}
-
 
 		Renderer2D::EndScene();
 	}

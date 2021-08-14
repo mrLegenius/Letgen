@@ -1,31 +1,33 @@
 #pragma once
 #include "Event.h"
+#include "Letgen/Input/KeyCodes.h"
+
 namespace Letgen
 {
-	class LETGEN_API KeyEvent : public Event
+	class KeyEvent : public Event
 	{
 	public:
-		int GetKeyCode() const { return m_Keycode; }
+		_NODISCARD KeyCode GetKeyCode() const { return m_Keycode; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
 	protected:
-		explicit KeyEvent(const int keycode) : m_Keycode(keycode) { }
+		explicit KeyEvent(const KeyCode keycode) : m_Keycode(keycode) { }
 
-		int m_Keycode;
+		KeyCode m_Keycode;
 	};
 
-	class LETGEN_API KeyPressedEvent : public KeyEvent
+	class KeyPressedEvent : public KeyEvent
 	{
 	public:
-		KeyPressedEvent(const int keycode, const int repeatCount)
+		KeyPressedEvent(const KeyCode keycode, const int repeatCount)
 			: KeyEvent(keycode), m_RepeatCount(repeatCount) { }
 
-		int GetRepeatCount() const { return m_RepeatCount; }
+		_NODISCARD int GetRepeatCount() const { return m_RepeatCount; }
 
-		std::string ToString() const override
+		_NODISCARD std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "KeyPressedEvent: " << m_Keycode << " (" << m_RepeatCount << " repeats)";
+			ss << "KeyPressedEvent: " << static_cast<int>(m_Keycode) << " (" << m_RepeatCount << " repeats)";
 			return ss.str();
 		}
 
@@ -35,32 +37,32 @@ namespace Letgen
 		int m_RepeatCount;
 	};
 
-	class LETGEN_API KeyTypedEvent : public KeyEvent
+	class KeyTypedEvent : public KeyEvent
 	{
 	public:
-		KeyTypedEvent(const int keycode)
+		KeyTypedEvent(const KeyCode keycode)
 			: KeyEvent(keycode) { }
 
-		std::string ToString() const override
+		_NODISCARD std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "KeyTypedEvent: " << m_Keycode;
+			ss << "KeyTypedEvent: " << static_cast<int>(m_Keycode);
 			return ss.str();
 		}
 
 		EVENT_CLASS_TYPE(KeyTyped)
 	};
 
-	class LETGEN_API KeyReleasedEvent : public KeyEvent
+	class KeyReleasedEvent : public KeyEvent
 	{
 	public:
-		explicit KeyReleasedEvent(const int keycode)
+		explicit KeyReleasedEvent(const KeyCode keycode)
 			: KeyEvent(keycode) { }
 
-		std::string ToString() const override
+		_NODISCARD std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "KeyReleasedEvent: " << m_Keycode;
+			ss << "KeyReleasedEvent: " << static_cast<int>(m_Keycode);
 			return ss.str();
 		}
 

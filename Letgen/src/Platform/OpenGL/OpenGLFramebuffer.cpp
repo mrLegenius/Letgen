@@ -88,7 +88,7 @@ namespace Letgen
 			}
 		}
 
-		static GLenum FramebufferTextureFormatToGL(const FramebufferTextureFormat format)
+		static GLenum FramebufferTextureFormatToOpenGLFormat(const FramebufferTextureFormat format)
 		{
 			switch (format)
 			{
@@ -229,7 +229,7 @@ namespace Letgen
 		LET_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size());
 
 		auto& spec = m_ColorAttachmentSpecifications[attachmentIndex];
-		glClearTexImage(m_ColorAttachments[attachmentIndex], 0,
-			Utils::FramebufferTextureFormatToGL(spec.textureFormat), GL_INT, &value);
+		const auto format = Utils::FramebufferTextureFormatToOpenGLFormat(spec.textureFormat);
+		glClearTexImage(m_ColorAttachments[attachmentIndex], 0, format, GL_INT, &value);
 	}
 }

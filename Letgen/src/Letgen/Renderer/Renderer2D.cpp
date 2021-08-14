@@ -14,6 +14,10 @@ namespace Letgen
 		glm::vec4 color;
 		glm::vec2 texCoord;
 		float texIndex;
+		float texTiling;
+
+		// Editor-only
+		int entityID = 2;
 	};
 	
 	struct Renderer2DData
@@ -42,8 +46,6 @@ namespace Letgen
 	};
 
 	static Renderer2DData* s_Data;
-
-	
 	
 	void Renderer2D::Init()
 	{
@@ -61,7 +63,9 @@ namespace Letgen
 			{ShaderDataType::Float3, "a_Position" },
 			{ShaderDataType::Float4, "a_Color" },
 			{ShaderDataType::Float2, "a_TexCoord" },
-			{ShaderDataType::Float, "a_TexIndex" },
+			{ShaderDataType::Float, "a_TexIndex"},
+			{ShaderDataType::Float, "a_TexTiling"},
+			{ShaderDataType::Int, "a_EntityID"},
 		});
 
 		const auto quadIndices = new uint32_t[Renderer2DData::maxIndices];
@@ -80,7 +84,7 @@ namespace Letgen
 			offset += Renderer2DData::verticesPerQuad;
 		}
 		
-		const Ref<IndexBuffer> quadIB = IndexBuffer::Create(quadIndices, s_Data->maxIndices);
+		const Ref<IndexBuffer> quadIB = IndexBuffer::Create(quadIndices, Renderer2DData::maxIndices);
 		data.quadVertexArray->SetIndexBuffer(quadIB);
 		delete[] quadIndices;
 		
@@ -107,21 +111,6 @@ namespace Letgen
 		delete s_Data->quadVertexBufferBase;
 	}
 
-	void Renderer2D::BeginScene(const OrthographicCamera& camera)
-	{
-		LET_PROFILE_FUNCTION();
-
-		s_Data->ultimateShader->Bind();
-		s_Data->ultimateShader->SetMatrix4("u_Projection", camera.GetProjectionMatrix());
-		s_Data->ultimateShader->SetMatrix4("u_View", camera.GetViewMatrix());
-
-		StartBatch();
-		
-		const float gray = 0.69f / 5;
-		RenderCommand::SetClearColor(glm::vec4(glm::vec3(gray), 1.0f));
-		RenderCommand::Clear();
-	}
-
 	void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform)
 	{
 		LET_PROFILE_FUNCTION();
@@ -131,10 +120,6 @@ namespace Letgen
 		s_Data->ultimateShader->SetMatrix4("u_View", glm::inverse(transform));
 
 		StartBatch();
-
-		const float gray = 0.69f / 5;
-		RenderCommand::SetClearColor(glm::vec4(glm::vec3(gray), 1.0f));
-		RenderCommand::Clear();
 	}
 
 	void Renderer2D::BeginScene(const EditorCamera& camera)
@@ -146,10 +131,6 @@ namespace Letgen
 		s_Data->ultimateShader->SetMatrix4("u_View", camera.GetViewMatrix());
 
 		StartBatch();
-
-		const float gray = 0.69f / 5;
-		RenderCommand::SetClearColor(glm::vec4(glm::vec3(gray), 1.0f));
-		RenderCommand::Clear();
 	}
 
 
@@ -194,30 +175,30 @@ namespace Letgen
 		StartBatch();
 	}
 
-	void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color)
+	void Renderer2D::DrawSprite(const glm::mat4& transform, const SpriteRendererComponent& spriteRenderer, const int entityID)
 	{
 		Draw(
 			transform,
-			color,
+			spriteRenderer.color,
 			s_Data->blankTexture,
-			1.0f);
+			1.0f,
+			entityID);
 	}
 
-	void Renderer2D::Draw(const glm::mat4& transform, const glm::vec4& color, const Ref<Texture2D>& texture, const float tiling)
+	void Renderer2D::Draw(const glm::mat4& transform, const glm::vec4& color, const Ref<Texture2D>& texture, const float tiling, const int entityID)
 	{
 		LET_PROFILE_FUNCTION();
 
-		AddQuadToVertexBuffer(transform, color, texture);
+		AddQuadToVertexBuffer(transform, color, texture, tiling, entityID);
 
 		const auto& shader = s_Data->ultimateShader;
-		shader->SetFloat("u_TexTiling", tiling);
 
 		s_Data->quadVertexArray->Bind();
 		texture->Bind();
 		RenderCommand::DrawIndexed(s_Data->quadVertexArray);
 	}
 
-	void Renderer2D::AddQuadToVertexBuffer(const glm::mat4& model, const glm::vec4& color, const Ref<Texture2D>& texture)
+	void Renderer2D::AddQuadToVertexBuffer(const glm::mat4& model, const glm::vec4& color, const Ref<Texture2D>& texture, const float tiling, const int entityID)
 	{
 		LET_PROFILE_FUNCTION();
 		
@@ -264,6 +245,8 @@ namespace Letgen
 			s_Data->quadVertexBufferPtr->color = color;
 			s_Data->quadVertexBufferPtr->texCoord = textureCoords[i];
 			s_Data->quadVertexBufferPtr->texIndex = textureIndex;
+			s_Data->quadVertexBufferPtr->texTiling = tiling;
+			s_Data->quadVertexBufferPtr->entityID = entityID;
 			s_Data->quadVertexBufferPtr++;
 		}
 

@@ -20,7 +20,7 @@ namespace Letgen
         LET_PROFILE_FUNCTION();
 
         FramebufferSpecification fbSpec;
-        fbSpec.attachmentSpecification = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::Depth };
+        fbSpec.attachmentSpecification = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RedInteger, FramebufferTextureFormat::Depth };
         fbSpec.width = Application::Get().GetWindow().GetWidth();
         fbSpec.height = Application::Get().GetWindow().GetHeight();
 
@@ -33,7 +33,8 @@ namespace Letgen
         m_Hierarchy.SetContext(m_ActiveScene);
 
         SceneSerializer sceneSerializer(m_ActiveScene);
-        sceneSerializer.Deserialize("assets/scenes/FirstScene.letscene");
+        m_ActiveScenePath = "assets/scenes/FirstScene.letscene";
+        sceneSerializer.Deserialize(m_ActiveScenePath);
     }
 
     void EditorLayer::OnDetach()
@@ -63,8 +64,29 @@ namespace Letgen
         m_EditorCamera.OnUpdate();
     	
         m_Framebuffer->Bind();
+        const float gray = 0.69f / 5;
+        RenderCommand::SetClearColor(glm::vec4(glm::vec3(gray), 1.0f));
+        RenderCommand::Clear();
+    	
+        // Clear entity ID attachment to -1
+        m_Framebuffer->ClearAttachment(1, -1);
+    	
         m_ActiveScene->OnUpdateEditor(m_EditorCamera);
 
+    	auto[mx, my] = ImGui::GetMousePos();
+		mx -= m_ViewportBounds[0].x;
+		my -= m_ViewportBounds[0].y;
+        const glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
+		my = viewportSize.y - my;
+        const int mouseX = static_cast<int>(mx);
+        const int mouseY = static_cast<int>(my);
+
+		if (mouseX >= 0 && mouseY >= 0 && mouseX < static_cast<int>(viewportSize.x) && mouseY < static_cast<int>(viewportSize.y))
+		{
+			int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
+			m_HoveredEntity = pixelData == -1 ? Entity() : Entity(static_cast<entt::entity>(pixelData), m_ActiveScene.get());
+		}
+    	
         //COOL GRADIENT COLOR
         //glm::vec4 c{ (i + 3.0f) / 6.0f, (i + 5.0f) / 10.0f, (i + 10.0f) / 15.0f, 1.0f };
         m_Framebuffer->Unbind();
@@ -76,6 +98,7 @@ namespace Letgen
 
         EventDispatcher dispatcher(event);
         dispatcher.Dispatch<KeyPressedEvent>(LET_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
+        dispatcher.Dispatch<MouseButtonPressedEvent>(LET_BIND_EVENT_FN(EditorLayer::OnMouseButtonPressed));
     }
 
     void EditorLayer::OnImGuiRender()
@@ -101,7 +124,7 @@ namespace Letgen
         const bool alt = Input::IsKeyDown(KeyCode::LeftAlt) ||
             Input::IsKeyDown(KeyCode::RightAlt);
 
-	    switch ((KeyCode)event.GetKeyCode())
+	    switch (event.GetKeyCode())
 	    {
         
         case KeyCode::N:
@@ -116,7 +139,8 @@ namespace Letgen
         }
         case KeyCode::S:
         {
-            if (control && shift) { SaveSceneAs(); }
+            if (control) { SaveScene(); }
+            else if (control && shift) { SaveSceneAs(); }
             break;
         }
         case KeyCode::Q:
@@ -143,6 +167,19 @@ namespace Letgen
 	    default:
             break;
 	    }
+
+        return false;
+    }
+
+    bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& event)
+    {
+        if (event.GetMouseButton() == MouseButton::Left)
+        {
+            if (m_ViewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyPressed(KeyCode::LeftAlt))
+                m_Hierarchy.SetSelectedEntity(m_HoveredEntity);
+        }
+           
+        return false;
     }
 
     void EditorLayer::CreateNewScene()
@@ -152,6 +189,7 @@ namespace Letgen
             static_cast<uint32_t>(m_ViewportSize.x),
             static_cast<uint32_t>(m_ViewportSize.y));
         m_Hierarchy.SetContext(m_ActiveScene);
+        m_ActiveScenePath.clear();
     }
 
     void EditorLayer::OpenScene()
@@ -167,7 +205,20 @@ namespace Letgen
 
             SceneSerializer sceneSerializer(m_ActiveScene);
             sceneSerializer.Deserialize(filepath);
+
+            m_ActiveScenePath = filepath;
         }
+    }
+
+    void EditorLayer::SaveScene()
+    {
+        if (!m_ActiveScenePath.empty())
+        {
+            SceneSerializer sceneSerializer(m_ActiveScene);
+            sceneSerializer.Serialize(m_ActiveScenePath);
+        }
+        else
+            SaveSceneAs();
     }
 
     void EditorLayer::SaveSceneAs()
@@ -177,6 +228,8 @@ namespace Letgen
         {
             SceneSerializer sceneSerializer(m_ActiveScene);
             sceneSerializer.Serialize(filepath);
+        	
+            m_ActiveScenePath = filepath;
         }
     }
 
@@ -266,7 +319,11 @@ namespace Letgen
 
         const auto stats = Renderer2D::GetStats();
 
-        ImGui::Text("Renderer2D Stats:");
+        std::string hoveredEntity = "None";
+        if (m_HoveredEntity)
+            hoveredEntity = m_HoveredEntity.GetComponent<TagComponent>().tag;
+    	
+        ImGui::Text("Hovered Entity: %s", hoveredEntity.c_str());
         ImGui::Text("Draw Calls: %d", stats.drawCalls);
         ImGui::Text("Quads Count: %d", stats.quadCount);
         ImGui::Text("Vertices Count: %d", stats.GetTotalVertexCount());
@@ -341,6 +398,11 @@ namespace Letgen
                 if (ImGui::MenuItem("Open Scene...", "Ctrl+O"))
                 {
                     OpenScene();
+                }
+
+                if (ImGui::MenuItem("Save Scene", "Ctrl+S"))
+                {
+					SaveScene();
                 }
             	
                 if(ImGui::MenuItem("Save Scene As...", "Ctrl+Shift+S"))

@@ -17,11 +17,14 @@ namespace Letgen
 		void OnEvent(Event& event) override;
 		void OnImGuiRender() override;
 
+
 	private:
 		bool OnKeyPressed(KeyPressedEvent& event);
+		bool OnMouseButtonPressed(MouseButtonPressedEvent& event);
 
 		void CreateNewScene();
 		void OpenScene();
+		void SaveScene();
 		void SaveSceneAs();
 
 		
@@ -34,8 +37,9 @@ namespace Letgen
 		Ref<Framebuffer> m_Framebuffer = nullptr;
 
 		Ref<Scene> m_ActiveScene = nullptr;
-		Entity m_CameraEntity;
-		Entity m_SquareEntity;
+		std::string m_ActiveScenePath;
+
+		Entity m_HoveredEntity;
 
 		bool m_ViewportFocused = false;
 		bool m_ViewportHovered = false;

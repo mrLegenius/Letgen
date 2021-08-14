@@ -99,24 +99,25 @@ namespace Letgen
 		{
 			auto& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
+			const auto keyCode = static_cast<KeyCode>(key);
 			switch (action)
 			{
 			case GLFW_PRESS:
 			{
-				KeyPressedEvent event(key, 0);
+				KeyPressedEvent event(keyCode, 0);
 				data.eventCallback(event);
 				break;
 			}
 			case GLFW_RELEASE:
 			{
-				KeyReleasedEvent event(key);
+				KeyReleasedEvent event(keyCode);
 				data.eventCallback(event);
 				break;
 			}
 			case GLFW_REPEAT:
 			{
 				//TODO: find a repeat count
-				KeyPressedEvent event(key, 1);
+				KeyPressedEvent event(keyCode, 1);
 				data.eventCallback(event);
 				break;
 			}
@@ -126,7 +127,8 @@ namespace Letgen
 		glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int character)
 		{
 			auto& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
-			KeyTypedEvent event(character);
+			const auto charCode = static_cast<KeyCode>(character);
+			KeyTypedEvent event(charCode);
 			data.eventCallback(event);
 		});
 
@@ -134,17 +136,18 @@ namespace Letgen
 		{
 			auto& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
+			const auto buttonCode = static_cast<MouseButton>(button);
 			switch (action)
 			{
 			case GLFW_PRESS:
 			{
-				MouseButtonPressedEvent event(button);
+				MouseButtonPressedEvent event(buttonCode);
 				data.eventCallback(event);
 				break;
 			}
 			case GLFW_RELEASE:
 			{
-				MouseButtonReleasedEvent event(button);
+				MouseButtonReleasedEvent event(buttonCode);
 				data.eventCallback(event);
 				break;
 			}

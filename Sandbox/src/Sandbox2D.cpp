@@ -47,7 +47,7 @@ void Sandbox2D::OnUpdate()
 			for (float j = -5.0f; j < 5.0f; j += 0.5f)
 			{
 				glm::vec4 c{ (i + 3.0f) / 6.0f, (i + 5.0f) / 10.0f, (i + 10.0f) / 15.0f, 1.0f };
-				Letgen::Renderer2D::DrawQuad({
+				Letgen::Renderer2D::DrawSprite({
 				{i, j},0.0f,{0.45f, 0.45f} },
 				c);
 			}

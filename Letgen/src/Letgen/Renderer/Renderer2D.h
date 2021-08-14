@@ -13,7 +13,6 @@ namespace Letgen
 		static void Init();
 		static void Shutdown();
 
-		static void BeginScene(const OrthographicCamera& camera);
 		static void BeginScene(const Camera& camera, const glm::mat4& transform);
 		static void BeginScene(const EditorCamera& camera);
 		
@@ -21,7 +20,7 @@ namespace Letgen
 		
 		static void Flush();
 		
-		static void DrawQuad(const glm::mat4& transform, const glm::vec4& color);
+		static void DrawSprite(const glm::mat4& transform, const SpriteRendererComponent& spriteRenderer, int entityID);
 
 		struct Statistics
 		{
@@ -39,7 +38,7 @@ namespace Letgen
 		static void NextBatch();
 		static void StartBatch();
 		
-		static void Draw(const glm::mat4& transform, const glm::vec4& color, const Ref<Texture2D>& texture, float tiling);
-		static void AddQuadToVertexBuffer(const glm::mat4& model, const glm::vec4& color, const Ref<Texture2D>& texture);
+		static void Draw(const glm::mat4& transform, const glm::vec4& color, const Ref<Texture2D>& texture, float tiling, int entityID = -1);
+		static void AddQuadToVertexBuffer(const glm::mat4& model, const glm::vec4& color, const Ref<Texture2D>& texture, float tiling, int entityID = -1);
 	};
 }

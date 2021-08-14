@@ -17,6 +17,7 @@ namespace Letgen
 
 		
 		Entity GetSelectedEntity() const { return m_SelectionContext; }
+		void SetSelectedEntity(const Entity entity) { m_SelectionContext = entity; }
 	private:
 		Ref<Scene> m_Context = nullptr;
 		Entity m_SelectionContext;
