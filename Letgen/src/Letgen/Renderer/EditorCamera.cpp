@@ -5,8 +5,6 @@
 #include "Letgen/Input/KeyCodes.h"
 #include "Letgen/Input/MouseButtonCodes.h"
 
-#include <glfw/glfw3.h>
-
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 
@@ -26,7 +24,7 @@ namespace Letgen
 
 	void EditorCamera::UpdateView()
 	{
-		// m_Yaw = m_Pitch = 0.0f; // Lock the camera's rotation
+		m_Yaw = m_Pitch = 0.0f; // Lock the camera's rotation
 		m_Position = CalculatePosition();
 
 		glm::quat orientation = GetOrientation();
@@ -61,17 +59,17 @@ namespace Letgen
 
 	void EditorCamera::OnUpdate()
 	{
-		if (Input::IsKeyPressed(KeyCode::LeftAlt))
+		if (Input::IsKeyDown(KeyCode::LeftAlt))
 		{
 			const glm::vec2& mouse{ Input::GetMouseX(), Input::GetMouseY() };
-			glm::vec2 delta = (mouse - m_InitialMousePosition) * 0.003f;
+			const glm::vec2 delta = (mouse - m_InitialMousePosition) * 0.003f;
 			m_InitialMousePosition = mouse;
 
-			if (Input::IsMouseButtonPressed(MouseButton::Middle))
+			if (Input::IsMouseButtonDown(MouseButton::Left))
 				MousePan(delta);
-			else if (Input::IsMouseButtonPressed(MouseButton::Left))
+			else if (Input::IsMouseButtonDown(MouseButton::Right))
 				MouseRotate(delta);
-			else if (Input::IsMouseButtonPressed(MouseButton::Right))
+			else if (Input::IsMouseButtonDown(MouseButton::Middle))
 				MouseZoom(delta.y);
 		}
 
