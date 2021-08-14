@@ -20,6 +20,7 @@ namespace Letgen
         LET_PROFILE_FUNCTION();
 
         FramebufferSpecification fbSpec;
+        fbSpec.attachmentSpecification = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::Depth };
         fbSpec.width = Application::Get().GetWindow().GetWidth();
         fbSpec.height = Application::Get().GetWindow().GetHeight();
 
